@@ -1,3 +1,5 @@
+# Hack the Tokenizer
+
 Language-model-based tools have gained popularity since the introduction of ChatGPT. This is no surprise given the profound impact intelligent machines can have on society. Whether in the education, medical, or legal domain, models that can enhance or even replace experts could significantly lower the cost of services and, consequently, democratize access to them. However, it is crucial to avoid exacerbating existing inequalities and ensure these tools benefit everyone.  
 
 This potential issue arises because training and developing language models require substantial financial resources, predominantly available to large tech companies focused on generating revenue. Consequently, a disparity can already be observed: since English is the most widely spoken language, companies prioritize developing English-based language models, offering limited support for other languages. This results in a quality gap, where generating non-English text with such models often results in less quality with higher costs. Both issues that can be linked to the tokenizer of the language model. To understand how a (brief) tokenizer explanation is in order.  

@@ -1,8 +1,11 @@
+import re
 import json
-import logging
-from pathlib import Path
-
 import torch
+import logging
+import pandas as pd
+
+from pathlib import Path
+from datasets import load_dataset
 from transformers import AutoTokenizer
 
 
@@ -87,3 +90,22 @@ def copy_dir(src: Path, dst: Path):
         else:
             file.rename(dst / file.name)
 
+
+# Soft Max
+def soft_max(arr):
+    return arr.exp() / arr.exp().sum()
+
+def get_first_word(original_text: str, predicted_text: str):
+    predicted_text = predicted_text.replace(original_text, '')
+    # Regex to find first word
+    first_word = re.search(r'\b\w+\b', predicted_text)
+    first_word = first_word.group() if first_word else None
+    return first_word
+
+def load_dataset_to_dataframe(*args, data_dir=None, dataset_types=['train', 'validation', 'test'], **kwargs):
+    ds = load_dataset(*args, data_dir=data_dir, **kwargs)
+    output = []
+    for ds_type in dataset_types:
+        output.append(ds[ds_type].to_pandas())
+        output[-1]['Dataset Type'] = ds_type
+    return pd.concat(output)

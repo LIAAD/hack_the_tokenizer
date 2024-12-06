@@ -26,16 +26,18 @@ class Benchmark():
         self,
         name: str,
         dataset: pd.DataFrame,
-        evaluation_method: Callable[['Benchmark', MODEL_TYPE, TOKENIZER_TYPE], Any],
+        prediction_prompts: list[str],
+        evaluation_method: Callable[['Benchmark', list[str]], Any],
         aggregation_method: Callable[[list[Any]], Any] = lambda x: sum(x) / len(x)
     ):
         self.name = name
         self.df = dataset
+        self.prediction_prompts = prediction_prompts
         self.eval_method = evaluation_method
         self.agg_method = aggregation_method
         self.evaluation_results = {}
-    
-    def run_eval(self, model: MODEL_TYPE, tokenizer: TOKENIZER_TYPE):
+
+    def run_eval(self, model: MODEL_TYPE, predictions: list[str]):
         model_name = model.name_or_path
         if self.evaluation_results.get(model_name, None) is not None:
             return self.evaluation_results[model_name]['result']
@@ -43,7 +45,7 @@ class Benchmark():
         results = []
         for _ in range(self.config['number_of_evaluations']):
             results.append(
-                self.eval_method(self, model, tokenizer)
+                self.eval_method(self, predictions)
             )
         
         result = self.agg_method(results)
@@ -59,7 +61,7 @@ class Benchmark():
 class Benchmarks():
     config = {
         'parallel_tasks': True,
-        'parallel_batch_size': 22,
+        'parallel_batch_size': None,
         'model_kwargs': {
             'do_sample': False,
             'temperature': None,
@@ -68,9 +70,10 @@ class Benchmarks():
             # 'return_dict_in_generate': True,
             'return_legacy_cache': False
         },
-        'no_config_copy_benchmarks': [],
+        'dont_copy_config_benchmarks': [],
         'tqdm_description': '<{MODEL}> Running {benchmark_name} Benchmark',
-        'number_of_evaluations': 3
+        'number_of_evaluations': 3,
+        'max_new_tokens': 20,
     }
 
     def __init__(self, benchmarks: list[Benchmark]):
@@ -78,9 +81,20 @@ class Benchmarks():
         self.evaluation_results = {}
 
     def run(self, model: MODEL_TYPE, tokenizer: TOKENIZER_TYPE):
-        # Update each benchmark config before running benchmarks
+        # Update each benchmark config before running benchmarks + Generate initial pipeline input prompt
+        pipeline_inputs = []
         for bench in self.benchmarks:
-            if bench.name not in self.config['no_config_copy_benchmarks']: bench.config = self.config
+            if bench.name not in self.config['dont_copy_config_benchmarks']:
+                bench.config = self.config
+            pipeline_inputs.extend(bench.prediction_prompts)
+        
+        generator = transformers.pipeline(
+            model=model,
+            tokenizer=tokenizer,
+            torch_dtype=self.config.get('torch_dtype', None),
+            model_kwargs=self.config['model_kwargs']
+        )
+        outputs = generator(pipeline_inputs, max_new_tokens=self.config['max_new_tokens'], batch_size=self.config['parallel_batch_size'])
     
         model_name = model.name_or_path
         if self.evaluation_results.get(model_name, None) is not None:

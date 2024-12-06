@@ -88,10 +88,13 @@ class SupergluePTPT(Benchmark):
     def __init__(self):
         # Loading CALAME-PT dataset onto a Pandas DataFrame
         df = utils.load_dataset_to_dataframe('PORTULAN/extraglue', data_dir='data/boolq_pt-PT') 
+        # Prepare input texts
+        df['prediction_prompts'] = 'Passagem: ' + df['passage'] + '\nPergunta: ' + df['question'] + '\nResposta (0-Verdade, 1-Mentira):'
 
         return super().__init__(
             self.__class__.__name__,
             df,
             evaluation_method=task_boolq,
+            prediction_prompts=df['prediction_prompts'].tolist(),
             aggregation_method=lambda results: np.array([r['accuracy'] for r in results]).mean()
         )

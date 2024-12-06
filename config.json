@@ -1,0 +1,21 @@
+{
+    "HuggingFaceTB/SmolLM2-135M": "no-config",
+    "NOVA-vision-language/GlorIA-1.3B": "no-config",
+    "PORTULAN/gervasio-7b-portuguese-ptpt-decoder": {
+        "parallel_tasks": false,
+        "parallel_batch_size": 1,
+        "model_kwargs": {
+            "torch_dtype": "torch.bfloat16"
+        },
+        "generate_model_kwargs": {
+            "do_sample": false,
+            "top_p": null,
+            "temperature": null,
+            "pad_token_id": 50257,
+            "return_legacy_cache": false
+        },
+        "no_config_copy_benchmarks": [],
+        "tqdm_description": "<{MODEL}> Running {benchmark_name} Benchmark",
+        "number_of_evaluations": 1
+    }
+}

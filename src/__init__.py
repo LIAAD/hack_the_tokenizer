@@ -1,4 +1,5 @@
 from .benchmark import BENCHMARKS
-from . import utils, bpe
+from . import utils
+from .BPE import BPE
 
-__all__ = ['utils', 'BENCHMARKS', 'bpe']
+__all__ = ['utils', 'BENCHMARKS', 'BPE']

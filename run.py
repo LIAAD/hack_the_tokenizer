@@ -16,18 +16,14 @@ def main():
     for MODEL in MODEL_CONFIGS.keys():
         print('{:-^100s}\n\n{: ^100s}\n\n{:-^100s}'.format('', f'Running benchmarks for model `{MODEL}`', ''))
 
-        # Load model and tokenizer
-        model = AutoModelForCausalLM.from_pretrained(MODEL, use_safetensors=True, **MODEL_CONFIGS[MODEL]['model_kwargs']).to(DEVICE)
-        tokenizer = AutoTokenizer.from_pretrained(MODEL)
+        config = MODEL_CONFIGS[MODEL] if isinstance(MODEL_CONFIGS[MODEL], dict) else {}
+        # Adding device to config if it has not been specified
+        config.setdefault('pipeline_kwargs', {})
+        config['pipeline_kwargs']['device'] = config['pipeline_kwargs'].get('device', DEVICE)
 
         # Update config if necessary
-        BENCHMARKS.config = MODEL_CONFIGS[MODEL] if isinstance(MODEL_CONFIGS[model], dict) else INITIAL_CONFIG.copy()
-        BENCHMARKS.run(model, tokenizer)
-
-        # Freeing up model from GPU memory
-        model.to('cpu')
-        torch.cuda.empty_cache()
-        del(model)
+        BENCHMARKS.config = config if config != {} else INITIAL_CONFIG.copy()
+        BENCHMARKS.run(MODEL, pipeline_kwargs=config['pipeline_kwargs'])
 
 if __name__ == '__main__':
     main()

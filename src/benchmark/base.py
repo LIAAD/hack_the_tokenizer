@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import Callable, Union, Any
+from typing import Callable, Union, Any, Literal
 import tqdm
 import transformers
 from ..DatasetClass import ListDataset
@@ -127,6 +127,17 @@ class Benchmarks():
     
     def get_results(self):
         return self.evaluation_results
+
+    def get_training_data(self, return_as: Literal['dataframe', 'df', 'list', 'str']='list'):
+        training_data = pd.concat([b.df for b in self.benchmarks])
+        training_data = training_data.select_dtypes(include='object').fillna('').drop(columns=['Dataset Type', 'prediction_prompts'])
+        if return_as in ('dataframe', 'df'):
+            return training_data
+        training_data['DATA'] = training_data.apply(lambda x: ' '.join(x), axis=1)
+        training_data = training_data['DATA'].to_list()
+        if return_as == 'list':
+            return training_data
+        return '\n'.join(training_data)
 
     def __repr__(self):
         out = '<<Benchmarks>>\n'

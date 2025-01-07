@@ -1,18 +1,15 @@
 import json
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
 
-import sys
-sys.path.insert(1, '../')
 from src import BENCHMARKS
 
 DEVICE: str = 'cuda'
 INITIAL_CONFIG: dict = BENCHMARKS.config.copy()
+
 # Loading Configurations
 with open('config.json', 'r') as f:
     MODEL_CONFIGS: dict = json.load(f)
 
-def main():
+def run_benchmark():
     for MODEL in MODEL_CONFIGS.keys():
         print('{:-^100s}\n\n{: ^100s}\n\n{:-^100s}'.format('', f'Running benchmarks for model `{MODEL}`', ''))
 
@@ -26,4 +23,4 @@ def main():
         BENCHMARKS.run(MODEL, pipeline_kwargs=config['pipeline_kwargs'])
 
 if __name__ == '__main__':
-    main()
+    run_benchmark()

@@ -1,6 +1,6 @@
 import torch
-from ..src import utils
-from ..src import loader
+from src import utils
+from src import loader
 
 DEVICE = 'cuda'
 model, tokenizer = loader.load_model_and_tokenizer(device=DEVICE)
@@ -9,8 +9,8 @@ model, tokenizer = loader.load_model_and_tokenizer(device=DEVICE)
 # FINDING A PHRASE THAT PREDICTS " luggage" as the new token
 phrases = '''
 The airline offers complimentary tags for your checked or carry-on  
-The conveyor belt at baggage claim was crowded with unclaimed pieces of  
-They charge extra for oversized or overweight pieces of checked  
+The conveyor belt at baggage claim was crowded with unclaimed pieces of 
+They charge extra for oversized or overweight pieces of checked 
 '''
 for phrase in phrases[1:-1].split('\n'):
     tokens = tokenizer(phrase.strip(' '), return_tensors='pt')
@@ -24,9 +24,9 @@ for phrase in phrases[1:-1].split('\n'):
 phrase = 'The airline offers complimentary tags for your checked or carry-on'
 tokens = tokenizer(phrase, return_tensors='pt')
 tokens = model.generate(tokens['input_ids'].to(DEVICE), max_new_tokens=1, pad_token_id=tokenizer.eos_token_id, attention_mask=tokens['attention_mask'].to(DEVICE))
-token_generated = tokens[0][-1].item()  # token_generated = {ID: 47161, TOKEN: " luggage"}
+token_generated = tokens[0][-1].item()  # token_generated = {ID: 10720, TOKEN: " bags"}
 
-# So, the phrase generated the token `token_generated = 47161`. What happens if I create a new_token with that token_id?
+# So, the phrase generated the token `token_generated = 10720`. What happens if I create a new_token with that token_id?
 new_token_id = token_generated
 new_token = ' martelo'
 

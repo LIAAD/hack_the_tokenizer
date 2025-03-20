@@ -225,6 +225,48 @@ def replace_tokens(
     return {'tokenizer': new_tokenizer, 'tokenizer_path': temp_folder}
 
 
+def compare_model_generation(
+    input_phrase: str,
+    model1, tokenizer1,
+    *models_tokenizers,
+    max_new_tokens: int=40,
+    DEVICE: str='cuda'
+):
+    '''
+        Can be used to compare multiple models, they should be specified as follows:
+        compare_model_generation(input_phrase,
+            model1, tokenizer1,
+            model2, tokenizer2,
+            model3, tokenizer3,
+            ...,
+            max_new_tokens=XXX,
+            DEVICE=YYY
+        )
+        NOTE: Do not specify `max_new_tokens` or `DEVICE` using normal "arguments", must be specified with kwargs
+    '''
+    
+    input_tokens1 = tokenizer1(input_phrase, return_tensors='pt')
+    input_tokens1, attention_mask1 = input_tokens1['input_ids'].to(DEVICE), input_tokens1['attention_mask'].to(DEVICE)
+    generation1 = model1.generate(input_tokens1, max_new_tokens=max_new_tokens, pad_token_id=tokenizer1.eos_token_id, attention_mask=attention_mask1)
+    print("{:-^100s}\n{: ^100s}\n\n{: ^100s}\n\n{:-^100s}".format(
+        '',
+        f"Original Model Generation:", 
+        f'`{tokenizer1.decode(generation1[0])}`',
+        ''
+    ))
+
+    for i in range(0, len(models_tokenizers), 2):
+        model, tokenizer = models_tokenizers[i], models_tokenizers[i+1]
+        input_tokens = tokenizer(input_phrase, return_tensors='pt')
+        input_tokens, attention_mask2 = input_tokens['input_ids'].to(DEVICE), input_tokens['attention_mask'].to(DEVICE)
+        generation2 = model.generate(input_tokens, max_new_tokens=max_new_tokens, pad_token_id=tokenizer.eos_token_id, attention_mask=attention_mask2)
+        print("{:-^100s}\n{: ^100s}\n\n{: ^100s}\n\n{:-^100s}".format(
+            '',
+            f"Hacked generation for Model {i//2}:", 
+            f'`{tokenizer.decode(generation2[0])}`',
+            ''
+        ))
+
 if __name__ == '__main__':
     import loader
     model, tokenizer = loader.load_model_and_tokenizer()

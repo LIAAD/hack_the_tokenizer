@@ -10,4 +10,4 @@ class ListDataset(Dataset):
     def __getitem__(self, i):
         return self.original_list[i]
 
-    def to_list(self): return self.original_list
+    def to_list(self): return [a for a in self.original_list]

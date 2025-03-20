@@ -129,11 +129,11 @@ class Benchmarks():
         return self.evaluation_results
 
     def get_training_data(self, return_as: Literal['dataframe', 'df', 'list', 'str']='list'):
-        training_data = pd.concat([b.df for b in self.benchmarks])
+        training_data = pd.concat([b.df for b in self.benchmarks]).reset_index(drop=True)
         training_data = training_data.select_dtypes(include='object').fillna('').drop(columns=['Dataset Type', 'prediction_prompts'])
         if return_as in ('dataframe', 'df'):
             return training_data
-        training_data['DATA'] = training_data.apply(lambda x: ' '.join(x), axis=1)
+        training_data['DATA'] = training_data.apply(lambda x: ' '.join(x).strip(), axis=1)
         training_data = training_data['DATA'].to_list()
         if return_as == 'list':
             return training_data

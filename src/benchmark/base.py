@@ -2,7 +2,8 @@ import pandas as pd
 from typing import Callable, Union, Any, Literal
 import tqdm
 import transformers
-from ..DatasetClass import ListDataset
+from ..DatasetClass import ListDataset, TextDataset
+from torch.utils.data import DataLoader
 
 
 TOKENIZER_TYPE = Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast]
@@ -20,7 +21,7 @@ class Benchmark():
             # 'return_dict_in_generate': True,
             'return_legacy_cache': False
         },
-        'number_of_evaluations': 3
+        'number_of_evaluations': 1
     }
     
     def __init__(
@@ -38,7 +39,7 @@ class Benchmark():
         self.agg_method = aggregation_method
         self.evaluation_results = {}
 
-    def run_eval(self, model_name: str, predictions: list[str]):
+    def run_eval(self, model_name: str, predictions: list[str], tokenizer):
         if self.evaluation_results.get(model_name, None) is not None:
             return self.evaluation_results[model_name]['result']
         self.evaluation_results[model_name] = {}
@@ -61,7 +62,7 @@ class Benchmark():
 class Benchmarks():
     config = {
         'parallel_tasks': True,
-        'parallel_batch_size': None,
+        'parallel_batch_size': 1,
         'model_kwargs': {
             'do_sample': False,
             'temperature': None,
@@ -72,15 +73,16 @@ class Benchmarks():
         },
         'dont_copy_config_benchmarks': [],
         'tqdm_description': '<{MODEL}> Running {benchmark_name} Benchmark',
-        'number_of_evaluations': 3,
+        'number_of_evaluations': 1,
         'max_new_tokens': 20,
+        'generation_kwargs': {}
     }
 
     def __init__(self, benchmarks: list[Benchmark]):
         self.benchmarks = benchmarks
         self.evaluation_results = {}
 
-    def run(self, model: str, pipeline_kwargs={}):
+    def run(self, model, tokenizer, generation_kwargs={}):
         # Update each benchmark config before running benchmarks + Generate initial pipeline input prompt
         pipeline_inputs = []
         for bench in self.benchmarks:
@@ -88,24 +90,30 @@ class Benchmarks():
                 bench.config = self.config
             pipeline_inputs.extend(bench.prediction_prompts.to_list())
         
-        generator = transformers.pipeline(
-            model=model,
-            torch_dtype=self.config.get('torch_dtype', None),
-            model_kwargs=self.config.get('model_kwargs', None),
-            **pipeline_kwargs
+        batch_size = self.config.get('parallel_batch_size', 1)
+        dataloader = DataLoader(
+            TextDataset(pipeline_inputs, tokenizer, batch_size),
+            batch_size=batch_size,
+            shuffle=False
         )
-        if generator.tokenizer.pad_token_id is None:
-            generator.tokenizer.pad_token_id = generator.model.config.eos_token_id
         generation = []
-        for gen in tqdm.tqdm(generator(
-                ListDataset(pipeline_inputs),
-                max_new_tokens=self.config.get('max_new_tokens', 5),
-                batch_size=self.config.get('parallel_batch_size', None)
-            ),
-            desc=self.config.get('tqdm_desc', "<{MODEL}> Calculating inferences for inputs").format(MODEL=model),
-            total=len(pipeline_inputs)
-        ):
-            generation.append(gen)
+        gen_kwargs = {
+            'num_beams': 1,
+            'num_return_sequences': 1,
+            'max_new_tokens': self.config.get('max_new_tokens', 5),
+            'pad_token_id': tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id,
+        }
+        gen_kwargs.update(self.config.get('generation_kwargs', {})) # Second most priority arguments
+        gen_kwargs.update(generation_kwargs)    # Most priority arguments
+        
+        for batch in tqdm.tqdm(dataloader, desc=self.config.get('tqdm_desc', "<{MODEL}> Calculating inferences for inputs").format(MODEL=model if isinstance(model, str) else model.name_or_path)):
+            outputs = model.generate(
+                input_ids=batch['input_ids'].squeeze(1).to(model.device),
+                attention_mask=batch['attention_mask'].squeeze(1).to(model.device),
+                **gen_kwargs
+            )
+            # Decode the input and generated sequences
+            generation.extend([{'generated_text': x} for x in tokenizer.batch_decode(outputs, skip_special_tokens=True)])
 
         outputs = {}
         for bench in self.benchmarks:
@@ -117,10 +125,10 @@ class Benchmarks():
             return self.evaluation_results[model_name]
         results = {}
         for benchmark in self.benchmarks:
-            eval_results = benchmark.run_eval(model, outputs[benchmark.name])
+            eval_results = benchmark.run_eval(model_name, outputs[benchmark.name], tokenizer=tokenizer)
             results[benchmark.name] = {
                 'result': eval_results,
-                'results': benchmark.evaluation_results
+                'results': benchmark.evaluation_results[model_name]['results-raw']
             }
         self.evaluation_results[model_name] = results
         return results

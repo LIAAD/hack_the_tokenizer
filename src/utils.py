@@ -267,6 +267,30 @@ def compare_model_generation(
             ''
         ))
 
+
+# Generation of text for a given model
+def generate(
+    model,
+    tokenizer,
+    phrase: str,
+    device='auto',
+    return_dict_in_generate=True,
+    output_logits=True,
+    max_new_tokens=1,
+    **model_kwargs
+):
+    inputs = tokenizer(phrase, return_tensors='pt')
+    for key in inputs.keys(): inputs[key] = inputs[key].to(device)
+    return model.generate(
+        **inputs,
+        pad_token_id = tokenizer.eos_token_id,
+        return_dict_in_generate=return_dict_in_generate,
+        max_new_tokens=max_new_tokens,
+        output_logits=output_logits,
+        **model_kwargs
+    )
+
+
 if __name__ == '__main__':
     import loader
     model, tokenizer = loader.load_model_and_tokenizer()

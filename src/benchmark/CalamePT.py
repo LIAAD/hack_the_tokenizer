@@ -14,7 +14,7 @@ def benchmark(
     benchmark_output: list[dict[str, str]] = []
     # After obtaining predictions start the evaluation process
     for data, prediction in zip(dataset, predictions):
-        if len(prediction) > 1: prediction = prediction[0]
+        if len(prediction) > 1 and not isinstance(prediction, str): prediction = prediction[0]
         # Retrieve the actual answer from the prediction
         predicted_answer = utils.get_first_word(data['sentence'], prediction)
         benchmark_output.append({

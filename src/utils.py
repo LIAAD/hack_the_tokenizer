@@ -100,7 +100,7 @@ def soft_max(arr):
     return arr.exp() / arr.exp().sum()
 
 def get_first_word(original_text: str, predicted_text: str):
-    predicted_text = predicted_text.replace(original_text, '')
+    predicted_text = predicted_text.replace(original_text, '').strip()
     # Regex to find first word
     first_word = re.search(r'\b\w+\b', predicted_text)
     first_word = first_word.group() if first_word else None

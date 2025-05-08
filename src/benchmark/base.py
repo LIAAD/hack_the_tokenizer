@@ -39,7 +39,7 @@ class Benchmark():
         self.agg_method = aggregation_method
         self.evaluation_results = {}
 
-    def run_eval(self, model_name: str, predictions: list[str], tokenizer):
+    def run_eval(self, model_name: str, predictions: list[str], tokenizer=None):
         if self.evaluation_results.get(model_name, None) is not None:
             return self.evaluation_results[model_name]['result']
         self.evaluation_results[model_name] = {}
@@ -82,7 +82,9 @@ class Benchmarks():
         self.benchmarks = benchmarks
         self.evaluation_results = {}
 
-    def run(self, model, tokenizer, generation_kwargs={}):
+    def run(self, model, tokenizer, encode_tokenizer=None, generation_kwargs={}):
+        decoder_tokenizer = tokenizer
+        if not encode_tokenizer: encode_tokenizer = tokenizer
         # Update each benchmark config before running benchmarks + Generate initial pipeline input prompt
         pipeline_inputs = []
         for bench in self.benchmarks:
@@ -92,7 +94,7 @@ class Benchmarks():
         
         batch_size = self.config.get('parallel_batch_size', 1)
         dataloader = DataLoader(
-            TextDataset(pipeline_inputs, tokenizer, batch_size),
+            TextDataset(pipeline_inputs, encode_tokenizer, batch_size),
             batch_size=batch_size,
             shuffle=False
         )
@@ -101,7 +103,7 @@ class Benchmarks():
             'num_beams': 1,
             'num_return_sequences': 1,
             'max_new_tokens': self.config.get('max_new_tokens', 5),
-            'pad_token_id': tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id,
+            'pad_token_id': encode_tokenizer.pad_token_id if encode_tokenizer.pad_token_id else encode_tokenizer.eos_token_id,
         }
         gen_kwargs.update(self.config.get('generation_kwargs', {})) # Second most priority arguments
         gen_kwargs.update(generation_kwargs)    # Most priority arguments
@@ -113,7 +115,7 @@ class Benchmarks():
                 **gen_kwargs
             )
             # Decode the input and generated sequences
-            generation.extend([{'generated_text': x} for x in tokenizer.batch_decode(outputs, skip_special_tokens=True)])
+            generation.extend([{'generated_text': x} for x in decoder_tokenizer.batch_decode(outputs, skip_special_tokens=True)])
 
         outputs = {}
         for bench in self.benchmarks:
@@ -125,7 +127,7 @@ class Benchmarks():
             return self.evaluation_results[model_name]
         results = {}
         for benchmark in self.benchmarks:
-            eval_results = benchmark.run_eval(model_name, outputs[benchmark.name], tokenizer=tokenizer)
+            eval_results = benchmark.run_eval(model_name, outputs[benchmark.name])
             results[benchmark.name] = {
                 'result': eval_results,
                 'results': benchmark.evaluation_results[model_name]['results-raw']

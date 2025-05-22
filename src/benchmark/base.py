@@ -39,7 +39,7 @@ class Benchmark():
         self.agg_method = aggregation_method
         self.evaluation_results = {}
 
-    def run_eval(self, model_name: str, predictions: list[str], tokenizer=None):
+    def run_eval(self, model_name: str, predictions: dict[str, Any]):
         if self.evaluation_results.get(model_name, None) is not None:
             return self.evaluation_results[model_name]['result']
         self.evaluation_results[model_name] = {}
@@ -82,7 +82,7 @@ class Benchmarks():
         self.benchmarks = benchmarks
         self.evaluation_results = {}
 
-    def run(self, model, tokenizer, encode_tokenizer=None, generation_kwargs={}):
+    def run(self, model, tokenizer, encode_tokenizer=None, generation_kwargs={}, store_generation_data=True):
         decoder_tokenizer = tokenizer
         if not encode_tokenizer: encode_tokenizer = tokenizer
         # Update each benchmark config before running benchmarks + Generate initial pipeline input prompt
@@ -107,6 +107,13 @@ class Benchmarks():
         }
         gen_kwargs.update(self.config.get('generation_kwargs', {})) # Second most priority arguments
         gen_kwargs.update(generation_kwargs)    # Most priority arguments
+        # Force the generation to return dictionary output and include logits, scores and hidden_states
+        gen_kwargs.update({
+            'return_dict_in_generate': True,
+            'output_logits': True,
+            'output_scores': True,
+            'output_hidden_states': True
+        })
         
         for batch in tqdm.tqdm(dataloader, desc=self.config.get('tqdm_desc', "<{MODEL}> Calculating inferences for inputs").format(MODEL=model if isinstance(model, str) else model.name_or_path)):
             outputs = model.generate(
@@ -115,16 +122,36 @@ class Benchmarks():
                 **gen_kwargs
             )
             # Decode the input and generated sequences
-            generation.extend([{'generated_text': x} for x in decoder_tokenizer.batch_decode(outputs, skip_special_tokens=True)])
+            batch_gen = []
+            # hidden_states = [[state.to('cpu') for state in output] for output in outputs.hidden_states]
+            logits = [logit.to('cpu') for logit in outputs.logits]
+            # scores = [scores.to('cpu') for scores in outputs.scores]
+            sequences = outputs.sequences.to('cpu')
+            for i, generated_text in enumerate(decoder_tokenizer.batch_decode(outputs.sequences, skip_special_tokens=True)):
+                batch_gen.append({})
+                # batch_gen[-1]['hidden_states'] = [[hidden_state[i] for hidden_state in token_hid_state] for token_hid_state in hidden_states]
+                if store_generation_data:
+                    batch_gen[-1]['logits'] = [logit[i] for logit in logits]
+                # batch_gen[-1]['scores'] = [score[i] for score in scores]
+                batch_gen[-1]['generated_tokens'] = sequences[i]
+                batch_gen[-1]['generated_text'] = generated_text
+            generation.extend(batch_gen)
 
         outputs = {}
+
+        # Saving the number of runs (if we run the benchmark with temperature>0, we can run multiple with a single "benchmar.run")
         for bench in self.benchmarks:
-            outputs[bench.name] = [g['generated_text'] for g in generation[:len(bench.prediction_prompts)]]
+            outputs[bench.name] = {
+                key: [g[key] for g in generation[:len(bench.prediction_prompts)]]
+                for key in batch_gen[-1].keys()
+            }
             generation = generation[len(bench.prediction_prompts):]
 
         model_name = model.name_or_path
         if self.evaluation_results.get(model_name, None) is not None:
             return self.evaluation_results[model_name]
+
+
         results = {}
         for benchmark in self.benchmarks:
             eval_results = benchmark.run_eval(model_name, outputs[benchmark.name])

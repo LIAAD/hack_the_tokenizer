@@ -2,24 +2,31 @@ import pandas as pd
 from .base import Benchmark
 import src.utils as utils
 import numpy as np
+from typing import Any
 
 
 def benchmark(
     benchmark: Benchmark,
-    predictions: list[str]
+    predictions: dict[str, Any]
 ):
     # NOTE: We could improve this benchmark by using the PROBABILITY Distribution of the actual token.
     dataset = benchmark.df.to_dict('records')
 
     benchmark_output: list[dict[str, str]] = []
     # After obtaining predictions start the evaluation process
-    for data, prediction in zip(dataset, predictions):
-        if len(prediction) > 1 and not isinstance(prediction, str): prediction = prediction[0]
+    for data, n in zip(dataset, range(len(predictions['generated_text']))):
+        predicted_text = predictions['generated_text'][n]
+        if len(predicted_text) > 1 and not isinstance(predicted_text, str): predicted_text = predicted_text[0]
         # Retrieve the actual answer from the prediction
-        predicted_answer = utils.get_first_word(data['sentence'], prediction)
+        predicted_answer = utils.get_first_word(data['sentence'], predicted_text)
         benchmark_output.append({
-            'text': data['sentence'], 'prediction': predicted_answer, 'correct_word': data['last_word']
+            'text': data['sentence'],
+            'prediction': predicted_answer,
+            'correct_word': data['last_word'],
+            'generated_ids': predictions['generated_tokens'][n],
+            'generated_logits': predictions.get('logits', {n: 'n/a'})[n]
         })
+
     
     accurate_preds = sum(str(ben['prediction']).lower() == str(ben['correct_word']).lower() for ben in benchmark_output)
     return {

@@ -1,6 +1,6 @@
 import torch
 
-from src import utils, loader
+from hack_tokenizer import utils, loader
 
 DEVICE = 'cpu'
 NEW_TOKEN = ' preemptive'
@@ -94,7 +94,7 @@ print("{:-^100s}\n{: ^100s}\n\n{: ^100s}\n\n{:-^100s}".format(
 
 # MARK: Test 1: Swapping two tokens embeddings (validate the input with one token generates the same answer as the hacked with the other swapped token)
 import torch
-from src import utils, loader
+from hack_tokenizer import utils, loader
 DEVICE = 'cpu'
 
 # Load the model and tokenizer
@@ -157,7 +157,7 @@ compare_model_generation(
 
 # MARK: Test 2. Will now try to swap the token responsible with weighted average of 0.99*responsible + 0.01*going 
 import torch
-from src import utils, loader
+from hack_tokenizer import utils, loader
 DEVICE = 'cpu'
 # Load the model and tokenizer
 model, tokenizer = loader.load_model_and_tokenizer(device='cpu')

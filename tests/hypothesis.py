@@ -1,4 +1,4 @@
-from src import loader
+from hack_tokenizer import loader
 import torch
 
 DEVICE = 'cuda'

@@ -14,13 +14,13 @@ import torch
 import tqdm
 import os
 os.chdir(r'Hack The Tockenizer')
-from src import utils, loader, hack
+from hack_tokenizer import utils, loader, hack, BENCHMARKS
 DEVICE = 'cpu'
 
 # Load the model and tokenizer
 model, tokenizer = loader.load_model_and_tokenizer(device=DEVICE)
 
-phrase: str = hack.BENCHMARKS.get_training_data('list')[0]
+phrase: str = BENCHMARKS.get_benchmark_data('list')[0]
 inputs = tokenizer.encode(phrase, return_tensors='pt')
 for key in inputs.keys(): inputs[key] = inputs[key].to(DEVICE)
 

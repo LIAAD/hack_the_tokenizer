@@ -1,6 +1,6 @@
 import torch
 import tqdm
-from src import utils, loader
+from hack_tokenizer import utils, loader
 DEVICE = 'cpu'
 
 # Load the model and tokenizer

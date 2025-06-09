@@ -1,6 +1,6 @@
 import torch
 import tqdm
-from src import utils, loader, hack
+from hack_tokenizer import utils, loader, hack
 DEVICE = 'cpu'
 
 # Load the model and tokenizer
@@ -93,7 +93,7 @@ import torch
 import tqdm
 import os
 os.chdir(r'Hack The Tockenizer')
-from src import utils, loader, hack
+from hack_tokenizer import utils, loader, hack
 DEVICE = 'cuda' # Exploring them in CUDA to speed up generation (since they're bigger)
 model_name = "HuggingFaceTB/SmolLM-1.7B"
 
@@ -164,7 +164,7 @@ import torch
 import tqdm
 import os
 os.chdir(r'Hack The Tockenizer')
-from src import utils, loader, hack
+from hack_tokenizer import utils, loader, hack
 DEVICE = 'cpu'
 
 # Load the model and tokenizer
@@ -249,7 +249,7 @@ import torch
 import tqdm
 import os
 os.chdir(r'Hack The Tockenizer')
-from src import utils, loader, hack
+from hack_tokenizer import utils, loader, hack
 DEVICE = 'cpu'
 
 
@@ -368,7 +368,7 @@ import torch
 import tqdm
 import os
 os.chdir(r'Hack The Tockenizer')
-from src import utils, loader, hack
+from hack_tokenizer import utils, loader, hack
 DEVICE = 'cpu'
 
 # Load the model and tokenizer

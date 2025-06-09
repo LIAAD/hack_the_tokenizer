@@ -1,6 +1,5 @@
 import torch
-from src import utils
-from src import loader
+from hack_tokenizer import loader
 
 DEVICE = 'cuda'
 model, tokenizer = loader.load_model_and_tokenizer(device=DEVICE)

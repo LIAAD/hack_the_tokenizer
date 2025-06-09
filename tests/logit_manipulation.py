@@ -2,8 +2,8 @@ import torch
 import sys
 import pathlib
 sys.path.insert(1, str(pathlib.Path('..').resolve()))
-from src import utils, loader, hack
-from src.DatasetClass import ListDataset, TextDataset
+from hack_tokenizer import utils, loader, hack
+from hack_tokenizer.src.DatasetClass import ListDataset, TextDataset
 from torch.utils.data import DataLoader
 
 import tqdm
@@ -117,8 +117,8 @@ import pathlib
 import os
 os.chdir('/home/yali/MEGA/Hack The Tockenizer/tests')
 sys.path.insert(1, str(pathlib.Path('..').resolve()))
-from src import utils, loader, hack
-from src.DatasetClass import ListDataset, TextDataset
+from hack_tokenizer import utils, loader, hack
+from hack_tokenizer.DatasetClass import ListDataset, TextDataset
 from torch.utils.data import DataLoader
 
 import tqdm

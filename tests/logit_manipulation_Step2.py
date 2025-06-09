@@ -16,15 +16,15 @@ import pathlib
 import os
 os.chdir('/home/yali/MEGA/Hack The Tockenizer/tests')
 sys.path.insert(1, str(pathlib.Path('..').resolve()))
-from src import utils, loader, hack
-from src.DatasetClass import ListDataset, TextDataset
+from hack_tokenizer import utils, loader, hack, BENCHMARKS
+from hack_tokenizer.src.DatasetClass import ListDataset, TextDataset
 from torch.utils.data import DataLoader
 
 import tqdm
 import transformers
 DEVICE = 'cuda'
 model_name = 'HuggingFaceTB/SmolLM-135M'
-phrases: list[str] = hack.BENCHMARKS.benchmarks[1].prediction_prompts.to_list() # CalamePT dataset 
+phrases: list[str] = BENCHMARKS.benchmarks[1].prediction_prompts.to_list() # CalamePT dataset 
 
 
 

@@ -1,7 +1,7 @@
 import pandas as pd
 import tqdm
 from .base import Benchmark, TOKENIZER_TYPE, MODEL_TYPE
-import src.utils as utils
+from .. import utils
 import numpy as np
 from typing import Any
 
@@ -14,19 +14,19 @@ def task_boolq(
 
     benchmark_output: list[dict[str, str]] = []
     # After obtaining predictions start the evaluation process
-    for data, prediction in zip(dataset, predictions):
+    for data, prediction in zip(dataset, predictions['generated_text']):
         # if len(prediction) > 1: prediction = prediction[0]
         # Retrieve the actual answer from the prediction
-        predicted_answer = utils.get_first_word(data['prediction_prompts'], prediction['generated_text'])
+        predicted_answer = utils.get_first_word(data['prediction_prompts'], prediction)
         if not predicted_answer in ['1', '0']:
             if predicted_answer is None:
                 predicted_answer = '-1'
             elif predicted_answer.lower().startswith('sim') or predicted_answer.lower().startswith('verda'):
                 predicted_answer = '1'
-            else:
+            elif predicted_answer.lower().startswith('não') or predicted_answer.lower().startswith('mentir'):
                 predicted_answer = '0'
         benchmark_output.append({
-            'idx': data['idx'], 'input_text': data['prediction_prompts'], 'prediction_text': prediction['generated_text'], 'prediction_label': predicted_answer, 'correct_label': data['label']
+            'idx': data['idx'], 'input_text': data['prediction_prompts'], 'prediction_text': prediction, 'prediction_label': predicted_answer, 'correct_label': data['label']
         })
     accurate_preds = sum(ben['prediction_label'].strip()[:1] == str(ben['correct_label']) for ben in benchmark_output)
     return {

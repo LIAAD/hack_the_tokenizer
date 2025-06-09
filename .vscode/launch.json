@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run Module `evaluation`",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "hack_tokenizer.evaluation",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
             "name": "Run `hacker.py`",
             "type": "debugpy",
             "request": "launch",

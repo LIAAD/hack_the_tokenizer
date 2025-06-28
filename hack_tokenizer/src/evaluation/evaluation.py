@@ -3,8 +3,10 @@ from pathlib import Path
 import datetime as dt
 import argparse
 
+import tqdm
 import torch
 import numpy as np
+import pandas as pd
 import transformers
 
 from hack_tokenizer.src.hack import ModelHacker
@@ -24,11 +26,11 @@ NUMBER_NEW_TOKENS       = 1000
 
 
 # TODO:
-#   1. Comparar ranking de "new_token" sem ter "treino" ou com "treino"
-#   2. Nas frases que nao gerou corretamente, comparar ranking de "novo_token" com o primeiro token necessario para gerar a palvra "correta"
-#   3. Visualizar um box-plot com os "new_token_rankings".
-#   4. Calcular Fertilidade com os novos tokens
-#   5. Comparar diferentes tipos de inicializacao de embeddings dos novos tokens (AVG, WeightedAvg, Random, etc)
+# [X]  1. Comparar ranking de "new_token" sem ter "treino" ou com "treino"
+# [X]  2. Nas frases que nao gerou corretamente, comparar ranking de "novo_token" com o primeiro token necessario para gerar a palvra "correta"
+# [X]  3. Visualizar um box-plot com os "new_token_rankings".
+# [X]  4. Calcular Fertilidade com os novos tokens
+# [ ]  5. Comparar diferentes tipos de inicializacao de embeddings dos novos tokens (AVG, WeightedAvg, Random, etc)
 
 class Evaluation:
     def __init__(
@@ -57,6 +59,16 @@ class Evaluation:
         self.datasets_metrics = datasets_metrics
         self.output_directory = output_directory
         self.store_generation_data = store_generation_data
+        self.config = {
+            'model_name': model_name,
+            'device': device,
+            'generation_batch_size': generation_batch_size,
+            'temperature': temperature,
+            'learning_rate': learning_rate,
+            'number_new_tokens': number_new_tokens,
+            'output_directory': output_directory,
+            'store_generation_data': store_generation_data,
+        }
 
     def run_benchmark_and_metrics(self, encode_tokenizer, model_gen_kwargs, store_generation_data ):
        output = {
@@ -64,6 +76,47 @@ class Evaluation:
            'Metrics': METRICS.run(self.model, self.tokenizer)
        }
        return output 
+
+    def run_analysis(self, encoding_tokenizer, tokens_to_analyze: list[str]=[], dataset: list[str]=[], model_gen_kwargs: dict={}):
+        # TODO: 1. Add rank and logit of the token necessary to generate the correct word
+        #       2. Add the logit of the chosen token
+        #       3. Add the logit of the new tokens
+        # This should be executed using the `dataset`:
+        #   For all "token_tracker" in the dataset, use phrases which should generate any token in the "token_tracker" and predict the ranking and logits of said tokens being chosen
+        results = []
+        for new_token in tqdm.tqdm(tokens_to_analyze, desc='Creating analaysis for model `{}`'.format(self.model.name_or_path)):
+            new_token_id = self.tokenizer.encode(new_token)[0]
+            old_token = encoding_tokenizer.tokenize(new_token)[0]
+            old_token_id = encoding_tokenizer.encode(old_token)[0]
+            phrases_to_generate_new_token = [p for phrase in dataset for p in phrase.split(new_token)[:-1] if new_token in phrase and len(p) > 0]
+            for phrase in tqdm.tqdm(phrases_to_generate_new_token,  desc=f'  Generating for new_token=`{new_token}` ', leave=False):
+                tokenization = self.tokenizer(phrase, return_tensors='pt')
+                input_ids, attention_mask = tokenization['input_ids'].to(self.model.device), tokenization['attention_mask'].to(self.model.device) # type: ignore (all torch.Tensors)
+                gen = self.model.generate(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    max_new_tokens=1,
+                    return_dict_in_generate=True,
+                    output_logits=True,
+                    pad_token_id=encoding_tokenizer.eos_token_id,
+                    **model_gen_kwargs
+                )
+                new_token_logits = gen.logits[0][0, new_token_id].item()  # type: ignore (gen is a torch.Tensor)
+                new_token_rank = (gen.logits[0] > new_token_logits).sum().item()    # type: ignore (gen is a torch.Tensor)
+                old_token_logits = gen.logits[0][0, old_token_id].item()  # type: ignore (gen is a torch.Tensor)
+                old_token_rank = (gen.logits[0] > old_token_logits).sum().item()    # type: ignore (gen is a torch.Tensor)
+                results.append({
+                    'phrase': phrase,
+                    'new_token': new_token,
+                    'new_token_id': new_token_id,
+                    'new_token_rank': new_token_rank,
+                    'new_token_logits': new_token_logits,
+                    'old_token': old_token,                 # First token required to generate the word E.g: "chegada" = "che"+"gada", would be the "che" token
+                    'old_token_id': old_token_id,           # Id for the "old_token"
+                    'old_token_logits': old_token_logits,   # Logits for the first token required to generated the expected word
+                    'old_token_rank': old_token_rank,        # 
+                })
+        return results        
 
     def evaluate(self):
         # Setting up configs
@@ -112,7 +165,10 @@ class Evaluation:
             show_progress=True,
             train=False,
         )
+        self.model.name_or_path = f'{self.model.name_or_path}[NEW_TOKENS]'
         results['INITIALIZED_NO_TRAINING'] = self.run_benchmark_and_metrics(self.encoding_tokenizer, model_gen_kwargs, self.store_generation_data)
+        df = pd.DataFrame(self.run_analysis(self.encoding_tokenizer, hacker.new_tokens, dataset=self.dataset_training, model_gen_kwargs=model_gen_kwargs))
+        df['model'] = self.model.name_or_path
 # ------------------------------------------------------------------------    
 
 # ------------------------------------------------------------------------
@@ -122,12 +178,23 @@ class Evaluation:
             self.model, self.tokenizer,
             self.encoding_tokenizer,
             dataset=self.dataset_training
-        )
+        ) 
+        self.model.name_or_path = self.model.name_or_path.replace('[NEW_TOKENS]', '[NEW_TOKENS_TRAINED]')
         results['INITIALIZED_WITH_TRAINING'] = self.run_benchmark_and_metrics(self.encoding_tokenizer, model_gen_kwargs, self.store_generation_data)
+        df2 = pd.DataFrame(self.run_analysis(self.encoding_tokenizer, hacker.new_tokens, dataset=self.dataset_training, model_gen_kwargs=model_gen_kwargs)) 
+        df2['model'] = self.model.name_or_path
+        df = pd.concat([df, df2])
 # ------------------------------------------------------------------------
 
+        # Add CONFIG to the "results" json (storing the configuration to output)
+        results = {
+            'RUN_CONFIGS': self.config,
+            'RESULTS': results
+        }
         # Save results in JSON file
-        dump_json(results, f'{self.output_directory}/results_{dt.datetime.now().strftime("%Y%m%d%H%M%S")}.json', False)
+        version = dt.datetime.now().strftime("%Y%m%d%H%M%S")
+        dump_json(results, f'{self.output_directory}/results_{version}.json', False)
+        df.to_csv(f'{self.output_directory}/analysis_{version}.csv', index=False)
         return None
 
 

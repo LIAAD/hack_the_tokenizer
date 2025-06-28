@@ -139,6 +139,7 @@ class Benchmark():
         
         result = self.agg_method(results)
         self.evaluation_results[model_name] = {
+            'model': model_name,
             'result': result,
             'results-raw': results
         }

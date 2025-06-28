@@ -1,5 +1,7 @@
 from typing import override, Union
 
+import re
+
 from .base import Metric
 
 
@@ -15,7 +17,8 @@ class Fertility(Metric):
         fertilities = []
         for text in self.data:
             tokenized_words = tokenizer.tokenize(text)
-            fertilities.append(len(tokenized_words) / len(text))
+            words = re.findall(r'\b\w+\b', text)
+            fertilities.append(len(tokenized_words) / len(words))
 
         return sum(fertilities) / len(fertilities)
 

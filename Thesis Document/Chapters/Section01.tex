@@ -1,0 +1,45 @@
+% Chapter Template
+
+% Main chapter title
+%\chapter[toc version]{doc version}
+\chapter{Introduction}
+
+% Short version of the title for the header
+%\chaptermark{version for header}
+
+% Chapter Label
+% For referencing this chapter elsewhere, use \ref{ChapterTemplate}
+\label{Section1}
+
+% Write text in here
+% Use \subsection and \subsubsection to organize text
+In recent years, Artificial Intelligence models have dominated the market with the introduction of Large Language Models like ~\cite{Chat-GPT}.\\
+These models are trained in extensive datasets containing trillions\unsure{need to validate this "trillions", how many words are actually there? Also, insert a reference here} of words\\
+One of the main challenges these models face is the lack of training data for less "data-full" languages\unure{find a better word for this section}.\\
+Without the tons of data required to create these models, "smaller" languages currently lack models with the same performance as more widely spoken languages such as English.\\
+The main goal of this dissertation was to explore how to adapt existing models trained with one language to another using few computational resources.\\
+For that, we focus on the \i{tokenizer}, the building blocks of state-of-the-art LLM models.
+
+\section{Motivation}\label{Section1.1}
+\unsure{Not sure if this should be a section by its own or in here it's enough}
+
+
+\section{Objectives}\label{Section1.2}
+By focusing on trained models for specific languages, we aim to adapt them to another "target" language using the least amount of resources possible.\\
+With that in mind, our goals mainly focused on manipulating the tokenizer and the model's embedding layer, without having to overdo an intensive amount of training.\\
+\\
+We tried focusing on a few key questions:
+\begin{itemize}
+    \item Is it possible for an english-trained model show similar performance in another target language by modifying the tokenizers?
+    \item Is it possible to speed-up training by making use of the tokenizers?
+    \item How much faster can inference be made by adding new tokens to the models' vocabulary?
+\end{itemize}
+These key questions helped guideline this research and have shown promising questions by unraveling new insightful questions.
+
+\section{Approach}\label{Section1.3}
+
+
+
+\section{Contributions}\label{Section1.4}
+
+\section{Chapter Summaries}\label{Section1.5}

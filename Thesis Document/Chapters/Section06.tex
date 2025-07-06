@@ -1,18 +1,66 @@
 % Chapter Template
 
 % Main chapter title
-%\chapter[toc version]{doc version}
 \chapter{Conclusions}
 
 % Short version of the title for the header
-%\chaptermark{version for header}
+\chaptermark{Conclusions}
 
 % Chapter Label
-% For referencing this chapter elsewhere, use \ref{ChapterTemplate}
-\label{Section7}
+\label{chap:conclusions}
 
-% Write text in here
-% Use \subsection and \subsubsection to organize text
-Discuss the results obtained and next Steps
+This dissertation has presented a methodological framework for adapting pre-trained language models to European Portuguese through targeted tokenizer modifications. By expanding the tokenizer vocabulary with language-specific tokens and developing novel embedding initialization strategies, we have demonstrated significant improvements in model performance without requiring extensive retraining.
 
-\unsure{Maybe change the name, but the idea is "Future Work"}\section{Future Work}
+Our findings indicate that tokenizer adaptation represents a computationally efficient approach to language adaptation, offering substantial performance gains with minimal resource requirements compared to full model retraining. The position-weighted initialization method, in particular, demonstrated superior performance across evaluation metrics, suggesting that accounting for positional information in token embeddings is crucial for effective language adaptation.
+
+
+\section{Summary of Contributions}
+This research has made several substantive contributions to the field of natural language processing and multilingual model adaptation:
+
+\begin{itemize}
+    \item Development and validation of a tokenizer adaptation methodology that enhances model performance for European Portuguese without requiring complete model retraining
+    
+    \item Introduction of two novel embedding initialization strategies—Mean Vector Initialization and Position-Weighted Initialization—with comprehensive comparative analysis of their effectiveness
+    
+    \item Demonstration that position-sensitive embedding initialization significantly outperforms uniform averaging approaches, providing empirical evidence for the importance of token position in embedding representation
+    
+    \item Creation of an inference adaptation framework that enables efficient utilization of enhanced tokenizers while maintaining compatibility with pre-trained model weights
+    
+    \item Empirical validation of the approach using rigorous European Portuguese-specific benchmarks, establishing a methodological foundation for future work in low-resource language adaptation
+\end{itemize}
+
+\section{Limitations}
+While our approach demonstrated significant improvements in Portuguese language processing capabilities, several limitations should be acknowledged:
+
+\begin{itemize}
+    \item \textbf{Inference Complexity}: The adapted model requires a specialized inference procedure that introduces additional computational overhead compared to standard inference methods
+    
+    \item \textbf{Training Data Constraints}: The quality of the added tokens is directly dependent on the representativeness of the Portuguese corpus used for training the BPE tokenizer, which may not capture all linguistic variations present in European Portuguese
+    
+    \item \textbf{Embedding Space Coherence}: While our initialization strategies attempt to place new token embeddings in semantically appropriate regions of the embedding space, there is no guarantee of optimal placement without fine-tuning the entire model
+    
+    \item \textbf{Evaluation Scope}: Our evaluation focused primarily on text completion and binary classification tasks, which may not fully represent the model's performance across all potential use cases
+    
+    \item \textbf{Cross-lingual Transfer}: The impact of tokenizer adaptation on the model's performance in other languages was not comprehensively evaluated, leaving open questions about potential degradation in multilingual capabilities
+\end{itemize}
+
+These limitations provide important context for interpreting our results and highlight areas requiring further investigation in future research.
+
+\section{Future Research Directions}
+Based on our findings and the identified limitations, several promising avenues for future research emerge:
+
+\begin{itemize}
+    \item \textbf{Embedding Fine-tuning}: Investigating lightweight fine-tuning approaches that could optimize the initialized embeddings without requiring full model retraining
+    
+    \item \textbf{Hybrid Adaptation Strategies}: Exploring combinations of tokenizer adaptation with parameter-efficient fine-tuning methods such as LoRA or adapter layers
+    
+    \item \textbf{Cross-lingual Evaluation}: Conducting comprehensive evaluations to understand how tokenizer adaptation for one language affects model performance across other languages
+    
+    \item \textbf{Optimization of Inference Procedures}: Developing more efficient inference methods for adapted tokenizers to reduce computational overhead
+    
+    \item \textbf{Extension to Other Languages}: Applying and refining the methodology for other low-resource languages, particularly those with distinct morphological characteristics
+    
+    \item \textbf{Theoretical Analysis}: Developing a more rigorous theoretical framework for understanding the relationship between tokenization granularity and model performance across languages
+\end{itemize}
+
+These research directions offer promising pathways for advancing the field of multilingual language model adaptation, particularly for languages with limited resources for full model pre-training.

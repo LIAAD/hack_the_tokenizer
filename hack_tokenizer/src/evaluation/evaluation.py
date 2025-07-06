@@ -10,9 +10,9 @@ import pandas as pd
 import transformers
 
 from hack_tokenizer.src.hack import ModelHacker
-from .. import loader, benchmark as Benchmark
-from ..metrics import METRICS 
-from ..json_dumper import dump_json
+from hack_tokenizer.src import loader, benchmark as Benchmark
+from hack_tokenizer.src.metrics import METRICS 
+from hack_tokenizer.src.json_dumper import dump_json
 
 np.random.seed(42)  # Setting numpy seed to reproduce randomness results
 

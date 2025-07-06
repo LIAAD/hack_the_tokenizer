@@ -42,9 +42,9 @@ class CalamePT(Benchmark):
 
     def __init__(self):
         # Loading CALAME-PT dataset onto a Pandas DataFrame
-        df_handwritten = pd.read_json("hf://datasets/NOVA-vision-language/calame-pt/calamept_handwritten_only.jsonl", lines=True)
+        df_handwritten = pd.read_json("https://huggingface.co/datasets/NOVA-vision-language/calame-pt/resolve/main/calamept_handwritten_only.jsonl", lines=True)
         df_handwritten['Source'] = 'Handwritten'
-        df_generated = pd.read_json("hf://datasets/NOVA-vision-language/calame-pt/calamept_gen_only.jsonl", lines=True)
+        df_generated = pd.read_json("https://huggingface.co/datasets/NOVA-vision-language/calame-pt/resolve/main/calamept_gen_only.jsonl", lines=True)
         df_generated['Source'] = 'Generated'
         df = pd.concat([df_handwritten, df_generated])[['id', 'sentence', 'last_word']]
 

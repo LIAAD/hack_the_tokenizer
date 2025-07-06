@@ -16,7 +16,7 @@ from hack_tokenizer.src.json_dumper import dump_json
 
 np.random.seed(42)  # Setting numpy seed to reproduce randomness results
 
-DEVICE                  = 'cuda'
+DEVICE                  = 'cuda' # MacOS - 'mps'
 GENERATION_BATCH_SIZE   = 8
 # MODEL                   = 'Qwen/Qwen2.5-1.5B-Instruct'
 MODEL                   = 'HuggingFaceTB/SmolLM2-135M'

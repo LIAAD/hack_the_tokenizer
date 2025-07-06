@@ -13,11 +13,68 @@
 
 % Write text in here
 % Use \subsection and \subsubsection to organize text
+In order to adapt existing models to new target languages we focused on changing the Tokenizer of said model.
+
+We started off by adapting the model \textit{HuggingFaceSmolLm135M} to the \textit{portuguese} alphabet.
+
+\section{Methodology}
+The model \textit{HuggingFaceSmolLm135M} has a tokenizer with a vocabulary size of \unsure{50k?}.
+We made use of the \textit{added_tokens} attribute of the tokenizer to increase its size by about 10000 tokens.
+
+\subsection{New Tokens}
+We obtained new tokens to add to the initial vocabulary by training a new \textit{BPE} tokenizer with portuguese-only text, 
+more specifically, we used the datasets from the Benchmarks \unsure{CalamePT (add reference to this benchmark)} and \unsure{SuperGluePTPT (add reference to this benchmark)}.\\
+
+After obtaining a tokenizer with $vocab\_size=len(HuggingFaceSmolLm135M_{vocab\_size})$, we filtered the tokens in our 
+new_tokenizer by executing the following:
+
+\begin{itemize}
+    \item Removing all tokens already in \textit{HuggingFaceSmolLm135M} tokenizer
+    \item Picking the first 10_000 tokens within the tokenizer obtained in 1.
+\end{itemize}
+
+\subsection{Embedding Initialization}
+With the new tokens selected to append to our existing tokenizer, we need to add new embeddings to our model to reflect
+the new \textit{token_id}s added.
+
+\subsubsection{Average Method}
+The first method we used to obtain the new tokens embeddings, was what we called "average embedding".
+This method is as follows:
+$$
+    Let Embedding(token) = E(t) \\
+    \forall new_token \in new_tokens \\
+    Let OldTokenization(new_token) = {t_1, t_2, ..., t_n} \\
+    Embedding(new_token) = \frac{\sum_{i=1}^{N}E(t_i)}{N}
+$$
+
+Having the Embeddings for all the new_tokens, we simplly extend the model's vocabulary by adding for `model.weights[new_token_id] = new_embed[new_token_id]`\unsure{Add this to a code block or change the way it is represented}
+
+\subsubsection{Weighted Drop Method}
+This method gives more relative importance to the left-most "tokens" of a new token.
+Let's take $t_1t_2t_3...t_n$ as our new token (and assuming the old tokenization of it was the respective $(t_1, t_2, ..., t_n)$).\\
+The first token ($t_1$) receives $K$ more relevance than the second token ($t_2$) which has $K$ more relevance than the third token ($t_3$) and so on.
+
+Meaning the token $t_i$ has $K$ more relevance (weight) than the token $t_{i+1}$.\\
+This was thought out due to the model already understanding the importance of the first token with relation to the rest of the input prompt and, as such,
+it would more likely give higher score to embeddings resembling the first tokens of the new token rather than any of the following.
+
+The specific methodology calculation is as follows:
+$$
+new\_token = (t_1, t_2, ..., t_N) \\ 
+E(new\_token) = (w_1 \times E(t_1), w_2 \times E(t_2), \dots, w_N \times E(t_N)) \\
+w_i = w_{i+1} \times K
+$$
 
 
-\section{Datasets}\label{Section5.1}
+\section{Utilization}
+After having adapted the new model and tokenizer to include $new\_tokens$ and the respective embeddings, the inference
+with this "hacked"\unsure{Find a new word for this description} model must be slightly changed. \\
+Since the model has not experienced any of the newly added embeddings during it's training phase, it does not generate coherent
+sentences when prompted with said embeddings.\\
+As such, we must apply the prior tokenization before prompting the model and, every time it generates a new token, replace said token
+with it's old tokenization.\\
+\\
+This way the model generates more than one token at a time, but we must roll-back to the old tokenizataion before prompting the model again.
 
-
-\section{Evaluation metrics}\label{Section5.2}
 
 

@@ -13,6 +13,34 @@
 
 % Write text in here
 % Use \subsection and \subsubsection to organize text
-Section to explain all the evaluation metrics and why I used them.
+This research focused on European Portuguese as the target language to adapt new models and, as such, all our evaluation methods
+were focused on methods used for European Portuguese. Past work has explored \unsure{add references to past work containing the datasets} different datasets
+relevant for the Portuguese vocabulary. However, the majority of benchmakrs focus on the Brazilian Portuguese rather than European one.
 
 
+\section{Evaluation Method}
+For the target language of European Portuguese, we used \textit{CalamePT} and \textit{SuperGluePTPT}\unsure{Add references to both benchmarks} 
+benchmarks which contained peer reviewed data in the target language.
+
+\subsection{CalamePT}
+This benchmark focused on text-completion with the right word.\\
+It contains a list of 200 manually generated texts, where the last word can easily be deducted from the prior text.
+An example exercise from this benchmark is "Ela correu durante horas para alcançar a linha de \textunderscore{chegada}" where "chegada" is the wanted
+token.
+
+So the model would receive everything BUT "chegada" as a prompt and if the first word generated was " chegada" it would receive a positive
+score for that exercise.
+
+This is then repeated throughout all of the 2076(200+1876)\unsure{Verify how many phrases the calamept dataset has} prompts.
+
+\subsection{SuperGluePTPT}
+This dataset was obtained by translating a dataset \unsure{Add reference to original English SuperGlue Dataset} onto European Portuguese,
+and it was later peer reviewed \unsure{Add the perrcentage of data that was reviewed}.
+
+The evaluation method focuses on asking questions of Yes/No and prompting the model to answer one or the other.
+Some prompt engineering was needed to force the model to respond with only Yes/No and afterwards, we calculate the accuracy of answers.
+
+Meaning if the model got correct 10 answers out of 100, it would get 10\% of score.
+
+
+\section{}

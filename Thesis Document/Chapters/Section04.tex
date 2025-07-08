@@ -36,12 +36,12 @@ Following the selection of new tokens, it was necessary to initialize correspond
 The first approach, termed "Mean Vector Initialization," computes the embedding for each new token by averaging the embeddings of its constituent subtokens as determined by the original tokenizer. The mathematical formulation is as follows:
 
 $$
-\begin{aligned}
-\text{Let } E(t) &= \text{Embedding function for token } t \\
-\forall \text{ } new\_token &\in new\_tokens \\
-\text{Let } OldTokenization(new\_token) &= \{t_1, t_2, \ldots, t_n\} \\
-E(new\_token) &= \frac{1}{n}\sum_{i=1}^{n}E(t_i)
-\end{aligned}
+\begin{array}{c}
+    \text{Let } E(t) = \text{Embedding function for token } t \\
+    \forall\, \text{new\_token} \in \text{new\_tokens} \\
+    \text{Let } \text{OldTokenization}(new\_token) = \{t_1, t_2, \ldots, t_n\} \\
+    E(\text{new\_token}) = \frac{1}{n} \sum_{i=1}^{n} E(t_i)
+\end{array}
 $$
 
 After computing the embeddings for all new tokens, the model's embedding matrix was extended by assigning:
@@ -58,11 +58,11 @@ The second approach, "Position-Weighted Initialization," assigns differential im
 For a new token decomposed into the sequence $(t_1, t_2, \ldots, t_n)$ by the original tokenizer, weights are assigned such that:
 
 $$
-\begin{aligned}
-\text{Let } new\_token &= (t_1, t_2, \ldots, t_n) \\
-E(new\_token) &= \frac{\sum_{i=1}^{n} w_i \times E(t_i)}{\sum_{i=1}^{n} w_i} \\
-\text{where } w_i &= K^{n-i} \text{ for } i \in \{1,2,\ldots,n\}
-\end{aligned}
+\begin{array}{c}
+    \text{Let } new\_token = (t_1, t_2, \ldots, t_n) \\
+    E(new\_token) = \frac{\sum_{i=1}^{n} w_i \times E(t_i)}{\sum_{i=1}^{n} w_i} \\
+    \text{where } w_i = K^{n-i} \text{ for } i \in \{1,2,\ldots,n\}
+\end{array}
 $$
 
 The parameter $K > 1$ determines the degree of positional bias, with higher values of $K$ placing greater emphasis on earlier tokens. This approach was motivated by the observation that autoregressive models typically assign higher predictive importance to initial tokens in a sequence, and therefore the embedding should reflect this asymmetric relevance.

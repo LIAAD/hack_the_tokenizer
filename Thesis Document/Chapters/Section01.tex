@@ -21,9 +21,9 @@ The main goal of this dissertation is to explore how to adapt existing models tr
 For that, we focus on the \textit{tokenizer}, the fundamental building block of state-of-the-art LLM models.
 
 \section{Motivation}\label{Section1.1}
-The development of language models for low-resource languages presents significant challenges due to limited available data and computational constraints. Traditional approaches to creating language-specific models typically involve either training from scratch—requiring enormous datasets and computational resources—or extensive fine-tuning of existing models, which still demands considerable resources.
+The development of language models for low-resource languages presents significant challenges due to limited available data and computational constraints. Traditional approaches to creating language-specific models typically involve either training from scratch, requiring enormous datasets and computational resources, or extensive fine-tuning of existing models, which still demands considerable resources.
 
-For European Portuguese, despite being spoken by approximately 10 million native speakers, the availability of high-quality language models lags behind those for more widely spoken languages. This disparity creates barriers to technological inclusion and limits access to advanced language technologies for Portuguese speakers.
+For European Portuguese, despite being spoken by approximately 10 million native speakers\unsure{add reference to number of european portuguese speakers}, the availability of high-quality language models lags behind those for more widely spoken languages. This disparity creates barriers to technological inclusion and limits access to advanced language technologies for Portuguese speakers.
 
 This research is motivated by the need to develop efficient methods for adapting existing language models to low-resource languages without requiring extensive retraining. By focusing on tokenizer adaptation rather than complete model retraining, we aim to provide a computationally efficient approach that can be applied to various languages with limited digital resources.
 
@@ -31,16 +31,16 @@ The potential impact of this research extends beyond European Portuguese, offeri
 
 \section{Objectives}\label{Section1.2}
 By focusing on trained models for specific languages, we aim to adapt them to another "target" language using the least amount of resources possible.\\
-With that in mind, our goals mainly focused on manipulating the tokenizer and the model's embedding layer, without requiring intensive additional training.\\
+This paper thoroughly explores manipulating the tokenizer \unsure{add reference to tokenizer background information} and the model's embedding layer, without requiring intensive additional training.\\
 
 We focused on addressing the following key research questions:
 \begin{itemize}
-    \item Is it possible for an English-trained model to achieve comparable performance in European Portuguese by strategically modifying the tokenizer?
-    \item Can tokenizer adaptation accelerate the training process for new language adaptation?
-    \item How much can inference efficiency be improved by adding language-specific tokens to the model's vocabulary?
-    \item What embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?
+    \item Is it possible for an English-trained model to achieve comparable performance in European Portuguese by strategically modifying the tokenizer?\unsure{Answered that (or at least we have results that can answer this question)}
+    \item Can tokenizer adaptation accelerate the training process for new language adaptation?\unsure{We did not answer this question, so we may have to remove it}
+    \item How much can inference efficiency be improved by adding language-specific tokens to the model's vocabulary?\unsure{Haven't answered this question yet but can add it to the rersearch}
+    \item What embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?\unsure{Answered it, haven't shown table specifying why we chose "Position Weighted Initialization" as the best option}
 \end{itemize}
-These key questions guided our research methodology and led to several novel insights regarding tokenizer adaptation for cross-lingual model performance.
+These key questions guided our research methodology and led to several insights regarding tokenizer adaptation for cross-lingual model performance.
 
 \section{Approach}\label{Section1.3}
 Our approach to adapting language models to European Portuguese centers on modifying the tokenizer component while minimizing changes to the model's parameters. The methodology consists of four primary components:
@@ -52,29 +52,33 @@ Our approach to adapting language models to European Portuguese centers on modif
     
     \item \textbf{Embedding Initialization}: We develop and compare novel strategies for initializing the embeddings of the newly added tokens, including Mean Vector Initialization and Position-Weighted Initialization, which account for the positional importance of constituent tokens.
     
-    \item \textbf{Inference Adaptation}: We implement a specialized inference procedure that enables the model to effectively utilize the newly added tokens during text generation, maintaining compatibility with the model's pre-trained weights.
+    \item \textbf{Inference Adaptation}: We theorized a specialized inference procedure that enables the model to effectively utilize the newly added tokens during text generation, maintaining compatibility with the model's pre-trained weights.\unsure{Only thought out the methodology, haven't implemented it yet.}
 \end{enumerate}
 
 This approach requires minimal computational resources compared to traditional fine-tuning or pre-training methods, making it particularly suitable for scenarios with limited access to high-performance computing infrastructure.
 
 \section{Contributions}\label{Section1.4}
+% -----------------------------------------------------------------------
+% AI Generated Mumbling bellow, must review it
+% -----------------------------------------------------------------------
 This dissertation makes several significant contributions to the field of multilingual language model adaptation:
 
 \begin{itemize}
-    \item Development of a novel tokenizer adaptation methodology that enhances model performance for European Portuguese without requiring complete model retraining
+    \item Development of a novel tokenizer adaptation methodology that enhances model performance\unsure{only with some temperature value > k, find a way of specifying it here} for European Portuguese without requiring complete model retraining
     
-    \item Introduction and comparative analysis of two embedding initialization strategies—Mean Vector Initialization and Position-Weighted Initialization—with the latter demonstrating superior performance across evaluation metrics
+    \item Introduction and comparative analysis of two embedding initialization strategies - Mean Vector Initialization and Position-Weighted Initialization, with the latter demonstrating superior performance across evaluation metrics
     
-    \item Empirical evidence supporting the importance of token position in embedding representation, as demonstrated by the effectiveness of the position-weighted initialization approach
+    \item Creation\unsure{Not creation, only theoretical creation} of an inference adaptation framework that enables efficient utilization of enhanced tokenizers while maintaining compatibility with pre-trained model weights
     
-    \item Creation of an inference adaptation framework that enables efficient utilization of enhanced tokenizers while maintaining compatibility with pre-trained model weights
-    
-    \item Comprehensive evaluation using European Portuguese-specific benchmarks, establishing a methodological foundation for future work in low-resource language adaptation
+    \item Comprehensive evaluation using European Portuguese-specific benchmarks, establishing a methodological foundation for future work in low-resource language adaptation\unsure{Haven't established it, more that I consized two methodologies in one simply pyhton class}
 \end{itemize}
 
 These contributions collectively advance the state of the art in efficient cross-lingual adaptation of language models, particularly for languages with limited resources.
 
 \section{Chapter Summaries}\label{Section1.5}
+% -----------------------------------------------------------------------
+% AI Generated Mumbling bellow, must review it once all the other chapters are finalized
+% -----------------------------------------------------------------------
 The remainder of this dissertation is organized as follows:
 
 \begin{itemize}

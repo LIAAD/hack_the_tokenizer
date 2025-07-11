@@ -34,27 +34,27 @@ This approach focuses on editing existing tokenizers and adjusting the model emb
 Several methods have been proposed for adapting tokenizers to new languages:
 
 \begin{itemize}
-    \item \textbf{Vocabulary Expansion}: Adding new tokens specific to the target language while maintaining the original vocabulary~\cite{wang2019extending}
+    \item \textbf{Vocabulary Expansion}: Adding new tokens specific to the target language while maintaining the original vocabulary~\cite{https://www.semanticscholar.org/reader/6a8d467a5d36cdd5404fbb0a69835e7d0b5bee75}
     
-    \item \textbf{Tokenizer Replacement}: Completely replacing the original tokenizer with one trained on the target language~\cite{rust2020good}
+    \item \textbf{Tokenizer Replacement}: Completely replacing the original tokenizer with one trained on the target language~\cite{https://arxiv.org/pdf/2012.15613}
     
     \item \textbf{Hybrid Approaches}: Combining elements of the original tokenizer with target language-specific tokens~\cite{AdaptinigPretrainedModels}
 \end{itemize}
 
-Particularly relevant to our work, Pfeiffer et al.~\cite{AdaptinigPretrainedModels} explored adapting pre-trained models to new languages without the need for any training, focusing only on replacing tokens in the tokenizer and adjusting their respective embedding weights. Their approach demonstrated promising results, though their focus was primarily on non-Latin languages with distinct character sets from the pre-training languages.
+Particularly relevant to our work, Pfeiffer et al.~\cite{AdaptinigPretrainedModels} explored adapting pre-trained models to new languages without the need for any training, focusing on replacing tokens in the tokenizer, adjusting their respective embedding weights and undergo fine-tuning training. Their approach demonstrated promising results, though their focus was primarily on non-Latin languages with distinct character sets from the pre-training languages.
 
 \subsection{Embedding Initialization Strategies}
 A critical aspect of tokenizer adaptation is determining how to initialize the embeddings for newly added tokens. Several strategies have been proposed:
 
 \begin{itemize}
-    \item \textbf{Random Initialization}: Assigning random values to new token embeddings~\cite{wang2019extending}
+    \item \textbf{Random Initialization}: Assigning random values to new token embeddings~\cite{https://www.semanticscholar.org/reader/59c0c6b62e33850cda08663d4c9ecabcf5d21596}
     
     \item \textbf{Subword Averaging}: Computing new token embeddings as the average of their constituent subwords in the original tokenizer~\cite{AdaptinigPretrainedModels}
     
     \item \textbf{Cross-lingual Mapping}: Using bilingual dictionaries to map embeddings from source to target language~\cite{artetxe2018robust}
 \end{itemize}
 
-Our work builds upon these approaches by introducing position-sensitive embedding initialization, which accounts for the varying importance of constituent tokens based on their position.
+Our work builds upon these approaches\unsure{We discussed about implementing the "Cross-lingual Mapping" but ended up not implementing it. Should we remove it from this section?} by introducing position-sensitive embedding initialization, which accounts for the varying importance of constituent tokens based on their position.
 
 \section{PT-PT Datasets}\label{Section3.3}
 One of the main challenges in creating and adapting models for European Portuguese is the limited availability of high-quality datasets. From our literature review, we identified several datasets specifically designed for evaluating Portuguese language models, with particular focus on two comprehensive benchmarks.
@@ -70,6 +70,7 @@ The benchmark includes several tasks:
     \item \textbf{COPA-PT}: A causal reasoning task requiring models to determine cause-effect relationships
     \item \textbf{MultiRC-PT}: A reading comprehension task with multiple correct answers
 \end{itemize}
+We only picked the "BoolQ-PT" task for our experiments.\unsure{Should we emphasize more that we only used BoolQ-PT? Or should we include the other tasks?}
 
 \subsubsection{Evaluation}
 Each task in SuperGluePTPT has its own evaluation metric, typically accuracy or F1 score. The overall benchmark score is computed as the average performance across all tasks, providing a comprehensive assessment of a model's language understanding capabilities in European Portuguese.

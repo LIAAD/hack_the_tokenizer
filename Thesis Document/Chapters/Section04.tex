@@ -77,6 +77,12 @@ For example, with $K = 1.5$ and a token decomposed into three subtokens, the wei
     \item $w_3 = 1.5^0 = 1.0$ (third token)
 \end{itemize}
 
+All these weights are then normalized to sum to 1, resulting in:
+\begin{itemize}
+    \item $w_1 = \frac{2.25}{2.25+1.5+1} \approx 0.47$ (first token)
+    \item $w_2 = \frac{1.5}{2.25+1.5+1}  \approx 0.32$ (second token)
+    \item $w_3 = \frac{1}{2.25+1.5+1}    \approx 0.21$ (third token)
+\end{itemize}
 This weighting scheme ensures that the first token contributes more than twice as much to the final embedding as the last token, reflecting its greater importance in determining the semantic meaning of the compound token.
 
 \subsection{Comparative Analysis of Initialization Methods}

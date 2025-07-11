@@ -12,66 +12,66 @@
 % AI Generated SECTION6, haven't reviewed it yet only here as a placeholder/reference
 % ----------------------------------------------------------
 
-This dissertation has presented a methodological framework for adapting pre-trained language models to European Portuguese through targeted tokenizer modifications. By expanding the tokenizer vocabulary with language-specific tokens and developing novel embedding initialization strategies, we have demonstrated significant improvements in model performance without requiring extensive retraining.
+% This dissertation has presented a methodological framework for adapting pre-trained language models to European Portuguese through targeted tokenizer modifications. By expanding the tokenizer vocabulary with language-specific tokens and developing novel embedding initialization strategies, we have demonstrated significant improvements in model performance without requiring extensive retraining.
 
-Our findings indicate that tokenizer adaptation represents a computationally efficient approach to language adaptation, offering substantial performance gains with minimal resource requirements compared to full model retraining. The position-weighted initialization method, in particular, demonstrated superior performance across evaluation metrics, suggesting that accounting for positional information in token embeddings is crucial for effective language adaptation.
+% Our findings indicate that tokenizer adaptation represents a computationally efficient approach to language adaptation, offering substantial performance gains with minimal resource requirements compared to full model retraining. The position-weighted initialization method, in particular, demonstrated superior performance across evaluation metrics, suggesting that accounting for positional information in token embeddings is crucial for effective language adaptation.
 
-The experimental results showed an average performance improvement of 10.9 percentage points on the CalamePT benchmark and 5.7 percentage points on the SuperGluePTPT benchmark compared to the baseline model. Additionally, the adapted tokenizer achieved a 27.3\% reduction in the number of tokens required to encode Portuguese text, significantly improving inference efficiency and context window utilization. These improvements were achieved with minimal computational resources - approximately 0.1\% of the resources that would be required for full model retraining highlighting the cost-effectiveness of our approach.
+% The experimental results showed an average performance improvement of 10.9 percentage points on the CalamePT benchmark and 5.7 percentage points on the SuperGluePTPT benchmark compared to the baseline model. Additionally, the adapted tokenizer achieved a 27.3\% reduction in the number of tokens required to encode Portuguese text, significantly improving inference efficiency and context window utilization. These improvements were achieved with minimal computational resources - approximately 0.1\% of the resources that would be required for full model retraining highlighting the cost-effectiveness of our approach.
 
 
-\section{Summary of Contributions}
-This research has made several substantive contributions to the field of natural language processing and multilingual model adaptation:
+% \section{Summary of Contributions}
+% This research has made several substantive contributions to the field of natural language processing and multilingual model adaptation:
 
-\begin{itemize}
-    \item Development and validation of a tokenizer adaptation methodology that enhances model performance for European Portuguese without requiring complete model retraining
+% \begin{itemize}
+%     \item Development and validation of a tokenizer adaptation methodology that enhances model performance for European Portuguese without requiring complete model retraining
     
-    \item Introduction of two novel embedding initialization strategies—Mean Vector Initialization and Position-Weighted Initialization—with comprehensive comparative analysis of their effectiveness
+%     \item Introduction of two novel embedding initialization strategies—Mean Vector Initialization and Position-Weighted Initialization—with comprehensive comparative analysis of their effectiveness
     
-    \item Demonstration that position-sensitive embedding initialization significantly outperforms uniform averaging approaches, providing empirical evidence for the importance of token position in embedding representation
+%     \item Demonstration that position-sensitive embedding initialization significantly outperforms uniform averaging approaches, providing empirical evidence for the importance of token position in embedding representation
     
-    \item Creation of an inference adaptation framework that enables efficient utilization of enhanced tokenizers while maintaining compatibility with pre-trained model weights
+%     \item Creation of an inference adaptation framework that enables efficient utilization of enhanced tokenizers while maintaining compatibility with pre-trained model weights
     
-    \item Empirical validation of the approach using rigorous European Portuguese-specific benchmarks, establishing a methodological foundation for future work in low-resource language adaptation
-\end{itemize}
+%     \item Empirical validation of the approach using rigorous European Portuguese-specific benchmarks, establishing a methodological foundation for future work in low-resource language adaptation
+% \end{itemize}
 
-\section{Limitations}
-While our approach demonstrated significant improvements in Portuguese language processing capabilities, several limitations should be acknowledged:
+% \section{Limitations}
+% While our approach demonstrated significant improvements in Portuguese language processing capabilities, several limitations should be acknowledged:
 
-\begin{itemize}
-    \item \textbf{Inference Complexity}: The adapted model requires a specialized inference procedure that introduces additional computational overhead compared to standard inference methods. Our measurements indicate an approximately 15-20% increase in inference time due to the token replacement operations required during generation. This overhead could be problematic for latency-sensitive applications, particularly when processing longer documents.
+% \begin{itemize}
+%     \item \textbf{Inference Complexity}: The adapted model requires a specialized inference procedure that introduces additional computational overhead compared to standard inference methods. Our measurements indicate an approximately 15-20% increase in inference time due to the token replacement operations required during generation. This overhead could be problematic for latency-sensitive applications, particularly when processing longer documents.
     
-    \item \textbf{Training Data Constraints}: The quality of the added tokens is directly dependent on the representativeness of the Portuguese corpus used for training the BPE tokenizer. Our training data, while diverse, was limited to approximately 5 million sentences, which may not capture all linguistic variations present in European Portuguese, particularly domain-specific terminology, regional dialects, and evolving language patterns.
+%     \item \textbf{Training Data Constraints}: The quality of the added tokens is directly dependent on the representativeness of the Portuguese corpus used for training the BPE tokenizer. Our training data, while diverse, was limited to approximately 5 million sentences, which may not capture all linguistic variations present in European Portuguese, particularly domain-specific terminology, regional dialects, and evolving language patterns.
     
-    \item \textbf{Embedding Space Coherence}: While our initialization strategies attempt to place new token embeddings in semantically appropriate regions of the embedding space, there is no guarantee of optimal placement without fine-tuning the entire model. Analysis of the embedding space using dimensionality reduction techniques revealed that some Portuguese-specific tokens were positioned suboptimally relative to semantically related tokens in the original vocabulary, potentially limiting their effectiveness.
+%     \item \textbf{Embedding Space Coherence}: While our initialization strategies attempt to place new token embeddings in semantically appropriate regions of the embedding space, there is no guarantee of optimal placement without fine-tuning the entire model. Analysis of the embedding space using dimensionality reduction techniques revealed that some Portuguese-specific tokens were positioned suboptimally relative to semantically related tokens in the original vocabulary, potentially limiting their effectiveness.
     
-    \item \textbf{Evaluation Scope}: Our evaluation focused primarily on text completion and binary classification tasks, which may not fully represent the model's performance across all potential use cases. More complex tasks such as translation, summarization, and creative text generation were not comprehensively evaluated, leaving gaps in our understanding of the approach's effectiveness across the full spectrum of language processing tasks.
+%     \item \textbf{Evaluation Scope}: Our evaluation focused primarily on text completion and binary classification tasks, which may not fully represent the model's performance across all potential use cases. More complex tasks such as translation, summarization, and creative text generation were not comprehensively evaluated, leaving gaps in our understanding of the approach's effectiveness across the full spectrum of language processing tasks.
     
-    \item \textbf{Cross-lingual Transfer}: The impact of tokenizer adaptation on the model's performance in other languages was not comprehensively evaluated. Preliminary tests suggested a minor degradation (2-3% on average) in English language performance after Portuguese adaptation, raising concerns about potential trade-offs in multilingual capabilities when optimizing for a specific target language.
+%     \item \textbf{Cross-lingual Transfer}: The impact of tokenizer adaptation on the model's performance in other languages was not comprehensively evaluated. Preliminary tests suggested a minor degradation (2-3% on average) in English language performance after Portuguese adaptation, raising concerns about potential trade-offs in multilingual capabilities when optimizing for a specific target language.
     
-    \item \textbf{Scalability Concerns}: While our approach worked well for the addition of 10,000 tokens, it remains unclear how it would scale to larger vocabulary expansions or to simultaneous adaptation for multiple target languages. The embedding initialization strategies might require refinement for scenarios involving more extensive vocabulary modifications.
-\end{itemize}
+%     \item \textbf{Scalability Concerns}: While our approach worked well for the addition of 10,000 tokens, it remains unclear how it would scale to larger vocabulary expansions or to simultaneous adaptation for multiple target languages. The embedding initialization strategies might require refinement for scenarios involving more extensive vocabulary modifications.
+% \end{itemize}
 
-These limitations provide important context for interpreting our results and highlight areas requiring further investigation in future research. Despite these constraints, the substantial performance improvements achieved with minimal computational resources suggest that the approach represents a valuable contribution to the field of multilingual language model adaptation.
+% These limitations provide important context for interpreting our results and highlight areas requiring further investigation in future research. Despite these constraints, the substantial performance improvements achieved with minimal computational resources suggest that the approach represents a valuable contribution to the field of multilingual language model adaptation.
 
-\section{Future Research Directions}
-Based on our findings and the identified limitations, several promising avenues for future research emerge:
+% \section{Future Research Directions}
+% Based on our findings and the identified limitations, several promising avenues for future research emerge:
 
-\begin{itemize}
-    \item \textbf{Embedding Fine-tuning}: Investigating lightweight fine-tuning approaches that could optimize the initialized embeddings without requiring full model retraining. Specifically, we propose exploring gradient-based optimization of only the new token embeddings while keeping the rest of the model frozen, potentially using contrastive learning objectives to improve semantic coherence within the embedding space.
+% \begin{itemize}
+%     \item \textbf{Embedding Fine-tuning}: Investigating lightweight fine-tuning approaches that could optimize the initialized embeddings without requiring full model retraining. Specifically, we propose exploring gradient-based optimization of only the new token embeddings while keeping the rest of the model frozen, potentially using contrastive learning objectives to improve semantic coherence within the embedding space.
     
-    \item \textbf{Hybrid Adaptation Strategies}: Exploring combinations of tokenizer adaptation with parameter-efficient fine-tuning methods such as LoRA~\cite{hu2021lora}, adapters~\cite{houlsby2019parameter}, or prompt tuning~\cite{lester2021power}. Our preliminary experiments suggest that combining tokenizer adaptation with LoRA fine-tuning could yield an additional 3-5% performance improvement while still maintaining computational efficiency.
+%     \item \textbf{Hybrid Adaptation Strategies}: Exploring combinations of tokenizer adaptation with parameter-efficient fine-tuning methods such as LoRA~\cite{hu2021lora}, adapters~\cite{houlsby2019parameter}, or prompt tuning~\cite{lester2021power}. Our preliminary experiments suggest that combining tokenizer adaptation with LoRA fine-tuning could yield an additional 3-5% performance improvement while still maintaining computational efficiency.
     
-    \item \textbf{Cross-lingual Evaluation}: Conducting comprehensive evaluations to understand how tokenizer adaptation for one language affects model performance across other languages. This should include systematic testing across typologically diverse languages and standardized multilingual benchmarks such as XGLUE~\cite{liang2020xglue} and XTREME~\cite{hu2020xtreme}.
+%     \item \textbf{Cross-lingual Evaluation}: Conducting comprehensive evaluations to understand how tokenizer adaptation for one language affects model performance across other languages. This should include systematic testing across typologically diverse languages and standardized multilingual benchmarks such as XGLUE~\cite{liang2020xglue} and XTREME~\cite{hu2020xtreme}.
     
-    \item \textbf{Optimization of Inference Procedures}: Developing more efficient inference methods for adapted tokenizers to reduce computational overhead. Potential approaches include caching mechanisms for token replacements, parallel processing of token substitutions, and specialized CUDA kernels for accelerated inference with adapted tokenizers.
+%     \item \textbf{Optimization of Inference Procedures}: Developing more efficient inference methods for adapted tokenizers to reduce computational overhead. Potential approaches include caching mechanisms for token replacements, parallel processing of token substitutions, and specialized CUDA kernels for accelerated inference with adapted tokenizers.
     
-    \item \textbf{Extension to Other Languages}: Applying and refining the methodology for other low-resource languages, particularly those with distinct morphological characteristics. Languages with rich morphology such as Finnish, Hungarian, or Turkish would be particularly interesting test cases for evaluating the generalizability of our approach.
+%     \item \textbf{Extension to Other Languages}: Applying and refining the methodology for other low-resource languages, particularly those with distinct morphological characteristics. Languages with rich morphology such as Finnish, Hungarian, or Turkish would be particularly interesting test cases for evaluating the generalizability of our approach.
     
-    \item \textbf{Theoretical Analysis}: Developing a more rigorous theoretical framework for understanding the relationship between tokenization granularity and model performance across languages. This could involve information-theoretic analyses of token distributions, studies of embedding space geometry before and after adaptation, and formal models of how tokenization affects attention patterns in transformer architectures.
+%     \item \textbf{Theoretical Analysis}: Developing a more rigorous theoretical framework for understanding the relationship between tokenization granularity and model performance across languages. This could involve information-theoretic analyses of token distributions, studies of embedding space geometry before and after adaptation, and formal models of how tokenization affects attention patterns in transformer architectures.
     
-    \item \textbf{Multi-language Adaptation}: Investigating methods for simultaneously adapting models to multiple target languages while minimizing interference between language-specific adaptations. This could involve developing specialized token selection algorithms that account for cross-linguistic similarities and differences.
+%     \item \textbf{Multi-language Adaptation}: Investigating methods for simultaneously adapting models to multiple target languages while minimizing interference between language-specific adaptations. This could involve developing specialized token selection algorithms that account for cross-linguistic similarities and differences.
     
-    \item \textbf{Dynamic Tokenization}: Exploring adaptive tokenization strategies that could dynamically adjust the tokenization process based on the input language or domain, potentially eliminating the need for specialized inference procedures while maintaining the benefits of language-specific tokens.
-\end{itemize}
+%     \item \textbf{Dynamic Tokenization}: Exploring adaptive tokenization strategies that could dynamically adjust the tokenization process based on the input language or domain, potentially eliminating the need for specialized inference procedures while maintaining the benefits of language-specific tokens.
+% \end{itemize}
 
-These research directions offer promising pathways for advancing the field of multilingual language model adaptation, particularly for languages with limited resources for full model pre-training. By building upon the foundation established in this dissertation, future work can further reduce the resource gap between high-resource and low-resource languages in the development and deployment of large language models.
+% These research directions offer promising pathways for advancing the field of multilingual language model adaptation, particularly for languages with limited resources for full model pre-training. By building upon the foundation established in this dissertation, future work can further reduce the resource gap between high-resource and low-resource languages in the development and deployment of large language models.

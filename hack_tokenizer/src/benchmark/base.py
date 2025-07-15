@@ -2,7 +2,7 @@ import pandas as pd
 from typing import Callable, Union, Any, Literal, overload
 import tqdm
 import transformers
-from ..DatasetClass import ListDataset, TextDataset
+from ..utils.DatasetClass import ListDataset, TextDataset
 from torch.utils.data import DataLoader
 
 

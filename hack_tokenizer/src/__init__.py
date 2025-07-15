@@ -1,7 +1,7 @@
 # src/__init__.py
+from .utils.functions import loader, utils
 from .benchmark import BENCHMARKS
-from . import utils, loader, hack, benchmark, metrics
-from .BPE import BPE
+from . import hack, benchmark, metrics
 from .evaluation import evaluation
 
 

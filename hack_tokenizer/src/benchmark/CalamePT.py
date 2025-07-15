@@ -1,6 +1,6 @@
 import pandas as pd
 from .base import Benchmark
-from .. import utils
+from ..utils import functions
 import numpy as np
 from typing import Any, Optional
 
@@ -18,7 +18,7 @@ def benchmark(
         predicted_text = predictions['generated_text'][n]
         if len(predicted_text) > 1 and not isinstance(predicted_text, str): predicted_text = predicted_text[0]
         # Retrieve the actual answer from the prediction
-        predicted_answer = utils.get_first_word(data['sentence'], predicted_text)
+        predicted_answer = functions.get_first_word(data['sentence'], predicted_text)
         benchmark_output.append({
             'text': data['sentence'],
             'prediction': predicted_answer,
@@ -69,7 +69,7 @@ class CalamePT(Benchmark):
 
 
 if __name__ == '__main__':
-    import loader
+    import hack_tokenizer.src.utils.loader as loader
     import torch
     model, tokenizer = loader.load_model_and_tokenizer(
         model_name='HuggingFaceTB/SmolLM-135M',

@@ -14,16 +14,8 @@ from hack_tokenizer.src.hack import ModelHacker
 from .. import benchmark as Benchmark
 from ..metrics import METRICS 
 from ..utils.json_dumper import dump_json
-
-np.random.seed(42)  # Setting numpy seed to reproduce randomness results
-
-DEVICE                  = 'cuda'
-GENERATION_BATCH_SIZE   = 8
-# MODEL                   = 'Qwen/Qwen2.5-1.5B-Instruct'
-MODEL                   = 'HuggingFaceTB/SmolLM2-135M'
-TEMPERATURE             = None
-LEARNING_RATE           = 1e-6
-NUMBER_NEW_TOKENS       = 1000
+from ..utils.constants import SEED, DEVICE, GENERATION_BATCH_SIZE, MODEL, TEMPERATURE, LEARNING_RATE, NUMBER_NEW_TOKENS 
+np.random.seed(SEED)  # Setting numpy seed to reproduce randomness results
 
 
 # TODO:
@@ -45,6 +37,7 @@ class Evaluation:
         dataset_tokenizer: Optional[list[str]],
         dataset_training: Optional[list[str]],
         datasets_metrics: Optional[dict[str, list[str]]],
+        dataset_testing: Optional[list[str]],
         output_directory: str,
         store_generation_data: bool=False,
         **_

@@ -1,13 +1,10 @@
 import pandas as pd
 from typing import Callable, Union, Any, Literal, overload
 import tqdm
-import transformers
 from ..utils.DatasetClass import ListDataset, TextDataset
 from torch.utils.data import DataLoader
+from ..utils.constants import TOKENIZER_TYPE, MODEL_TYPE
 
-
-TOKENIZER_TYPE = Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast]
-MODEL_TYPE = transformers.AutoModel
 
 class Benchmark():
     config = {

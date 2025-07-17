@@ -1,8 +1,10 @@
 from typing import Callable, Union, Any, Literal, overload
+from pathlib import Path
 import transformers
 
 TOKENIZER_TYPE = Union[transformers.PreTrainedTokenizer, transformers.PreTrainedTokenizerFast]
 MODEL_TYPE = transformers.AutoModel
+DATA_DIR = Path(__file__).parent.parent.parent.parent / 'data'
 
 SEED = 42
 

@@ -2,3 +2,6 @@
 **/__pycache__/*
 outputs/
 .venv/
+data/FULL_opensubtitles_pt-pt.txt
+data/metrics_evaluation_dataset.txt
+data/tokenizer_pt-pt.txt

@@ -4,7 +4,7 @@ import datetime as dt
 import argparse
 
 import tqdm
-from ..utils.functions import loader
+from ..utils import loader
 import torch
 import numpy as np
 import pandas as pd
@@ -37,7 +37,6 @@ class Evaluation:
         dataset_tokenizer: Optional[list[str]],
         dataset_training: Optional[list[str]],
         datasets_metrics: Optional[dict[str, list[str]]],
-        dataset_testing: Optional[list[str]],
         output_directory: str,
         store_generation_data: bool=False,
         **_
@@ -119,7 +118,7 @@ class Evaluation:
         if self.dataset_training is None:  self.dataset_training = self.dataset_tokenizer.copy()
         if self.datasets_metrics is not None and len(self.datasets_metrics) > 0: 
             for metric in self.datasets_metrics.keys():
-                METRICS.update_data(self.datasets_metrics, metric)
+                METRICS.update_data(self.datasets_metrics[metric], metric)
 
         # Import model
         self.model, self.tokenizer = loader.load_model_and_tokenizer(
@@ -230,6 +229,11 @@ Each key represents a dataset name and its value should be the path to that data
         if args.get(key) is not None:
             with open(args[key], 'r', encoding='utf-8') as f:
                 args[key] = f.readlines()
+    key = 'datasets_metrics'
+    for metric in args.get(key, {}):
+        with open(args[key][metric], 'r', encoding='utf-8') as f:
+            args[key][metric] = f.readlines()
+
 
     Evaluation(**args).evaluate()
 

@@ -18,6 +18,7 @@ class Fertility(Metric):
         for text in self.data:
             tokenized_words = tokenizer.tokenize(text)
             words = re.findall(r'\b\w+\b', text)
+            if len(words) == 0: continue
             fertilities.append(len(tokenized_words) / len(words))
 
         return sum(fertilities) / len(fertilities)

@@ -1,4 +1,3 @@
-from . import *
 from .base import Benchmarks
 import os
 import pathlib

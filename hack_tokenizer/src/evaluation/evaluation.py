@@ -228,6 +228,7 @@ def main():
     parser.add_argument('-dt',     '--dataset_tokenizer',   type=str,    default=None,                   help='Path to a `TXT` file containing training data for the BytePairEncoding algorithm for the `new_tokens`. (decoded using UTF-8).')
     parser.add_argument('-dT',     '--dataset_training',    type=str,    default=None,                   help='Path to a `TXT` file containing training data. (decoded using UTF-8).')
     parser.add_argument('-out',    '--output_directory',    type=str,    default='./outputs',            help='Directory where to save the json results')
+    parser.add_argument('-oF',     '--output_format',       type=str,    default='parquet',              help='Format of the analysis output. Defaults to `parquet` to reduce space usage, but can be one of `parquet`, `csv`, `xlsx`.')
     parser.add_argument('-in_met', '--embed_init_method',   type=str,    default='weighted_drop(1.5)',   help='Specifies Embeddings Initialization Method to use for the "new_tokens". Methods allowed: ["min" "mean" "mean" "avg" "quantile({number})" "weighted_drop({number})')
     parser.add_argument('-dM',     '--datasets_metrics',    type=parse_path_dict, default='',   help='''Mapping of metrics names to their corresponding data paths. 
 Format: metric1=/path/to/data1,metric2=/path/to/data2

@@ -9,6 +9,7 @@ export number_new_tokens=$number_new_tokens
 export dataset_tokenizer='./data/tokenizer_pt-pt.txt'
 export dataset_training='./data/calamept_dataset.txt'
 export output_directory=./outputs
+export output_format='parquet'
 export embed_init_method="weighted_drop(1.5)"
 export datasets_metrics='Fertility=./data/metrics_evaluation_dataset.txt,Perplexity=./data/metrics_evaluation_dataset.txt'
 
@@ -31,6 +32,7 @@ for model in "${MODELS[@]}"; do
         --dataset_tokenizer $dataset_tokenizer \
         --dataset_training $dataset_training \
         --output_directory $output_directory \
+        --output_format $output_format \
         --embed_init_method $embed_init_method \
         --datasets_metrics $datasets_metrics
 done

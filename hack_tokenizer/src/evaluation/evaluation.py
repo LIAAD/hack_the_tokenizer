@@ -1,4 +1,4 @@
-from typing import Optional 
+from typing import Optional, Literal
 from pathlib import Path
 import datetime as dt
 import argparse
@@ -38,6 +38,7 @@ class Evaluation:
         dataset_training: Optional[list[str]],
         datasets_metrics: Optional[dict[str, list[str]]],
         output_directory: str,
+        output_format: Literal['parquet', 'feather', 'csv', 'xlsx'],
         store_generation_data: bool=False,
         **_
     ) -> None:
@@ -51,6 +52,7 @@ class Evaluation:
         self.dataset_training = dataset_training
         self.datasets_metrics = datasets_metrics
         self.output_directory = output_directory
+        self.output_format = output_format
         self.store_generation_data = store_generation_data
         self.config = {
             'model_name': model_name,
@@ -60,6 +62,7 @@ class Evaluation:
             'learning_rate': learning_rate,
             'number_new_tokens': number_new_tokens,
             'output_directory': output_directory,
+            'output_format': 'output_format',
             'store_generation_data': store_generation_data,
         }
 
@@ -187,7 +190,18 @@ class Evaluation:
         # Save results in JSON file
         version = dt.datetime.now().strftime("%Y%m%d%H%M%S")
         dump_json(results, f'{self.output_directory}/results_{version}.json', False)
-        df.to_csv(f'{self.output_directory}/analysis_{version}.csv', index=False)
+        
+        # Save analysis results on the specified format
+        output_path = f'{self.output_directory}/analysis_{version}.{self.output_format}'
+        match self.output_format:
+            case 'parquet':
+                loader.optimize_dataframe(df).to_parquet(output_path)
+            case 'feather':
+                loader.optimize_dataframe(df).to_feather(output_path)
+            case 'csv':
+                df.to_csv(output_path, index=False)
+            case 'xlsx':
+                df.to_excel(output_path, index=False)
         return None
 
 

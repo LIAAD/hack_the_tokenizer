@@ -1,28 +1,21 @@
-from typing import Optional 
+from typing import Optional, Literal
 from pathlib import Path
 import datetime as dt
 import argparse
 
 import tqdm
+from ..utils import loader
 import torch
 import numpy as np
 import pandas as pd
 import transformers
 
 from hack_tokenizer.src.hack import ModelHacker
-from hack_tokenizer.src import loader, benchmark as Benchmark
-from hack_tokenizer.src.metrics import METRICS 
-from hack_tokenizer.src.json_dumper import dump_json
-
-np.random.seed(42)  # Setting numpy seed to reproduce randomness results
-
-DEVICE                  = 'cuda' # MacOS - 'mps'
-GENERATION_BATCH_SIZE   = 8
-# MODEL                   = 'Qwen/Qwen2.5-1.5B-Instruct'
-MODEL                   = 'HuggingFaceTB/SmolLM2-135M'
-TEMPERATURE             = None
-LEARNING_RATE           = 1e-6
-NUMBER_NEW_TOKENS       = 1000
+from .. import benchmark as Benchmark
+from ..metrics import METRICS 
+from ..utils.json_dumper import dump_json
+from ..utils.constants import SEED, DEVICE, GENERATION_BATCH_SIZE, MODEL, TEMPERATURE, LEARNING_RATE, NUMBER_NEW_TOKENS 
+np.random.seed(SEED)  # Setting numpy seed to reproduce randomness results
 
 
 # TODO:
@@ -45,6 +38,7 @@ class Evaluation:
         dataset_training: Optional[list[str]],
         datasets_metrics: Optional[dict[str, list[str]]],
         output_directory: str,
+        output_format: Literal['parquet', 'feather', 'csv', 'xlsx'],
         store_generation_data: bool=False,
         **_
     ) -> None:
@@ -58,6 +52,7 @@ class Evaluation:
         self.dataset_training = dataset_training
         self.datasets_metrics = datasets_metrics
         self.output_directory = output_directory
+        self.output_format = output_format
         self.store_generation_data = store_generation_data
         self.config = {
             'model_name': model_name,
@@ -67,6 +62,7 @@ class Evaluation:
             'learning_rate': learning_rate,
             'number_new_tokens': number_new_tokens,
             'output_directory': output_directory,
+            'output_format': 'output_format',
             'store_generation_data': store_generation_data,
         }
 
@@ -125,7 +121,7 @@ class Evaluation:
         if self.dataset_training is None:  self.dataset_training = self.dataset_tokenizer.copy()
         if self.datasets_metrics is not None and len(self.datasets_metrics) > 0: 
             for metric in self.datasets_metrics.keys():
-                METRICS.update_data(self.datasets_metrics, metric)
+                METRICS.update_data(self.datasets_metrics[metric], metric)
 
         # Import model
         self.model, self.tokenizer = loader.load_model_and_tokenizer(
@@ -194,7 +190,18 @@ class Evaluation:
         # Save results in JSON file
         version = dt.datetime.now().strftime("%Y%m%d%H%M%S")
         dump_json(results, f'{self.output_directory}/results_{version}.json', False)
-        df.to_csv(f'{self.output_directory}/analysis_{version}.csv', index=False)
+        
+        # Save analysis results on the specified format
+        output_path = f'{self.output_directory}/analysis_{version}.{self.output_format}'
+        match self.output_format:
+            case 'parquet':
+                loader.optimize_dataframe(df).to_parquet(output_path)
+            case 'feather':
+                loader.optimize_dataframe(df).to_feather(output_path)
+            case 'csv':
+                df.to_csv(output_path, index=False)
+            case 'xlsx':
+                df.to_excel(output_path, index=False)
         return None
 
 
@@ -221,6 +228,7 @@ def main():
     parser.add_argument('-dt',     '--dataset_tokenizer',   type=str,    default=None,                   help='Path to a `TXT` file containing training data for the BytePairEncoding algorithm for the `new_tokens`. (decoded using UTF-8).')
     parser.add_argument('-dT',     '--dataset_training',    type=str,    default=None,                   help='Path to a `TXT` file containing training data. (decoded using UTF-8).')
     parser.add_argument('-out',    '--output_directory',    type=str,    default='./outputs',            help='Directory where to save the json results')
+    parser.add_argument('-oF',     '--output_format',       type=str,    default='parquet',              help='Format of the analysis output. Defaults to `parquet` to reduce space usage, but can be one of `parquet`, `csv`, `xlsx`.')
     parser.add_argument('-in_met', '--embed_init_method',   type=str,    default='weighted_drop(1.5)',   help='Specifies Embeddings Initialization Method to use for the "new_tokens". Methods allowed: ["min" "mean" "mean" "avg" "quantile({number})" "weighted_drop({number})')
     parser.add_argument('-dM',     '--datasets_metrics',    type=parse_path_dict, default='',   help='''Mapping of metrics names to their corresponding data paths. 
 Format: metric1=/path/to/data1,metric2=/path/to/data2
@@ -236,6 +244,11 @@ Each key represents a dataset name and its value should be the path to that data
         if args.get(key) is not None:
             with open(args[key], 'r', encoding='utf-8') as f:
                 args[key] = f.readlines()
+    key = 'datasets_metrics'
+    for metric in args.get(key, {}):
+        with open(args[key][metric], 'r', encoding='utf-8') as f:
+            args[key][metric] = f.readlines()
+
 
     Evaluation(**args).evaluate()
 

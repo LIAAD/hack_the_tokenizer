@@ -7,8 +7,8 @@ import transformers
 import sys
 sys.path.insert(0, '/home/yali/MEGA/Hack The Tockenizer')
 
-from .. import loader
-from ..DatasetClass import TextDataset
+from ..utils import loader
+from ..utils.DatasetClass import TextDataset
 from torch.utils.data import DataLoader
 
 from typing import Literal, Union, Callable, Optional

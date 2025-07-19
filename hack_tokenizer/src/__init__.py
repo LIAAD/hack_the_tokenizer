@@ -1,11 +1,11 @@
 # src/__init__.py
+from .utils import loader, functions
 from .benchmark import BENCHMARKS
-from . import utils, loader, hack, benchmark, metrics
-from .BPE import BPE
+from . import hack, benchmark, metrics
 from .evaluation import evaluation
 
 
-__all__ = ['utils', 'BENCHMARKS', 'BPE', 'loader', 'evaluation', 'benchmark', 'hack', 'metrics']
+__all__ = ['loader', 'functions', 'BENCHMARKS', 'BPE', 'loader', 'evaluation', 'benchmark', 'hack', 'metrics']
 
 
 

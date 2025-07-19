@@ -292,7 +292,7 @@ def generate(
 
 
 if __name__ == '__main__':
-    import loader
+    import hack_tokenizer.src.utils.loader as loader
     model, tokenizer = loader.load_model_and_tokenizer()
     new_tokenizer = replace_tokens(
         tokenizer,

@@ -3,7 +3,7 @@ import sys
 import pathlib
 sys.path.insert(1, str(pathlib.Path('..').resolve()))
 from hack_tokenizer import utils, loader, hack
-from hack_tokenizer.src.DatasetClass import ListDataset, TextDataset
+from hack_tokenizer.src.utils.DatasetClass import ListDataset, TextDataset
 from torch.utils.data import DataLoader
 
 import tqdm

@@ -1,7 +1,8 @@
 import pandas as pd
 import tqdm
-from .base import Benchmark, TOKENIZER_TYPE, MODEL_TYPE
-from .. import utils
+from .base import Benchmark
+from ..utils import functions
+from ..utils.constants import TOKENIZER_TYPE, MODEL_TYPE 
 import numpy as np
 from typing import Any
 
@@ -17,7 +18,7 @@ def task_boolq(
     for data, prediction in zip(dataset, predictions['generated_text']):
         # if len(prediction) > 1: prediction = prediction[0]
         # Retrieve the actual answer from the prediction
-        predicted_answer = utils.get_first_word(data['prediction_prompts'], prediction)
+        predicted_answer = functions.get_first_word(data['prediction_prompts'], prediction)
         if not predicted_answer in ['1', '0']:
             if predicted_answer is None:
                 predicted_answer = '-1'
@@ -41,7 +42,7 @@ def task_boolq(
 class SupergluePTPT(Benchmark):
     def __init__(self):
         # Loading CALAME-PT dataset onto a Pandas DataFrame
-        df = utils.load_dataset_to_dataframe('PORTULAN/extraglue', data_dir='data/boolq_pt-PT') 
+        df = functions.load_dataset_to_dataframe('PORTULAN/extraglue', data_dir='data/boolq_pt-PT') 
         # Prepare input texts
         df['prediction_prompts'] = 'Passagem: ' + df['passage'] + '\nPergunta: ' + df['question'] + '\nResposta (0-Verdade, 1-Mentira):'
 

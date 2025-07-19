@@ -1,0 +1,48 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Module `evaluation`",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "hack_tokenizer.evaluation",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--model", "HuggingFaceTB/SmolLM2-135M",
+                "--device", "cuda",
+                "--batch", "8",
+                "--learning_rate", "1e-6",
+                "--number_new_tokens", "1000",
+                "--dataset_tokenizer", "./data/tokenizer_pt-pt.txt",
+                "--dataset_training", "./data/calamept_dataset.txt",
+                "--output_directory", "./outputs",
+                "--output_format", "parquet",
+                "--embed_init_method", "\"weighted_drop(1.5)\"",
+                "--datasets_metrics", "Fertility=./data/metrics_evaluation_dataset.txt,Perplexity=./data/metrics_evaluation_dataset.txt",
+            ],
+        },
+        {
+            "name": "Run `hacker.py`",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "hacker.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}

@@ -1,8 +1,0 @@
-numpy
-pandas
-tqdm
-torch
-transformers
-datasets
-jupyter
-ipywidgets

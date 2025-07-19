@@ -1,0 +1,73 @@
+method,metric,aggregation,value
+Average of Embeddings,generation_best_score,25%,1.98828125
+Random Embedding - BASELINE,generation_best_score,25%,68.0
+Weighted average with w_i = w_{i+1} * 5,generation_best_score,25%,1.89453125
+Average of Embeddings,generation_best_score,50%,5.796875
+Random Embedding - BASELINE,generation_best_score,50%,82.5
+Weighted average with w_i = w_{i+1} * 5,generation_best_score,50%,5.765625
+Average of Embeddings,generation_best_score,75%,10.3125
+Random Embedding - BASELINE,generation_best_score,75%,105.0
+Weighted average with w_i = w_{i+1} * 5,generation_best_score,75%,10.359375
+Average of Embeddings,generation_best_score,count,610.0
+Random Embedding - BASELINE,generation_best_score,count,610.0
+Weighted average with w_i = w_{i+1} * 5,generation_best_score,count,610.0
+Average of Embeddings,generation_best_score,max,25.25
+Random Embedding - BASELINE,generation_best_score,max,229.0
+Weighted average with w_i = w_{i+1} * 5,generation_best_score,max,29.625
+Average of Embeddings,generation_best_score,mean,7.22664794921875
+Random Embedding - BASELINE,generation_best_score,mean,88.8358606557377
+Weighted average with w_i = w_{i+1} * 5,generation_best_score,mean,7.233181512551229
+Average of Embeddings,generation_best_score,min,-5.75
+Random Embedding - BASELINE,generation_best_score,min,29.625
+Weighted average with w_i = w_{i+1} * 5,generation_best_score,min,-5.59375
+Average of Embeddings,generation_best_score,std,6.988865194382617
+Random Embedding - BASELINE,generation_best_score,std,31.2007712388667
+Weighted average with w_i = w_{i+1} * 5,generation_best_score,std,7.01089862010292
+Average of Embeddings,new_token_rank,25%,70.25
+Random Embedding - BASELINE,new_token_rank,25%,9.0
+Weighted average with w_i = w_{i+1} * 5,new_token_rank,25%,4.0
+Average of Embeddings,new_token_rank,50%,202.0
+Random Embedding - BASELINE,new_token_rank,50%,49176.0
+Weighted average with w_i = w_{i+1} * 5,new_token_rank,50%,10.0
+Average of Embeddings,new_token_rank,75%,571.75
+Random Embedding - BASELINE,new_token_rank,75%,49187.0
+Weighted average with w_i = w_{i+1} * 5,new_token_rank,75%,22.75
+Average of Embeddings,new_token_rank,count,610.0
+Random Embedding - BASELINE,new_token_rank,count,610.0
+Weighted average with w_i = w_{i+1} * 5,new_token_rank,count,610.0
+Average of Embeddings,new_token_rank,max,6525.0
+Random Embedding - BASELINE,new_token_rank,max,49200.0
+Weighted average with w_i = w_{i+1} * 5,new_token_rank,max,4242.0
+Average of Embeddings,new_token_rank,mean,483.21967213114755
+Random Embedding - BASELINE,new_token_rank,mean,31760.64918032787
+Weighted average with w_i = w_{i+1} * 5,new_token_rank,mean,31.568852459016394
+Average of Embeddings,new_token_rank,min,2.0
+Random Embedding - BASELINE,new_token_rank,min,0.0
+Weighted average with w_i = w_{i+1} * 5,new_token_rank,min,1.0
+Average of Embeddings,new_token_rank,std,750.6041973134195
+Random Embedding - BASELINE,new_token_rank,std,23181.30489592933
+Weighted average with w_i = w_{i+1} * 5,new_token_rank,std,224.11927099762514
+Average of Embeddings,new_token_score,25%,-2.77734375
+Random Embedding - BASELINE,new_token_score,25%,-82.0
+Weighted average with w_i = w_{i+1} * 5,new_token_score,25%,0.4765625
+Average of Embeddings,new_token_score,50%,1.078125
+Random Embedding - BASELINE,new_token_score,50%,-44.5
+Weighted average with w_i = w_{i+1} * 5,new_token_score,50%,4.25
+Average of Embeddings,new_token_score,75%,5.8984375
+Random Embedding - BASELINE,new_token_score,75%,23.96875
+Weighted average with w_i = w_{i+1} * 5,new_token_score,75%,9.125
+Average of Embeddings,new_token_score,count,610.0
+Random Embedding - BASELINE,new_token_score,count,610.0
+Weighted average with w_i = w_{i+1} * 5,new_token_score,count,610.0
+Average of Embeddings,new_token_score,max,19.75
+Random Embedding - BASELINE,new_token_score,max,148.0
+Weighted average with w_i = w_{i+1} * 5,new_token_score,max,21.375
+Average of Embeddings,new_token_score,mean,1.9874537733734632
+Random Embedding - BASELINE,new_token_score,mean,-35.346337090163935
+Weighted average with w_i = w_{i+1} * 5,new_token_score,mean,5.563419041868116
+Average of Embeddings,new_token_score,min,-10.5
+Random Embedding - BASELINE,new_token_score,min,-248.0
+Weighted average with w_i = w_{i+1} * 5,new_token_score,min,-7.34375
+Average of Embeddings,new_token_score,std,6.5036120116006755
+Random Embedding - BASELINE,new_token_score,std,70.82004721609624
+Weighted average with w_i = w_{i+1} * 5,new_token_score,std,6.714422864575631

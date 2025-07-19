@@ -3,7 +3,7 @@ from typing import override, Union
 import numpy as np
 import torch
 
-from .base import Metric
+from hack_tokenizer.src.metrics.base import Metric
 
 
 class Perplexity(Metric):

@@ -1,7 +1,7 @@
 import os
 
 from tokenizers import Tokenizer, trainers, models, pre_tokenizers, decoders
-from ..benchmark import BENCHMARKS
+from hack_tokenizer.src.benchmark import BENCHMARKS
 
 
 class TokenizerHack():

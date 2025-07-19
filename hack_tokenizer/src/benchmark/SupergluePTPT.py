@@ -1,8 +1,8 @@
 import pandas as pd
 import tqdm
-from .base import Benchmark
-from ..utils import functions
-from ..utils.constants import TOKENIZER_TYPE, MODEL_TYPE 
+from hack_tokenizer.src.benchmark.base import Benchmark
+from hack_tokenizer.src.utils import functions
+from hack_tokenizer.src.utils.constants import TOKENIZER_TYPE, MODEL_TYPE 
 import numpy as np
 from typing import Any
 

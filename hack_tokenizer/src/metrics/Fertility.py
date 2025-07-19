@@ -2,7 +2,7 @@ from typing import override, Union
 
 import re
 
-from .base import Metric
+from hack_tokenizer.src.metrics.base import Metric
 
 
 class Fertility(Metric):

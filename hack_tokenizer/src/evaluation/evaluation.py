@@ -4,17 +4,17 @@ import datetime as dt
 import argparse
 
 import tqdm
-from ..utils import loader
+from hack_tokenizer.src.utils import loader
 import torch
 import numpy as np
 import pandas as pd
 import transformers
 
 from hack_tokenizer.src.hack import ModelHacker
-from .. import benchmark as Benchmark
-from ..metrics import METRICS 
-from ..utils.json_dumper import dump_json
-from ..utils.constants import SEED, DEVICE, GENERATION_BATCH_SIZE, MODEL, TEMPERATURE, LEARNING_RATE, NUMBER_NEW_TOKENS 
+from hack_tokenizer.src import benchmark as Benchmark
+from hack_tokenizer.src.metrics import METRICS 
+from hack_tokenizer.src.utils.json_dumper import dump_json
+from hack_tokenizer.src.utils.constants import SEED, DEVICE, GENERATION_BATCH_SIZE, MODEL, TEMPERATURE, LEARNING_RATE, NUMBER_NEW_TOKENS 
 np.random.seed(SEED)  # Setting numpy seed to reproduce randomness results
 
 

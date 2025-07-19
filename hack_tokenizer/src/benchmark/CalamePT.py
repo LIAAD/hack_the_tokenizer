@@ -1,6 +1,6 @@
 import pandas as pd
-from .base import Benchmark
-from ..utils import functions
+from hack_tokenizer.src.benchmark.base import Benchmark
+from hack_tokenizer.src.utils import functions
 import numpy as np
 from typing import Any, Optional
 

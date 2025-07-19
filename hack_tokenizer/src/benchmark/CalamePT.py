@@ -42,16 +42,11 @@ class CalamePT(Benchmark):
 
     def __init__(self):
         # Loading CALAME-PT dataset onto a Pandas DataFrame
-        # df_handwritten = pd.read_json("hf://datasets/NOVA-vision-language/calame-pt/calamept_handwritten_only.jsonl", lines=True)
-        # df_handwritten['Source'] = 'Handwritten'
-        # df_generated = pd.read_json("hf://datasets/NOVA-vision-language/calame-pt/calamept_gen_only.jsonl", lines=True)
-        # df_generated['Source'] = 'Generated'
-        # df = pd.concat([df_handwritten, df_generated])[['id', 'sentence', 'last_word']]
-        with open('/home/yali/MEGA/Hack The Tockenizer/data/calamept_dataset.txt', 'r') as f:
-            data = f.readlines()
-        data = {'sentence': data, 'id': list(range(len(data))), 'last_word': [d.split(' ')[-1] for d in data]}
-        data['sentence'] = [' '.join(d.split(' ')[:-1]) for d in data['sentence']]
-        df = pd.DataFrame(data)
+        df_handwritten = pd.read_json("https://huggingface.co/datasets/NOVA-vision-language/calame-pt/resolve/main/calamept_handwritten_only.jsonl", lines=True)
+        df_handwritten['Source'] = 'Handwritten'
+        df_generated = pd.read_json("https://huggingface.co/datasets/NOVA-vision-language/calame-pt/resolve/main/calamept_gen_only.jsonl", lines=True)
+        df_generated['Source'] = 'Generated'
+        df = pd.concat([df_handwritten, df_generated])[['id', 'sentence', 'last_word']]
 
         output = super().__init__(
             self.__class__.__name__,

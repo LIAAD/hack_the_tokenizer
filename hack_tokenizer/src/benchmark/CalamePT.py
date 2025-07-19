@@ -28,7 +28,7 @@ def benchmark(
         })
 
     
-    accurate_preds = sum(str(ben['prediction']).lower() == str(ben['correct_word']).lower() for ben in benchmark_output)
+    accurate_preds = sum(str(ben['prediction']).lower().strip() == str(ben['correct_word']).lower().strip() for ben in benchmark_output)
     return {
         'benchmark': 'CALAME-PT',
         'accuracy': accurate_preds / len(dataset),

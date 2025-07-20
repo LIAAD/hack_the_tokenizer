@@ -19,20 +19,29 @@ MODELS=(
     "Qwen/Qwen2.5-1.5B-Instruct"    # Medium    MultiModal      Model
 )
 
+# Number of tokens to iterate over
+NUM_TOKENS=(
+    1000
+    5000
+    7500
+)
+
 # Loop through each model and run evaluation
 for model in "${MODELS[@]}"; do
     echo "Evaluating model: $model"
-    
-    python -m hack_tokenizer.evaluation \
-        --model "$model" \
-        --device $device \
-        --batch $batch \
-        --learning_rate $learning_rate \
-        --number_new_tokens $number_new_tokens \
-        --dataset_tokenizer $dataset_tokenizer \
-        --dataset_training $dataset_training \
-        --output_directory $output_directory \
-        --output_format $output_format \
-        --embed_init_method $embed_init_method \
-        --datasets_metrics $datasets_metrics
+    for number_new_tokens in "${NUM_TOKENS[@]}"; do 
+        echo "Number New Tokens: $number_new_tokens"	    
+	python -m hack_tokenizer.evaluation \
+ 	   --model "$model" \
+	   --device $device \
+	   --batch $batch \
+	   --learning_rate $learning_rate \
+	   --number_new_tokens $number_new_tokens \
+	   --dataset_tokenizer $dataset_tokenizer \
+	   --dataset_training $dataset_training \
+	   --output_directory $output_directory \
+	   --output_format $output_format \
+	   --embed_init_method $embed_init_method \
+	   --datasets_metrics $datasets_metrics
+    done
 done

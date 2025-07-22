@@ -40,6 +40,7 @@ class Evaluation:
         output_directory: str,
         output_format: Literal['parquet', 'feather', 'csv', 'xlsx'],
         store_generation_data: bool=False,
+        embed_init_method: str | Literal['min', 'mean', 'avg', 'quantile({number})', 'weighted_drop({number})'] = 'weighted_drop(1.5)',
         **_
     ) -> None:
         self.model_name = model_name
@@ -54,6 +55,7 @@ class Evaluation:
         self.output_directory = output_directory
         self.output_format = output_format
         self.store_generation_data = store_generation_data
+        self.embed_init_method = embed_init_method
         self.config = {
             'model_name': model_name,
             'device': device,
@@ -152,12 +154,12 @@ class Evaluation:
 
 # ------------------------------------------------------------------------
 #                   BASELINE + Initialization (new tokens)
-        # Creating new tokens + adding them to model and initializing them using "weighted_drop(1.5)"
+        # Creating new tokens + adding them to model and initializing them using "embed_init_method"
         self.model, self.tokenizer = hacker.hack(
             self.model, self.tokenizer,
             self.encoding_tokenizer,
             num_tokens=self.number_new_tokens,
-            embed_initializer_method='weighted_drop(1.5)',
+            embed_initializer_method=self.embed_init_method,
             show_progress=True,
             train=False,
         )

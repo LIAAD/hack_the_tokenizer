@@ -49,7 +49,7 @@ def parse_args():
 
 def prompt_loop(model, tokenizer, encoding_tokenizer, max_new_tokens: int, stop_words: list[str], temperature: Optional[float]):
     prompts = []
-    print(f"\n\n{'':-^100s}{YELLOW}\n\n{'You\'re now in prompt mode.':^100s}\n{'Type `quit` or `q` to exit this mode.':^100s}{RESET}\n\n{'':-^100s}")
+    print(f"\n\n{'':-^100s}{YELLOW}\n\n{'You''re now in prompt mode.':^100s}\n{'Type `quit` or `q` to exit this mode.':^100s}{RESET}\n\n{'':-^100s}")
     
     while True:
         prompt = input(f'\n{RESET}Prompt: ')

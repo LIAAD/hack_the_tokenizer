@@ -10,7 +10,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=['hack_tokenizer'],
     package_dir={'hack_tokenizer': 'src'},
-    python_requires=">=3.12.3",
+    python_requires=">=3.10",
     install_requires=[
         "torch",
         "transformers",

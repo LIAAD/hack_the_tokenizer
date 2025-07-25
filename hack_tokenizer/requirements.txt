@@ -8,3 +8,4 @@ jupyter
 ipywidgets
 joblib
 matplotlib
+typing-extensions>=4.5

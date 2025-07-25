@@ -1,4 +1,5 @@
-from typing import override, Union
+from typing import Union
+from typing_extensions import override  # ✅ Works in Python 3.10+
 
 import re
 

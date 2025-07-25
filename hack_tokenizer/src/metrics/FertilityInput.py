@@ -6,7 +6,7 @@ import re
 from hack_tokenizer.src.metrics.base import Metric
 
 
-class Fertility(Metric):
+class FertilityInput(Metric):
 
     def __init__(self, data: Union[str, list[str]]):
         output = super().__init__(data)

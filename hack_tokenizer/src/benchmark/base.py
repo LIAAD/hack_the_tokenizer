@@ -180,6 +180,8 @@ class Benchmarks():
 
         results = {}
         for benchmark in self.benchmarks:
+            # Update batch size of benchmarks
+            benchmark.config['parallel_batch_size'] = self.config['parallel_batch_size']
             outputs = benchmark.generate(model, decoder_tokenizer, encode_tokenizer, generation_kwargs, store_generation_data)
             eval_results = benchmark.run_eval(model_name, outputs)
             results[benchmark.name] = {

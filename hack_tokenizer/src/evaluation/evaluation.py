@@ -142,7 +142,7 @@ class Evaluation:
 
         # Removing "SuperGluePTPT" from the Benchmarks
         self.benchmarks = Benchmark.BENCHMARKS
-        self.benchmarks.config['parallel_batch_size'] = GENERATION_BATCH_SIZE   # Adding the Batch Size (to generate in parallel)
+        self.benchmarks.config['parallel_batch_size'] = self.generation_batch_size   # Adding the Batch Size (to generate in parallel)
 
 # ------------------------------------------------------------------------
 #                               BASELINE

@@ -11,7 +11,7 @@ export dataset_training='./data/calamept_dataset.txt'
 export output_directory=./outputs
 export output_format='parquet'
 export embed_init_method="weighted_drop(1.5)"
-export datasets_metrics='FertilityInput=./data/metrics_evaluation_dataset.txt,Perplexity=./data/metrics_evaluation_dataset.txt'
+export datasets_metrics='FertilityOutput=./data/fertility_output_evaluation-dataset.txt,FertilityInput=./data/metrics_evaluation_dataset.txt,Perplexity=./data/metrics_evaluation_dataset.txt'
 
 # List of models to evaluate
 MODELS=(

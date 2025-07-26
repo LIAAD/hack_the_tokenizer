@@ -4,11 +4,11 @@ import transformers.models as models
 import torch
 import numpy as np
 from typing import Tuple
+import hack_tokenizer.src.utils.constants as constants
 
 def load_model_and_tokenizer(
-    model_name = "HuggingFaceTB/SmolLM-135M",
-    # model_name = "HuggingFaceTB/SmolLM-1.7B",
-    device = 'cuda',
+    model_name = constants.MODEL,
+    device = constants.DEVICE,
     model_kwargs = {
         'torch_dtype': torch.bfloat16
     },
@@ -41,7 +41,7 @@ def optimize_dataframe(df: pd.DataFrame, sort_for_compression: bool=True):
         elif pd.api.types.is_float_dtype(col_type):
             original_values = df_opt[col].values.copy()
             df_opt[col] = pd.to_numeric(df_opt[col], downcast='float')
-            if not np.allclose(original_values, df_opt[col].values, equal_nan=True):
+            if not np.allclose(original_values, df_opt[col].values, equal_nan=True):    # type: ignore
                 df_opt[col] = original_values  # Revert if precision loss
         
         # Stage 2: Categorical Check (for all non-categorical columns)

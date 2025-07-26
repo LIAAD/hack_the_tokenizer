@@ -6,63 +6,57 @@ import tqdm
 # Import the "SEED" from the "constants" to reproduce results
 import sys
 sys.path.insert(1, (Path(__file__).parent.parent.resolve() / 'hack_tokenizer/src/utils').as_posix())
-from constants import SEED, DATA_DIR
+from hack_tokenizer.src.utils.constants import SEED, DATA_DIR
+from hack_tokenizer.src.benchmark.CalamePT import CalamePT
 
 import numpy as np
 np.random.seed(SEED) # Setting numpy seed to reproduce randomness results
 
 
 def strip_ponctuation_begin_and_end(text):
-    return re.sub(r'(?<!\w)[^\w]+|\B[^\w]+(?!\w)', '', text)
+    # Strip leading non-word characters (e.g., "...Hello" → "Hello")
+    text = re.sub(r'^\W+', '', text)
+    # Strip trailing non-word characters (e.g., "world!!!" → "world")
+    text = re.sub(r'\W+$', '', text)
+    return text
 
-def get_random_lines(file_path, N, encoding='utf-8'):
-    # Step 1: Get total lines and byte offsets of each line
-    offsets = []
-    with open(file_path, 'rb') as f:
-        offsets.append(0)  # First line starts at byte 0
-        pbar = tqdm.tqdm(desc='Scanning file')
-        while f.readline():
-            offsets.append(f.tell())  # Record byte offsets of each line
-            pbar.update(1)
-        total_lines = len(offsets) - 1  # Adjust for 0-based indexing
-        pbar.close()
-
-    # Step 2: Randomly select N unique line numbers
-    selected_indices = np.random.choice(total_lines, size=min(N, total_lines), replace=False)
-    selected_indices.sort()  # Optimize sequential reading
-
-    # Step 3: Fetch selected lines using seek()
-    selected_lines = []
-    with open(file_path, 'r', encoding=encoding) as f:
-        for idx in selected_indices:
-            f.seek(offsets[idx])
-            selected_lines.append(f.readline().strip())
-
-    return selected_lines
-
-def main(num_lines: int=100_000):
+def main(num_lines: int=100_000, fertility_output_num_lines: int=4):
+# -------------------------------------------------------------------------------------------------------
+#       Section1: Read data
     # OpenSubtitles dataset obtained from: https://opus.nlpl.eu/results/en&pt/corpus-result-table
-    dataset = Path(DATA_DIR) / 'FULL_opensubtitles_pt-pt.txt'
+    with open(DATA_DIR / 'FULL_opensubtitles_pt-pt.txt', 'r', encoding='utf-8') as f:
+        open_subtitles_data = f.readlines()
 
-    # Pick 10_000 random lines from the file
-    # lines = get_random_lines(dataset, 10_000)
-    file = open(dataset, 'r')
-    lines = file.readlines()
-    file.close()
-    selected_lines_metric_eval = np.random.choice(len(lines), size=num_lines, replace=False)
+    # Calamept dataset
+    calamept = CalamePT().df[['sentence', 'last_word']].drop_duplicates()
+    calamept = (calamept['sentence'] + ' ' + calamept['last_word']).tolist()
+# -------------------------------------------------------------------------------------------------------
 
-    # Write lines to a new file
-    filename = Path(DATA_DIR) / 'metrics_evaluation_dataset.txt'
-    with open(filename, 'w') as f:
-        f.writelines([strip_ponctuation_begin_and_end(lines[l]) for l in selected_lines_metric_eval if len(lines[l]) > 4])
+# -------------------------------------------------------------------------------------------------------
+#       Metrics Dataset
+    selected_lines_metric_eval = np.random.choice(len(open_subtitles_data), size=num_lines, replace=False)
+    filename_1 = Path(DATA_DIR) / 'metrics_evaluation_dataset.txt'
+    with open(filename_1, 'w', encoding='utf-8') as f:
+        f.writelines([strip_ponctuation_begin_and_end(open_subtitles_data[l]) for l in selected_lines_metric_eval if len(open_subtitles_data[l]) > 4])
+# -------------------------------------------------------------------------------------------------------
 
-    selected_lines_tokenizer = np.random.choice(len(lines), size=num_lines, replace=False)
-    # Write lines to a new file
-    filename = Path(DATA_DIR) / 'tokenizer_pt-pt.txt'
-    with open(filename, 'w') as f:
-        f.writelines([strip_ponctuation_begin_and_end(lines[l]) for l in selected_lines_tokenizer if len(lines[l]) > 4])
+# -------------------------------------------------------------------------------------------------------
+#       Tokenizer Dataset
+    selected_lines_tokenizer = np.random.choice(len(open_subtitles_data), size=num_lines, replace=False)
+    filename_2 = Path(DATA_DIR) / 'tokenizer_pt-pt.txt'
+    with open(filename_2, 'w', encoding='utf-8') as f:
+        f.writelines([strip_ponctuation_begin_and_end(open_subtitles_data[l]) for l in selected_lines_tokenizer if len(open_subtitles_data[l]) > 4])
+# -------------------------------------------------------------------------------------------------------
+    
+# -------------------------------------------------------------------------------------------------------
+#       FertilityOutput Dataset (dataset specific for FertilityOutput)
+    selected_lines_fertilityOutput = np.random.choice(len(calamept), size=fertility_output_num_lines, replace=False)
+    filename_3 = Path(DATA_DIR) / 'fertility_output_evaluation-dataset.txt'
+    with open(filename_3, 'w', encoding='utf-8') as f:
+        f.writelines([calamept[i].strip() + '\n' for i in selected_lines_fertilityOutput])
+# -------------------------------------------------------------------------------------------------------
 
-    return filename
+    return (filename_1, filename_2, filename_3)
 
 if __name__ == '__main__':
     main()

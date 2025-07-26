@@ -80,13 +80,13 @@ if __name__ == '__main__':
     model, tokenizer = loader.load_model_and_tokenizer()
     
     # Load some data
-    from pathlib import Path
-    with open(Path(__file__).parent.parent.parent.parent / 'data/tokenizer_pt-pt.txt', 'r', encoding='utf-8') as f:
+    import hack_tokenizer.src.utils.constants as constants
+    with open(constants.DATA_DIR / 'tokenizer_pt-pt.txt', 'r', encoding='utf-8') as f:
         new_tokenizer_dataset = f.readlines()
     # Find new tokens
     from hack_tokenizer.src.hack import ModelHacker
     new_tokens = ModelHacker(dataset=new_tokenizer_dataset, batch_size=-1)._get_new_tokens(
-        vocab_size=1000, ignore_tokens=[tokenizer.decode([x]) for x in range(len(tokenizer))]
+        vocab_size=constants.NUMBER_NEW_TOKENS, ignore_tokens=[tokenizer.decode([x]) for x in range(len(tokenizer))]
     )
 
     # Filter calamept_dataset to only phrases which include any of the new_tokens
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     calamept_dataset_filtered = [text for text in CalamePT().prediction_prompts if any(token in text for token in new_tokens)]
     # pick a random sample
     import random
-    random.seed(42)
+    random.seed(constants.SEED)
     calamept_dataset_filtered = random.choices(calamept_dataset_filtered, k=2)
 
 

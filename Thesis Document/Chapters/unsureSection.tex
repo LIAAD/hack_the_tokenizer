@@ -1,0 +1,125 @@
+% Chapter Template
+
+% Main chapter title
+\chapter{Exploratory Analysis and Design Rationale}
+\unsure{maybe make this Chapter between 3 and 4?}
+
+% Short version of the title for the header
+\chaptermark{exploration}
+
+% Chapter Label
+\label{chap:exploration}
+
+\section{Research Questions}
+\label{sec:research_questions}
+
+To guide the development of the methods presented in this thesis, several research questions were formulated. These questions shaped both the tokenizer adaptation and inference strategies. They are:
+
+\begin{enumerate}
+    \item What impact do the proposed modifications have on the original model's performance? Are these effects beneficial or detrimental?
+    \item Do the changes yield only quantitative improvements (e.g., accuracy, F1), or do they also lead to qualitative differences in model behavior?
+    \item How does the impact of the modifications vary depending on the characteristics of the base model (e.g., size, monolingual vs. multilingual)?
+    \item To what extent does the linguistic or statistical quality of the added tokens influence the results?
+\end{enumerate}
+
+This chapter outlines the exploratory steps taken to investigate these questions and the reasoning behind key design choices.
+
+\section{RQ1: Impact on Model Efficiency – Fertility Output Metric}
+\label{sec:fertility_metric}
+
+To assess whether the proposed token modifications positively affected the efficiency of the model, we developed a custom metric termed the \textbf{Fertility Output Metric}. This metric aims to quantify the number of input tokens required to generate a single meaningful word in the target language.
+
+\subsection{Method Overview}
+We start with a static prompt prefix (e.g., \texttt{"Em português, a palavra para"}), then iteratively feed increasingly long token sequences to the model until a full word is generated. This process is repeated over multiple target words and the mean number of input tokens required per word is recorded.
+
+\subsection{Purpose}
+The Fertility Output Metric provides a way to assess if the model is generating words more efficiently post-adaptation. A reduction in required tokens indicates a compression gain and a better tokenization alignment with the target language.
+
+\subsection{Implementation Notes}
+% You can personalize the details here
+By randomly selecting a 4 sentences from the \cite{calamept_reference}\unsure{fix reference to calamept} dataset, the algorithm implemented followed:
+\begin{lstlisting}
+num_tokens: list[int] = []
+for phrase in phrases:
+    tokens = tokenizer.encode(phrase)
+    
+    # Starting off on 3rd token to give some context to the model
+    for n=3 to len(tokens):
+        generation: list[int] = []
+        while not has_one_complete_word(tokens_per_word[-1])
+            next_token = model.generate(tokens[:n])
+            generation.append(next_token)
+        num_tokens.append(get_num_tokens_first_full_word(generation))
+fertility_output = average(num_tokens)
+\end{lstlisting}
+
+\section{RQ2: Qualitative Behavior – Prompt-Based Manual Evaluation}
+\label{sec:manual_eval}
+
+In order to explore whether our modifications affected not only quantitative metrics but also qualitative performance, we conducted structured prompt-based interactions with the models both before and after the adaptations.
+
+\subsection{Approach}
+We prompted the model with open-ended or semi-structured questions in the target language and analyzed the output in terms of coherence, grammaticality, and relevance.
+
+\subsection{Purpose}
+This form of qualitative evaluation is essential to capture subtle effects that standard metrics like accuracy or F1 may miss, such as improved fluency, stylistic appropriateness, or reduction in hallucinations.
+
+\subsection{Sample Prompts}
+% Add your actual examples here
+\begin{itemize}
+    \item \texttt{"Explique o que é a Revolução dos Cravos."}
+    \item \texttt{"Crie uma lista de compras em português com cinco itens do supermercado."}
+    \item \texttt{"Crie uma frase que contenha as seguintes palavras: comida, futebol e carro."}
+\end{itemize}
+
+
+
+\section{RQ3: Sensitivity to Model Characteristics – Multi-model Evaluation}
+\label{sec:model_variation}
+
+To determine whether the effectiveness of our adaptations depends on the underlying model architecture, we applied the tokenizer changes across multiple pre-trained models with varying properties.
+
+\subsection{Models Compared}
+We selected a range of models differing in:
+\begin{itemize}
+    \item \textbf{Size} (e.g., base vs. large)
+    \item \textbf{Language scope} (e.g. monolingual vs. multilingual)
+    \item \textbf{Pre-training corpus characteristics} (e.g. Models fine tuned for Coding, literature, etc)
+\end{itemize}
+
+\subsection{Purpose}
+This analysis is intended to evaluate the generalizability of the methods and determine whether certain architectures are more sensitive to tokenizer modifications than others.
+
+\subsection{Results}
+\unsure{Deveria adicionar resultados aqui ou nao?}
+
+\section{RQ4: Token Quality Evaluation – Prompt Completion with Constraints}
+\label{sec:token_quality_test}
+
+To assess whether the \textit{quality} of added tokens matters — linguistically or statistically — we designed a controlled test in which the model was asked to complete short sentences using a constrained set of target words.
+
+\subsection{Method Overview}
+The model was prompted with a small set of semantically or syntactically connected keywords and asked to generate a phrase or sentence that incorporated them.
+
+\subsection{Purpose}
+This allowed us to evaluate whether the newly added tokens were being properly understood, integrated, and positioned in natural linguistic structures, or whether they disrupted fluency or meaning.
+
+\subsection{Implementation}
+Example input format:
+\begin{itemize}
+    \item \texttt{Keywords: “sol”, “praia”, “verão” → Output: [short phrase]}
+\end{itemize}
+
+The same test set was applied before and after adaptation to allow side-by-side comparison.
+
+\section{Summary and Design Implications}
+\label{sec:exploration_summary}
+
+These exploratory analyses were critical in shaping the methods described in subsequent chapters. In particular:
+\begin{itemize}
+    \item RQ1 and RQ4 informed the token selection process and efficiency evaluation metrics
+    \item RQ2 guided our inclusion of qualitative assessments beyond benchmark scores
+    \item RQ3 led to a multi-model evaluation protocol to test robustness and transferability
+\end{itemize}
+
+In the following chapters, we build upon these insights to formalize and evaluate our adaptation strategies.

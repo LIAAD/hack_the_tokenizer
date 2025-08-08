@@ -35,10 +35,13 @@ This paper thoroughly explores manipulating the tokenizer \unsure{add reference 
 
 We focused on addressing the following key research questions:
 \begin{itemize}
-    \item Is it possible for an English-trained model to achieve comparable performance in European Portuguese by strategically modifying the tokenizer?\unsure{Answered that (or at least we have results that can answer this question)}
-    \item Can tokenizer adaptation accelerate the training process for new language adaptation?\unsure{We did not answer this question, so we may have to remove it}
-    \item How much can inference efficiency be improved by adding language-specific tokens to the model's vocabulary?\unsure{Haven't answered this question yet but can add it to the rersearch}
-    \item What embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?\unsure{Answered it, haven't shown table specifying why we chose "Position Weighted Initialization" as the best option}
+    \item What impact does tokenizer adaptation have on model performance for European Portuguese? Does it achieve comparable performance to the baseline model?
+    
+    \item How does tokenizer adaptation affect token efficiency (as measured by the Fertility metric) for Portuguese text processing?
+    
+    \item What are the trade-offs between token efficiency and other performance metrics (such as benchmarks) when adapting tokenizers?
+    
+    \item What embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?
 \end{itemize}
 These key questions guided our research methodology and led to several insights regarding tokenizer adaptation for cross-lingual model performance.
 

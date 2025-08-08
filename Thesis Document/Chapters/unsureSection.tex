@@ -13,31 +13,80 @@
 \section{Research Questions}
 \label{sec:research_questions}
 
-To guide the development of the methods presented in this thesis, several research questions were formulated. These questions shaped both the tokenizer adaptation and inference strategies. They are:
+To guide the development of the methods presented in this thesis, several research questions were formulated. These questions shaped the tokenizer adaptation strategies and evaluation methodology:
 
 \begin{enumerate}
-    \item What impact do the proposed modifications have on the original model's performance? Are these effects beneficial or detrimental?
-    \item Do the changes yield only quantitative improvements (e.g., accuracy, F1), or do they also lead to qualitative differences in model behavior?
-    \item How does the impact of the modifications vary depending on the characteristics of the base model (e.g., size, monolingual vs. multilingual)?
-    \item To what extent does the linguistic or statistical quality of the added tokens influence the results?
+    \item What impact does tokenizer adaptation have on model performance for European Portuguese? Does it achieve comparable performance to the baseline model?
+    
+    \item How does tokenizer adaptation affect token efficiency (as measured by the Fertility metric) for Portuguese text processing?
+    
+    \item What are the trade-offs between token efficiency and other performance metrics (such as perplexity) when adapting tokenizers?
+    
+    \item What embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?
 \end{enumerate}
 
 This chapter outlines the exploratory steps taken to investigate these questions and the reasoning behind key design choices.
 
-\section{RQ1: Impact on Model Efficiency – Fertility Output Metric}
+\section{RQ1: Impact on Model Performance}
+\label{sec:model_performance}
+
+To assess the impact of tokenizer adaptation on model performance for European Portuguese, we evaluated the adapted models on two Portuguese-specific benchmarks: CalamePT and SuperGluePTPT. These benchmarks provide complementary measures of the model's ability to understand and generate Portuguese text.
+
+The results, as detailed in Chapter 6, showed that tokenizer adaptation maintained comparable performance on these benchmarks compared to the baseline models. For the SmolLM2-135M model, performance on CalamePT remained at 13.63\% across all configurations, while SuperGluePTPT performance showed a marginal improvement from 1.44\% to 1.45\% with the adapted tokenizer. Similarly, the Qwen2.5-1.5B model maintained consistent performance on CalamePT (around 49.8\%) and SuperGluePTPT (around 40\%) across configurations.
+
+These findings suggest that tokenizer adaptation can be implemented without significantly degrading model performance on standard benchmarks, which is an important consideration for practical applications.
+
+\section{RQ2: Token Efficiency – Fertility Metrics}
 \label{sec:fertility_metric}
 
-To assess whether the proposed token modifications positively affected the efficiency of the model, we developed a custom metric termed the \textbf{Fertility Output Metric}. This metric aims to quantify the number of input tokens required to generate a single meaningful word in the target language.
+To assess whether the proposed token modifications positively affected the efficiency of the model, we developed two complementary metrics: the \textbf{Fertility Input Metric} and the \textbf{Fertility Output Metric}.
+
+\subsection{Fertility Input Metric}
+The Fertility Input Metric quantifies the average number of tokens required to encode a word in the target language. This metric directly measures the tokenization efficiency of the model when processing Portuguese text. A lower value indicates better token efficiency, as fewer tokens are needed to represent the same content.
+
+\subsection{Fertility Output Metric}
+The Fertility Output Metric aims to quantify the number of input tokens required to generate a single meaningful word in the target language. This metric evaluates the generation efficiency of the model when producing Portuguese text.
 
 \subsection{Method Overview}
-We start with a static prompt prefix (e.g., \texttt{"Em português, a palavra para"}), then iteratively feed increasingly long token sequences to the model until a full word is generated. This process is repeated over multiple target words and the mean number of input tokens required per word is recorded.
+
+\subsubsection{Fertility Input Metric}
+The Fertility Input Metric is calculated by:
+\begin{enumerate}
+    \item Selecting a representative corpus of Portuguese text
+    \item Tokenizing the text using the model's tokenizer
+    \item Counting the number of tokens produced
+    \item Dividing by the number of words in the original text
+\end{enumerate}
+
+\subsubsection{Fertility Output Metric}
+For the Fertility Output Metric, we start with a static prompt prefix (e.g., \texttt{"Em português, a palavra para"}), then iteratively feed increasingly long token sequences to the model until a full word is generated. This process is repeated over multiple target words and the mean number of input tokens required per word is recorded.
 
 \subsection{Purpose}
-The Fertility Output Metric provides a way to assess if the model is generating words more efficiently post-adaptation. A reduction in required tokens indicates a compression gain and a better tokenization alignment with the target language.
+Both metrics provide complementary insights into token efficiency:
+\begin{itemize}
+    \item The Fertility Input Metric evaluates encoding efficiency, showing how compactly the tokenizer represents Portuguese text
+    \item The Fertility Output Metric assesses generation efficiency, revealing how efficiently the model produces Portuguese words
+\end{itemize}
+
+A reduction in either metric indicates a compression gain and better alignment with the target language.
 
 \subsection{Implementation Notes}
 % You can personalize the details here
-By randomly selecting a 4 sentences from the \cite{calamept_reference}\unsure{fix reference to calamept} dataset, the algorithm implemented followed:
+\subsubsection{Fertility Input Implementation}
+By analyzing a corpus of Portuguese text from the \cite{calamept_reference}\unsure{fix reference to calamept} dataset:
+\begin{lstlisting}
+total_tokens = 0
+total_words = 0
+for text in corpus:
+    tokens = tokenizer.encode(text)
+    words = get_words(text)
+    total_tokens += len(tokens)
+    total_words += len(words)
+fertility_input = total_tokens / total_words
+\end{lstlisting}
+
+\subsubsection{Fertility Output Implementation}
+By randomly selecting 4 sentences from the \cite{calamept_reference}\unsure{fix reference to calamept} dataset:
 \begin{lstlisting}
 num_tokens: list[int] = []
 for phrase in phrases:
@@ -53,7 +102,16 @@ for phrase in phrases:
 fertility_output = average(num_tokens)
 \end{lstlisting}
 
-\section{RQ2: Qualitative Behavior – Prompt-Based Manual Evaluation}
+\section{RQ3: Trade-offs in Tokenizer Adaptation}
+\label{sec:tradeoffs}
+
+A critical aspect of our research was understanding the trade-offs involved in tokenizer adaptation. While the primary goal was to improve token efficiency, we discovered significant impacts on other performance metrics, particularly perplexity.
+
+Our experiments revealed a substantial increase in perplexity when adding Portuguese-specific tokens to the models. For the SmolLM2-135M model, perplexity increased from 282.40 in the baseline to 2773.63 with 10,000 new tokens (an 882\% increase). The effect was even more pronounced for the Qwen2.5-1.5B model, where perplexity increased from 1900.50 to over 94,000 with the adapted tokenizer.
+
+This trade-off between token efficiency and perplexity represents a fundamental challenge in tokenizer adaptation. Lower perplexity generally indicates better predictive performance, so this increase suggests that while the model becomes more token-efficient, it loses some predictive power. This finding has important implications for the practical application of tokenizer adaptation techniques.
+
+\section{RQ4: Qualitative Behavior – Prompt-Based Manual Evaluation}
 \label{sec:manual_eval}
 
 In order to explore whether our modifications affected not only quantitative metrics but also qualitative performance, we conducted structured prompt-based interactions with the models both before and after the adaptations.
@@ -74,7 +132,7 @@ This form of qualitative evaluation is essential to capture subtle effects that 
 
 
 
-\section{RQ3: Sensitivity to Model Characteristics – Multi-model Evaluation}
+\section{RQ4: Embedding Initialization Strategies}
 \label{sec:model_variation}
 
 To determine whether the effectiveness of our adaptations depends on the underlying model architecture, we applied the tokenizer changes across multiple pre-trained models with varying properties.
@@ -93,7 +151,7 @@ This analysis is intended to evaluate the generalizability of the methods and de
 \subsection{Results}
 \unsure{Deveria adicionar resultados aqui ou nao?}
 
-\section{RQ4: Token Quality Evaluation – Prompt Completion with Constraints}
+\section{Model Sensitivity Analysis}
 \label{sec:token_quality_test}
 
 To assess whether the \textit{quality} of added tokens matters — linguistically or statistically — we designed a controlled test in which the model was asked to complete short sentences using a constrained set of target words.
@@ -117,9 +175,9 @@ The same test set was applied before and after adaptation to allow side-by-side 
 
 These exploratory analyses were critical in shaping the methods described in subsequent chapters. In particular:
 \begin{itemize}
-    \item RQ1 and RQ4 informed the token selection process and efficiency evaluation metrics
-    \item RQ2 guided our inclusion of qualitative assessments beyond benchmark scores
-    \item RQ3 led to a multi-model evaluation protocol to test robustness and transferability
+    \item RQ1 and RQ2 informed our understanding of the performance impacts and efficiency gains of tokenizer adaptation
+    \item RQ3 highlighted the critical trade-offs between token efficiency and perplexity
+    \item RQ4 guided the development of effective embedding initialization strategies
 \end{itemize}
 
 In the following chapters, we build upon these insights to formalize and evaluate our adaptation strategies.

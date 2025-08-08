@@ -1,17 +1,19 @@
 % Chapter Template
 
 % Main chapter title
-\chapter{Inference Adaptation}
+\chapter{Proposed Inference Adaptation}
 
 % Short version of the title for the header
-\chaptermark{InferenceAdaptation}
+\chaptermark{ProposedInferenceAdaptation}
 
 % Chapter Label
 \label{chap:inference_adaptation}
 
 % Write text in here
-\unsure{The whole chapter of Inference Adapation was not implemented... Should wee change it?}
-After integrating the new tokens and their corresponding embeddings into the model architecture, a specialized inference procedure was developed to ensure optimal performance. This adaptation was necessary because the model had not been exposed to the newly added embeddings during its training phase, potentially leading to incoherent generation when directly prompted with these tokens.
+\section{Theoretical Framework}
+This chapter presents a theoretical framework for inference adaptation that was designed and implemented in the current research. It outlines a proposed approach for future work that could potentially enhance the performance of models with adapted tokenizers.
+
+After integrating new tokens and their corresponding embeddings into the model architecture, a specialized inference procedure was developed to ensure optimal performance. This adaptation was necessary because the model has not been exposed to the newly added embeddings during its training phase, potentially leading to incoherent generation when directly prompted with these tokens.
 
 The adapted inference procedure implements a two-phase tokenization approach:
 
@@ -23,13 +25,31 @@ The adapted inference procedure implements a two-phase tokenization approach:
 
 This approach effectively allows the model to generate multiple tokens in a single step when it selects a Portuguese-specific token, while maintaining compatibility with the model's learned token distributions. The procedure can be conceptualized as a form of dynamic vocabulary mapping that preserves the model's original training distribution while enhancing its efficiency for Portuguese text processing.
 
-\section{Experimental Configuration}
-To evaluate the effectiveness of the proposed methodology, a comprehensive experimental framework was established. The experiments were designed to assess both the intrinsic quality of the token embeddings and their impact on downstream task performance.
+\section{Potential Benefits}
+If implemented, this inference adaptation approach could offer several potential benefits:
 
-\section{Implementation Details}
-The tokenizer adaptation and embedding initialization were implemented using the Hugging Face Transformers library. Custom extensions were developed to handle the specialized inference procedure required for the adapted model. All experiments were conducted using PyTorch 2.5.1 on a system equipped with NVIDIA RTX 4060 8GB.
+\begin{itemize}
+    \item \textbf{Improved Generation Coherence}: By managing the interaction between original and new tokens, the approach could reduce inconsistencies in text generation. \unsure{Run some manual tests with NEW implementation VS default one to show these results}
+    
+    \item \textbf{Reduced Perplexity Impact}: The significant perplexity increases observed in our experiments might be mitigated by this controlled inference process. \unsure{Ru n some manualtests with NEW implementation VS default one to show these results}
+    
+    \item \textbf{Enhanced Token Efficiency}: The approach would preserve the token efficiency gains while potentially reducing negative impacts on model performance. \unsure{Run some manual tests with NEW implementation VS default one to show these results}
+\end{itemize}
 
-\section{Hyperparameter Selection}
-For the Position-Weighted Initialization method, a range of values for the weighting parameter $K$ were evaluated ($K \in \{1.1, 1.3, 1.5, 1.7, 2.0\}$). The optimal value was determined based on performance across multiple evaluation metrics, with $K = 1.5$ demonstrating the best overall results.
+\section{Implementation Considerations}
+While not implemented in a production-ready state, future work on this inference adaptation would require:
 
-The number of new tokens (10,000) was selected based on preliminary experiments that balanced vocabulary coverage against the computational overhead of expanding the embedding matrix.
+\begin{itemize}
+    \item Development of custom extensions to the Hugging Face Transformers library to handle the specialized inference procedure
+    
+    \item Careful management of token replacement logic to maintain semantic coherence
+    
+    \item Optimization of the inference process to minimize computational overhead
+    
+    \item Comprehensive evaluation to assess the impact on both quantitative metrics and qualitative generation quality
+\end{itemize}
+
+\section{Relationship to Current Results}
+The current research focused on tokenizer adaptation and embedding initialization, with the Position-Weighted Initialization method showing the best results among tested approaches. For this method, a range of values for the weighting parameter $K$ were evaluated ($K \in \{1.1, 1.3, 1.5, 1.7, 2.0\}$), with $K = 1.5$ demonstrating the best overall results.
+
+The number of new tokens (7,500) \unsure{Add reference to testing with multiple different levels of "# New Tokens" and show that 7,500 was the best one out of the 3 tests we did}was selected based on preliminary experiments that balanced vocabulary coverage against the computational overhead of expanding the embedding matrix. Future work on inference adaptation would build upon these findings to address the perplexity trade-off identified in our results.

@@ -1,10 +1,10 @@
 % Chapter Template
 
 % Main chapter title
-\chapter{Proposed Inference Adaptation}
+\chapter{Inference Adaptation}
 
 % Short version of the title for the header
-\chaptermark{ProposedInferenceAdaptation}
+\chaptermark{InferenceAdaptation}
 
 % Chapter Label
 \label{chap:inference_adaptation}
@@ -31,25 +31,17 @@ If implemented, this inference adaptation approach could offer several potential
 \begin{itemize}
     \item \textbf{Improved Generation Coherence}: By managing the interaction between original and new tokens, the approach could reduce inconsistencies in text generation. \unsure{Run some manual tests with NEW implementation VS default one to show these results}
     
-    \item \textbf{Reduced Perplexity Impact}: The significant perplexity increases observed in our experiments might be mitigated by this controlled inference process. \unsure{Ru n some manualtests with NEW implementation VS default one to show these results}
+    \item \textbf{Improved Predictive Performance}: The significant changes in predictive performance observed in our experiments might be mitigated by this controlled inference process. \unsure{Show tests of "normal" generation and our new proposed generation to show this predictive performance (basically using "hacked" tokenizer to encode before generation just gives "garbage-in" "garbage-out" type of thing)}
     
     \item \textbf{Enhanced Token Efficiency}: The approach would preserve the token efficiency gains while potentially reducing negative impacts on model performance. \unsure{Run some manual tests with NEW implementation VS default one to show these results}
 \end{itemize}
 
 \section{Implementation Considerations}
-The feature was implemented in a development-ready scenario only. In order to implement the inference adaptation to a production-level state, future work would require:
+The feature was implemented for a development-only stage. In order to implement inference adaptation to a production-level state, future work would require:
 
 \begin{itemize}
-    \item Development of custom extensions to the Hugging Face Transformers library to handle the specialized inference procedure
-    
-    \item Careful management of token replacement logic to maintain semantic coherence
-    
     \item Optimization of the inference process to minimize computational overhead
     
-    \item Comprehensive evaluation to assess the impact on both quantitative metrics and qualitative generation quality
+    \item Development of custom extensions to the Hugging Face Transformers library to handle the specialized inference procedure
+    
 \end{itemize}
-
-\section{Relationship to Current Results}
-The current research focused on tokenizer adaptation and embedding initialization, with the Position-Weighted Initialization method showing the best results among tested approaches. For this method, a range of values for the weighting parameter $K$ were evaluated ($K \in \{1.1, 1.3, 1.5, 1.7, 2.0\}$), with $K = 1.5$ demonstrating the best overall results.
-
-The number of new tokens (7,500) \unsure{Add reference to testing with multiple different levels of "# New Tokens" and show that 7,500 was the best one out of the 3 tests we did}was selected based on preliminary experiments that balanced vocabulary coverage against the computational overhead of expanding the embedding matrix. Future work on inference adaptation would build upon these findings to address the perplexity trade-off identified in our results.

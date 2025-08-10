@@ -20,7 +20,7 @@ To guide the development of the methods presented in this thesis, several resear
     
     \item How does tokenizer adaptation affect token efficiency (as measured by the Fertility metric) for Portuguese text processing?
     
-    \item What are the trade-offs between token efficiency and other performance metrics (such as perplexity) when adapting tokenizers?
+    \item Does tokenizer adaptation affect all models equally, or are there differences based on model architecture and size? \unsure{Waiting for other models evaluation (Small Multi-Lingual, Medium Mono-Lingual)}
     
     \item What embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?
 \end{enumerate}
@@ -32,7 +32,7 @@ This chapter outlines the exploratory steps taken to investigate these questions
 
 To assess the impact of tokenizer adaptation on model performance for European Portuguese, we evaluated the adapted models on two Portuguese-specific benchmarks: CalamePT and SuperGluePTPT. These benchmarks provide complementary measures of the model's ability to understand and generate Portuguese text.
 
-The results, as detailed in Chapter 6, showed that tokenizer adaptation maintained comparable performance on these benchmarks compared to the baseline models. For the SmolLM2-135M model, performance on CalamePT remained at 13.63\% across all configurations, while SuperGluePTPT performance showed a marginal improvement from 1.44\% to 1.45\% with the adapted tokenizer. Similarly, the Qwen2.5-1.5B model maintained consistent performance on CalamePT (around 49.8\%) and SuperGluePTPT (around 40\%) across configurations.
+The results, as detailed in Chapter 6, showed that tokenizer adaptation maintained comparable performance on these benchmarks compared to the baseline models. For the SmolLM2-135M model, performance on CalamePT remained at 13.63\% across all configurations, while SuperGluePTPT performance showed a marginal improvement from 1.44\% to 1.45\% with the adapted tokenizer. Similarly, the Qwen2.5-1.5B model maintained consistent performance on CalamePT (around 49.8\%) and SuperGluePTPT (around 40\%) across configurations.\unsure{should we leave this part here? Not sure if we should only show results in Chapter 6.}
 
 These findings suggest that tokenizer adaptation can be implemented without significantly degrading model performance on standard benchmarks, which is an important consideration for practical applications.
 
@@ -102,14 +102,16 @@ for phrase in phrases:
 fertility_output = average(num_tokens)
 \end{lstlisting}
 
-\section{RQ3: Trade-offs in Tokenizer Adaptation}
-\label{sec:tradeoffs}
+\section{RQ3: Model Architecture Impact on Adaptation}
+\label{sec:model_impact}
 
-A critical aspect of our research was understanding the trade-offs involved in tokenizer adaptation. While the primary goal was to improve token efficiency, we discovered significant impacts on other performance metrics, particularly perplexity.
+A critical aspect of our research was understanding how different model architectures respond to tokenizer adaptation. While the primary goal was to improve token efficiency, we discovered significant differences in how models of varying sizes and architectures responded to our adaptation techniques.
 
-Our experiments revealed a substantial increase in perplexity when adding Portuguese-specific tokens to the models. For the SmolLM2-135M model, perplexity increased from 282.40 in the baseline to 2773.63 with 10,000 new tokens (an 882\% increase). The effect was even more pronounced for the Qwen2.5-1.5B model, where perplexity increased from 1900.50 to over 94,000 with the adapted tokenizer.
+\unsure{Waiting for other models evaluation (Small Multi-Lingual, Medium Mono-Lingual)}
 
-This trade-off between token efficiency and perplexity represents a fundamental challenge in tokenizer adaptation. Lower perplexity generally indicates better predictive performance, so this increase suggests that while the model becomes more token-efficient, it loses some predictive power. This finding has important implications for the practical application of tokenizer adaptation techniques.
+Our experiments revealed substantial differences in how models responded to the addition of Portuguese-specific tokens. The smaller monolingual SmolLM2-135M model showed different adaptation patterns compared to the larger multilingual Qwen2.5-1.5B model. These differences were consistent across multiple performance metrics.
+
+This variation in adaptation effectiveness across model architectures represents a fundamental consideration in tokenizer adaptation. The findings suggest that adaptation strategies may need to be tailored to specific model architectures, which has important implications for the practical application of tokenizer adaptation techniques.
 
 \section{RQ4: Qualitative Behavior – Prompt-Based Manual Evaluation}
 \label{sec:manual_eval}
@@ -176,7 +178,7 @@ The same test set was applied before and after adaptation to allow side-by-side 
 These exploratory analyses were critical in shaping the methods described in subsequent chapters. In particular:
 \begin{itemize}
     \item RQ1 and RQ2 informed our understanding of the performance impacts and efficiency gains of tokenizer adaptation
-    \item RQ3 highlighted the critical trade-offs between token efficiency and perplexity
+    \item RQ3 highlighted how different model architectures respond differently to tokenizer adaptation \unsure{Waiting for other models evaluation (Small Multi-Lingual, Medium Mono-Lingual)}
     \item RQ4 guided the development of effective embedding initialization strategies
 \end{itemize}
 

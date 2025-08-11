@@ -16,7 +16,8 @@ export datasets_metrics='FertilityOutput=./data/fertility_output_evaluation-data
 # List of models to evaluate
 MODELS=(
     "HuggingFaceTB/SmolLM2-135M"    # Small     SingleModal     Model
-    "Qwen/Qwen2.5-1.5B-Instruct"    # Medium    MultiModal      Model
+	"Qwen/Qwen2.5-1.5B-Instruct"    # Medium    MultiModal      Model
+    "HuggingFaceTB/SmolLM3-3B"		# Big		MultiModal		Model
 )
 
 # Number of tokens to iterate over

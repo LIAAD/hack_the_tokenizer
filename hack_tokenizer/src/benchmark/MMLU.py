@@ -22,8 +22,6 @@ def benchmark_mmlu(
             'prompt': data['prompt'],
             'prediction': predicted_answer,
             'correct_answer': data['answer'],
-            'generated_ids': predictions['generated_tokens'][n],
-            'generated_logits': predictions.get('logits', {n: 'n/a'})[n]
         })
 
     accurate_preds = sum(

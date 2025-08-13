@@ -41,6 +41,7 @@ class Evaluation:
         output_format: Literal['parquet', 'feather', 'csv', 'xlsx'],
         store_generation_data: bool=False,
         embed_init_method: str | Literal['min', 'mean', 'avg', 'quantile({number})', 'weighted_drop({number})'] = 'weighted_drop(1.5)',
+        run_baseline_eval: bool=True,
         **_
     ) -> None:
         self.model_name = model_name
@@ -56,6 +57,7 @@ class Evaluation:
         self.output_format = output_format
         self.store_generation_data = store_generation_data
         self.embed_init_method = embed_init_method
+        self.run_baseline_eval = run_baseline_eval
         self.config = {
             'model_name': model_name,
             'device': device,
@@ -232,6 +234,7 @@ def main():
     parser.add_argument('-out',    '--output_directory',    type=str,    default='./outputs',            help='Directory where to save the json results')
     parser.add_argument('-oF',     '--output_format',       type=str,    default='parquet',              help='Format of the analysis output. Defaults to `parquet` to reduce space usage, but can be one of `parquet`, `csv`, `xlsx`.')
     parser.add_argument('-in_met', '--embed_init_method',   type=str,    default='weighted_drop(1.5)',   help='Specifies Embeddings Initialization Method to use for the "new_tokens". Methods allowed: ["min" "mean" "mean" "avg" "quantile({number})" "weighted_drop({number})')
+    parser.add_argument('-B',      '--baseline',            type=str,    default='false',                help='Options: True/False.\nTriggers BASELINE evalatuation (on base model). Sometimes only trained evaluation is needed.')
     parser.add_argument('-dM',     '--datasets_metrics',    type=parse_path_dict, default='',   help='''Mapping of metrics names to their corresponding data paths. 
 Format: metric1=/path/to/data1,metric2=/path/to/data2
 Example: --dataset_metrics Perplexity=/data/train.csv,Fertility=/data/test.csv
@@ -240,6 +243,7 @@ Each key represents a dataset name and its value should be the path to that data
     args = dict(parser.parse_args()._get_kwargs())
     args['model_name'] = args.pop('model')
     args['generation_batch_size'] = args.pop('batch')
+    args['run_baseline_eval'] = args.pop('baseline').lower() == 'true'
 
     # Reading `dataset` files (if they exist)
     for key in ['dataset_tokenizer', 'dataset_training']:

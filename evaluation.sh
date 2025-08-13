@@ -31,18 +31,25 @@ NUM_TOKENS=(
 for model in "${MODELS[@]}"; do
     echo "Evaluating model: $model"
     for number_new_tokens in "${NUM_TOKENS[@]}"; do 
-        echo "Number New Tokens: $number_new_tokens"	    
-	python -m hack_tokenizer.evaluation \
- 	   --model "$model" \
-	   --device $device \
-	   --batch $batch \
-	   --learning_rate $learning_rate \
-	   --number_new_tokens $number_new_tokens \
-	   --dataset_tokenizer $dataset_tokenizer \
-	   --dataset_training $dataset_training \
-	   --output_directory $output_directory \
-	   --output_format $output_format \
-	   --embed_init_method $embed_init_method \
-	   --datasets_metrics $datasets_metrics
+        echo "Number New Tokens: $number_new_tokens"	  
+		# Set baseline to True if number_new_tokens is 1000, otherwise False
+        if [ "$number_new_tokens" -eq 1000 ]; then
+            baseline="True"
+        else
+            baseline="False"
+        fi  
+		python -m hack_tokenizer.evaluation \
+			--model "$model" \
+			--device $device \
+			--batch $batch \
+			--learning_rate $learning_rate \
+			--number_new_tokens $number_new_tokens \
+			--dataset_tokenizer $dataset_tokenizer \
+			--dataset_training $dataset_training \
+			--output_directory $output_directory \
+			--output_format $output_format \
+			--embed_init_method $embed_init_method \
+			--datasets_metrics $datasets_metrics \
+			--baseline $baseline
     done
 done

@@ -37,6 +37,7 @@ class Metrics:
     
     def update_data(self, new_data, metric_id: Optional[str]=None):
         if metric_id is not None:
+            if not metric_id in self.metrics.keys(): return False
             return self.metrics[metric_id].update_data(new_data)
 
         for metric in self.metrics.values():

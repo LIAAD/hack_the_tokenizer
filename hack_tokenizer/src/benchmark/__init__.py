@@ -11,5 +11,4 @@ for benchmark in os.listdir((pathlib.Path(__file__) / '..').resolve()):
     bench = importlib.import_module(f'hack_tokenizer.src.benchmark.{benchmark}')
     BENCHMARKS.append(eval(f'bench.{benchmark}()'))
 BENCHMARKS = Benchmarks(BENCHMARKS)
-
 __all__ = ['BENCHMARKS']

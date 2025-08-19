@@ -212,10 +212,15 @@ class ModelHacker():
         if encoding_tokenizer.pad_token is None:
             encoding_tokenizer.pad_token = encoding_tokenizer.eos_token
             encoding_tokenizer.pad_token_id = encoding_tokenizer.eos_token_id
+        
+        # Adding padding tokens to tokenizer
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+            tokenizer.pad_token_id = tokenizer.eos_token_id
 
         if train:
             train_kwargs.setdefault('show_progress', show_progress)
-            self.train(model, tokenizer, encoding_tokenizer, self.new_tokens, **train_kwargs)
+            self.train(model=model, tokenizer=tokenizer, encoding_tokenizer=encoding_tokenizer, **train_kwargs)
         return model, tokenizer
 
     def train(

@@ -51,7 +51,7 @@ class FertilityOutput(Metric):
         return num_tokens
 
     @override
-    def run(self, model, tokenizer, *_, tokens_mapping: dict[int, list[int]] | None=None, **__):
+    def run(self, model, tokenizer, *_, **__):
         fertilities = []
         for text in self.data:
             # text = "Ela correu para chegar a linha de chegada"

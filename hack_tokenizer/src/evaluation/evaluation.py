@@ -156,9 +156,9 @@ class Evaluation:
 # ------------------------------------------------------------------------
 #                               BASELINE
         # Run benchmark with original model and tokenizer (without any modifications)
-        results = {
-            'BASELINE': self.run_benchmark_and_metrics(None, model_gen_kwargs, store_generation_data=self.store_generation_data)
-        }
+        results = {}
+        if self.run_baseline_eval:
+            results['BASELINE'] = self.run_benchmark_and_metrics(None, model_gen_kwargs, store_generation_data=self.store_generation_data)
 # ------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------

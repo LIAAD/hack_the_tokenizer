@@ -16,6 +16,7 @@ from hack_tokenizer.src.metrics import METRICS
 from hack_tokenizer.src.utils.json_dumper import dump_json
 from hack_tokenizer.src.utils.constants import SEED, DEVICE, GENERATION_BATCH_SIZE, MODEL, TEMPERATURE, LEARNING_RATE, NUMBER_NEW_TOKENS 
 np.random.seed(SEED)  # Setting numpy seed to reproduce randomness results
+torch.manual_seed(SEED)
 
 
 # TODO:

@@ -23,16 +23,22 @@ class Metric:
 
 
 class Metrics:
-    def __init__(self, metrics: list[Metric]):
+    def __init__(self, metrics: list[Metric], num_runs: dict[str, int]={}):
         self.metrics = {
             metric.name: metric
             for metric in metrics
         }
+        self.num_runs = num_runs
 
     def run(self, *args, **kwargs):
         results = {}
         for metric_name, metric in self.metrics.items():
-            results[metric_name] = metric.run(*args, **kwargs)
+            num_runs = self.num_runs.get(metric_name, 1)
+            if num_runs == 1:
+                results[metric_name] = metric.run(*args, **kwargs)
+                continue
+            for run_id in range(self.num_runs.get(metric_name, 1)):
+                results[f'{metric_name} [Run #{run_id}]'] = metric.run(*args, **kwargs)
         return results
     
     def update_data(self, new_data, metric_id: Optional[str]=None):

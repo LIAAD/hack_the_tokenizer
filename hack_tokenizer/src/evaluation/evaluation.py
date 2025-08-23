@@ -43,6 +43,7 @@ class Evaluation:
         store_generation_data: bool=False,
         embed_init_method: str | Literal['min', 'mean', 'avg', 'quantile({number})', 'weighted_drop({number})'] = 'weighted_drop(1.5)',
         run_baseline_eval: bool=True,
+        num_runs_metrics: dict[str, int]={},
         **_
     ) -> None:
         self.model_name = model_name
@@ -54,6 +55,7 @@ class Evaluation:
         self.dataset_tokenizer = dataset_tokenizer
         self.dataset_training = dataset_training
         self.datasets_metrics = datasets_metrics
+        self.num_runs_metrics = num_runs_metrics
         self.output_directory = output_directory
         self.output_format = output_format
         self.store_generation_data = store_generation_data
@@ -127,6 +129,10 @@ class Evaluation:
         if self.datasets_metrics is not None and len(self.datasets_metrics) > 0: 
             for metric in self.datasets_metrics.keys():
                 METRICS.update_data(self.datasets_metrics[metric], metric)
+
+        # Update the number of runs for each metric
+        for metric in self.num_runs_metrics.keys():
+            METRICS.num_runs[metric] = self.num_runs_metrics[metric]
 
         # Import model
         self.model, self.tokenizer = loader.load_model_and_tokenizer(
@@ -216,7 +222,11 @@ def parse_path_dict(string):
     pairs = string.split(',')
     return {k: Path(v) if v else '' for k, v in (pair.split('=') for pair in pairs)}
 
-
+def parse_int_dict(string):
+    if not string:  # Handle empty string case
+        return {}
+    pairs = string.split(',')
+    return {k: int(v) if v else 1 for k, v in (pair.split('=') for pair in pairs)}
 
 def main():
     # ------------------------------------------------------------------------------
@@ -239,6 +249,10 @@ def main():
     parser.add_argument('-dM',     '--datasets_metrics',    type=parse_path_dict, default='',   help='''Mapping of metrics names to their corresponding data paths. 
 Format: metric1=/path/to/data1,metric2=/path/to/data2
 Example: --dataset_metrics Perplexity=/data/train.csv,Fertility=/data/test.csv
+Each key represents a dataset name and its value should be the path to that dataset's data.''')
+    parser.add_argument('-nRM',     '--num_runs_metrics',    type=parse_int_dict, default='FertilityBoost=10',   help='''Mapping of metrics names to their corresponding number of Runs. 
+Format: metric1=integer,metric2=integer
+Example: --num_runs Perplexity=1,FertilityBoost=10
 Each key represents a dataset name and its value should be the path to that dataset's data.''')
 
     args = dict(parser.parse_args()._get_kwargs())

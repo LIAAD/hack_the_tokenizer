@@ -11,8 +11,7 @@ SEED = 42
 
 DEVICE                  = 'cuda'
 GENERATION_BATCH_SIZE   = 8
-# MODEL                   = 'Qwen/Qwen2.5-1.5B-Instruct'
-MODEL                   = 'HuggingFaceTB/SmolLM2-135M'
+MODEL                   = 'HuggingFaceTB/SmolLM3-3B' # 'HuggingFaceTB/SmolLM2-135M' # 'Qwen/Qwen2.5-1.5B-Instruct'
 TEMPERATURE             = None
 LEARNING_RATE           = 1e-6
-NUMBER_NEW_TOKENS       = 1000
+NUMBER_NEW_TOKENS       = 5000

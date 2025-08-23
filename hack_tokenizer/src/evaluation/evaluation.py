@@ -76,7 +76,7 @@ class Evaluation:
     def run_benchmark_and_metrics(self, encode_tokenizer, model_gen_kwargs, store_generation_data ):
        output = {
            'Benchmarks': self.benchmarks.run(self.model, self.tokenizer, encode_tokenizer, model_gen_kwargs, store_generation_data),
-           'Metrics': METRICS.run(self.model, self.tokenizer)
+           'Metrics': METRICS.run(model=self.model, tokenizer=self.tokenizer, model_gen_kwargs=model_gen_kwargs, show_progress=True, encode_tokenizer=encode_tokenizer)
        }
        return output 
 

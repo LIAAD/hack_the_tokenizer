@@ -20,7 +20,7 @@ def strip_ponctuation_begin_and_end(text):
     text = re.sub(r'\W+$', '', text)
     return text
 
-def main(num_lines: int=100_000, fertility_output_num_lines: int=4):
+def main(num_lines: int=100_000, fertility_output_num_lines: int=4, fertility_boost_num_lines: int=1000):
 # -------------------------------------------------------------------------------------------------------
 #       Section1: Read data
     # OpenSubtitles dataset obtained from: https://opus.nlpl.eu/results/en&pt/corpus-result-table
@@ -56,6 +56,13 @@ def main(num_lines: int=100_000, fertility_output_num_lines: int=4):
         f.writelines([calamept[i].strip() + '\n' for i in selected_lines_fertilityOutput])
 # -------------------------------------------------------------------------------------------------------
 
+# -------------------------------------------------------------------------------------------------------
+#       FertilityBoost Dataset (dataset specific for FertilityOutput)
+    selected_lines_fertilityBoost = np.random.choice(len(calamept), size=fertility_boost_num_lines, replace=False)
+    filename_3 = Path(DATA_DIR) / 'fertility_boost_evaluation-dataset.txt'
+    with open(filename_3, 'w', encoding='utf-8') as f:
+        f.writelines([calamept[i].strip() + '\n' for i in selected_lines_fertilityBoost])
+# -------------------------------------------------------------------------------------------------------
     return (filename_1, filename_2, filename_3)
 
 if __name__ == '__main__':

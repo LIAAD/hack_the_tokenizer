@@ -5,3 +5,5 @@ outputs/**json
 data/FULL_opensubtitles_pt-pt.txt
 data/metrics_evaluation_dataset.txt
 data/tokenizer_pt-pt.txt
+notebooks/RESULTS_SUMMARY_20250813094505.ods
+outputs/**

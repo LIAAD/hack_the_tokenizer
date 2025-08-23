@@ -11,7 +11,9 @@ export dataset_training='./data/calamept_dataset.txt'
 export output_directory=./outputs
 export output_format='parquet'
 export embed_init_method="weighted_drop(1.5)"
-export datasets_metrics='FertilityOutput=./data/fertility_output_evaluation-dataset.txt,FertilityInput=./data/metrics_evaluation_dataset.txt,Perplexity=./data/metrics_evaluation_dataset.txt'
+export datasets_metrics='FertilityOutput=./data/fertility_output_evaluation-dataset.txt,FertilityInput=./data/metrics_evaluation_dataset.txt,Perplexity=./data/metrics_evaluation_dataset.txt,FertilityBoost=./data/fertility_boost_evaluation-dataset.txt'
+export temperature=0.8
+export num_runs_metrics="FertilityBoost=10"
 
 # List of models to evaluate
 MODELS=(
@@ -50,6 +52,8 @@ for model in "${MODELS[@]}"; do
 			--output_format $output_format \
 			--embed_init_method $embed_init_method \
 			--datasets_metrics $datasets_metrics \
-			--baseline $baseline
+			--baseline $baseline \
+			--temperature $temperature \
+			--num_runs_metrics $num_runs_metrics
     done
 done

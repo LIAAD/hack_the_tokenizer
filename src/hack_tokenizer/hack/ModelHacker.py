@@ -13,7 +13,6 @@ from torch.utils.data import DataLoader
 
 from typing import Literal, Union, Callable, Optional
 
-from ..benchmark import BENCHMARKS, CalamePT, SupergluePTPT
 from .TokenizerHack import TokenizerHack
 
 class ModelHacker():
@@ -300,7 +299,7 @@ class ModelHacker():
         return model
 
     @classmethod
-    def prompt(cls, model, tokenizer, encoding_tokenizer, content, max_new_tokens: int, stop_words: list[str], temperature=None):
+    def prompt(cls, model, tokenizer, encoding_tokenizer, content: list[str] | str, max_new_tokens: int, stop_words: list[str], temperature: Optional[float]=None, print_response: bool=True):
         model_gen_kwargs = dict(top_p=None, top_k=None, temperature=None, do_sample=False) if temperature is None else dict(do_sample=True, temperature=temperature)
         model_gen_kwargs.update({'max_new_tokens': 1, 'pad_token_id': tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id})
 
@@ -322,7 +321,7 @@ class ModelHacker():
                 **model_gen_kwargs
             )[0][-1].item()
             outputs.append(tokenizer.decode(new_token))
-            print(outputs[-1], end='')
+            if print_response: print(outputs[-1], end='')
             # Check if any of the stop words have been generated
             for stop_word in stop_words:
                 if ''.join(outputs[-1]).endswith(stop_word):
@@ -332,6 +331,7 @@ class ModelHacker():
 
 
 if __name__ == '__main__':
+    from ..benchmark import BENCHMARKS, CalamePT, SupergluePTPT
 
     DEVICE                  = 'cpu'
     GENERATION_BATCH_SIZE   = 8

@@ -3,7 +3,7 @@ from typing_extensions import override  # ✅ Works in Python 3.10+
 
 import re
 
-from hack_tokenizer.src.metrics.base import Metric
+from .base import Metric
 
 
 class FertilityInput(Metric):

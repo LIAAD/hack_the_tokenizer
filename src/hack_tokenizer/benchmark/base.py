@@ -1,9 +1,8 @@
 import pandas as pd
 from typing import Callable, Union, Any, Literal, overload
 import tqdm
-from hack_tokenizer.src.utils.DatasetClass import ListDataset, TextDataset
+from ..utils.DatasetClass import ListDataset, TextDataset
 from torch.utils.data import DataLoader
-from hack_tokenizer.src.utils.constants import TOKENIZER_TYPE, MODEL_TYPE
 
 
 class Benchmark():

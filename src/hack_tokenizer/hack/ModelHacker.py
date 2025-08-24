@@ -7,14 +7,14 @@ import transformers
 import sys
 sys.path.insert(0, '/home/yali/MEGA/Hack The Tockenizer')
 
-from hack_tokenizer.src.utils import loader
-from hack_tokenizer.src.utils.DatasetClass import TextDataset
+from ..utils import loader
+from ..utils.DatasetClass import TextDataset
 from torch.utils.data import DataLoader
 
 from typing import Literal, Union, Callable, Optional
 
-from hack_tokenizer.src.benchmark import BENCHMARKS, CalamePT, SupergluePTPT
-from hack_tokenizer.src.hack.TokenizerHack import TokenizerHack
+from ..benchmark import BENCHMARKS, CalamePT, SupergluePTPT
+from .TokenizerHack import TokenizerHack
 
 class ModelHacker():
 

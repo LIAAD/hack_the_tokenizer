@@ -4,7 +4,7 @@ import transformers.models as models
 import torch
 import numpy as np
 from typing import Tuple
-import hack_tokenizer.src.utils.constants as constants
+from . import constants as constants
 
 def load_model_and_tokenizer(
     model_name = constants.MODEL,

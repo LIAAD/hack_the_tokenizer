@@ -4,7 +4,7 @@ from typing_extensions import override  # ✅ Works in Python 3.10+
 import numpy as np
 import torch
 
-from hack_tokenizer.src.metrics.base import Metric
+from .base import Metric
 
 
 class Perplexity(Metric):

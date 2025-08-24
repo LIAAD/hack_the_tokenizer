@@ -12,7 +12,9 @@ export output_directory=./outputs
 export output_format='parquet'
 export embed_init_method="weighted_drop(1.5)"
 export datasets_metrics='FertilityOutput=./data/fertility_output_evaluation-dataset.txt,FertilityInput=./data/metrics_evaluation_dataset.txt,Perplexity=./data/metrics_evaluation_dataset.txt,FertilityBoost=./data/fertility_boost_evaluation-dataset.txt'
-export temperature=0.8
+export temperature=0
+export top_k=0
+export top_p=0
 export num_runs_metrics="FertilityBoost=10"
 
 # List of models to evaluate

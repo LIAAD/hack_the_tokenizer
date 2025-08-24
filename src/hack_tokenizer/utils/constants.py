@@ -13,5 +13,7 @@ DEVICE                  = 'cuda'
 GENERATION_BATCH_SIZE   = 8
 MODEL                   = 'HuggingFaceTB/SmolLM3-3B' # 'HuggingFaceTB/SmolLM2-135M' # 'Qwen/Qwen2.5-1.5B-Instruct'
 TEMPERATURE             = None
+TOP_K                   = None
+TOP_P                   = None
 LEARNING_RATE           = 1e-6
 NUMBER_NEW_TOKENS       = 5000

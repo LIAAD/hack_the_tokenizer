@@ -14,7 +14,7 @@ from ..hack import ModelHacker
 from .. import benchmark as Benchmark
 from ..metrics import METRICS 
 from ..utils.json_dumper import dump_json
-from ..utils.constants import SEED, DEVICE, GENERATION_BATCH_SIZE, MODEL, TEMPERATURE, LEARNING_RATE, NUMBER_NEW_TOKENS 
+from ..utils.constants import SEED, DEVICE, GENERATION_BATCH_SIZE, MODEL, TEMPERATURE, LEARNING_RATE, NUMBER_NEW_TOKENS, TOP_K, TOP_P
 np.random.seed(SEED)  # Setting numpy seed to reproduce randomness results
 torch.manual_seed(SEED)
 
@@ -33,6 +33,8 @@ class Evaluation:
         device: str,
         generation_batch_size: int,
         temperature: Optional[str],
+        top_k: Optional[float],
+        top_p: Optional[float],
         learning_rate: float,
         number_new_tokens: int,
         dataset_tokenizer: Optional[list[str]],
@@ -49,7 +51,9 @@ class Evaluation:
         self.model_name = model_name
         self.device = device
         self.generation_batch_size = generation_batch_size
-        self.temperature = temperature
+        self.temperature = None if temperature is None or temperature<=0 else temperature
+        self.top_k = None if top_k is None or top_k<=0 else top_k
+        self.top_p = None if top_p is None or top_p<=0 else top_p
         self.learning_rate = learning_rate
         self.number_new_tokens = number_new_tokens
         self.dataset_tokenizer = dataset_tokenizer
@@ -66,6 +70,8 @@ class Evaluation:
             'device': device,
             'generation_batch_size': generation_batch_size,
             'temperature': temperature,
+            'top_p': top_p,
+            'top_k': top_k,
             'learning_rate': learning_rate,
             'number_new_tokens': number_new_tokens,
             'output_directory': output_directory,
@@ -123,7 +129,9 @@ class Evaluation:
 
     def evaluate(self):
         # Setting up configs
-        model_gen_kwargs = dict(top_p=None, top_k=None, temperature=None, do_sample=False) if self.temperature is None else dict(temperature=self.temperature)
+        model_gen_kwargs = dict(top_p=self.top_p, top_k=self.top_k, temperature=self.temperature)
+        model_gen_kwargs['do_sample'] = any(k is not None and k > 0 for k in model_gen_kwargs.values()) # Sample if ANY of the arguments above are > 0
+
         if self.dataset_tokenizer is None: self.dataset_tokenizer = Benchmark.BENCHMARKS.get_benchmark_data('list')
         if self.dataset_training is None:  self.dataset_training = self.dataset_tokenizer.copy()
         if self.datasets_metrics is not None and len(self.datasets_metrics) > 0: 
@@ -237,7 +245,9 @@ def main():
     parser.add_argument('-mo',     '--model',               type=str,    default=MODEL,                  help='Model to run the evaluation for.')
     parser.add_argument('-d',      '--device',              type=str,    default=DEVICE,                 help='Device onto which to run the evaluation.')
     parser.add_argument('-b',      '--batch',               type=int,    default=GENERATION_BATCH_SIZE,  help='Batch size for the training section. Specifies how many sentences to process in parallel')
-    parser.add_argument('-t',      '--temperature',         type=float,  default=TEMPERATURE,            help='Model generation temperature. This allows to manipulate the generation to be Deterministic.')
+    parser.add_argument('-t',      '--temperature',         type=float,  default=TEMPERATURE,            help='Model generation temperature. Smooths/reshapes the distribution (global effect). Setting this to `0` or not passing it will disable it')
+    parser.add_argument('-tK',     '--top_k',               type=int,    default=TOP_K,                  help='Model generation top_k. Hard cutoff on number of choices (fixed size, integer). Setting this to `0` or not passing it will disable it')
+    parser.add_argument('-tP',     '--top_p',               type=float,  default=TOP_P,                  help='Model generation top_p. Adaptive cutoff based on probability mass (variable size). Setting this to `0` or not passing it will disable it')
     parser.add_argument('-l',      '--learning_rate',       type=float,  default=LEARNING_RATE,          help='Learning rate used for the embedding training section.')
     parser.add_argument('-n',      '--number_new_tokens',   type=int,    default=NUMBER_NEW_TOKENS,      help='Number of new tokens to add to the original model.')
     parser.add_argument('-dt',     '--dataset_tokenizer',   type=str,    default=None,                   help='Path to a `TXT` file containing training data for the BytePairEncoding algorithm for the `new_tokens`. (decoded using UTF-8).')

@@ -17,3 +17,4 @@ TOP_K                   = None
 TOP_P                   = None
 LEARNING_RATE           = 1e-6
 NUMBER_NEW_TOKENS       = 5000
+EMBED_INIT_METHOD       = 'weighted_drop(1.5)'

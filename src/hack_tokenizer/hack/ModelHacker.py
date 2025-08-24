@@ -15,6 +15,8 @@ from typing import Literal, Union, Callable, Optional
 
 from .TokenizerHack import TokenizerHack
 
+logger = logging.getLogger(__name__)
+
 class ModelHacker():
 
     def __init__(self, dataset: str | list[str], batch_size: int, learning_rate: float=1e-6):
@@ -50,7 +52,7 @@ class ModelHacker():
         while new_tokens_size < vocab_size:
             trial_count += 1
             if show_progress:
-                logging.info(f'<trial no.{trial_count}> Calculating tokenizers')
+                logger.info(f'<trial no.{trial_count}> Calculating tokenizers')
             tokenizer__ = TokenizerHack(training_data=self.dataset).train_tokenizer(trainer_kwargs={'vocab_size': 2*vocab_size + extra, 'show_progress': show_progress})
 
             # Step 2. Find tokens in `pt_tokenizer` not in 

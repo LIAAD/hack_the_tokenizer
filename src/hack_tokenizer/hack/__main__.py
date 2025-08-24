@@ -5,7 +5,7 @@ import torch
 import transformers
 
 from .ModelHacker import ModelHacker
-from hack_tokenizer.src.utils import loader
+from ..utils import loader
 
 
 # Colors (ANSI escape sequences)

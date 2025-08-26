@@ -6,8 +6,8 @@ import tqdm
 # Import the "SEED" from the "constants" to reproduce results
 import sys
 sys.path.insert(1, (Path(__file__).parent.parent.resolve() / 'hack_tokenizer/src/utils').as_posix())
-from hack_tokenizer.src.utils.constants import SEED, DATA_DIR
-from hack_tokenizer.src.benchmark.CalamePT import CalamePT
+from hack_tokenizer.utils.constants import SEED, DATA_DIR
+from hack_tokenizer.benchmark.CalamePT import CalamePT
 
 import numpy as np
 np.random.seed(SEED) # Setting numpy seed to reproduce randomness results

@@ -24,7 +24,9 @@ def parse_args():
     parser.add_argument('-mo',     '--model',               default=None,   type=str,    help='Model to run the evaluation for.')
     parser.add_argument('-d',      '--device',              default=None,   type=str,    help='Device onto which to run the evaluation.')
     parser.add_argument('-b',      '--batch',               default=None,   type=int,    help='Batch size for the training section. Specifies how many sentences to process in parallel')
-    parser.add_argument('-t',      '--temperature',         default=None,   type=float,  help='Model generation temperature. This allows to manipulate the generation to be Deterministic.')
+    parser.add_argument('-t',      '--temperature',         default=None,   type=float,  help='Model generation temperature. Smooths/reshapes the distribution (global effect). Setting this to `0` or not passing it will disable it')
+    parser.add_argument('-tK',     '--top_k',               default=None,   type=int,    help='Model generation top_k. Hard cutoff on number of choices (fixed size, integer). Setting this to `0` or not passing it will disable it')
+    parser.add_argument('-tP',     '--top_p',               default=None,   type=float,  help='Model generation top_p. Adaptive cutoff based on probability mass (variable size). Setting this to `0` or not passing it will disable it')
     parser.add_argument('-l',      '--learning_rate',       default=None,   type=float,  help='Learning rate used for the embedding training section.')
     parser.add_argument('-n',      '--number_new_tokens',   default=None,   type=int,    help='Number of new tokens to add to the original model.')
     parser.add_argument('-dt',     '--dataset_tokenizer',   default=None,   type=str,    help='Path to a `TXT` file containing training data for the BytePairEncoding algorithm for the `new_tokens`. (decoded using UTF-8).')
@@ -47,7 +49,7 @@ def parse_args():
 
 
 
-def prompt_loop(model, tokenizer, encoding_tokenizer, max_new_tokens: int, stop_words: list[str], temperature: Optional[float]):
+def prompt_loop(model, tokenizer, encoding_tokenizer, max_new_tokens: int, stop_words: list[str], temperature: Optional[float], top_k: Optional[int], top_p: Optional[float]):
     prompts = []
     print(f"\n\n{'':-^100s}{YELLOW}\n\n{'You''re now in prompt mode.':^100s}\n{'Type `quit` or `q` to exit this mode.':^100s}{RESET}\n\n{'':-^100s}")
     
@@ -60,7 +62,7 @@ def prompt_loop(model, tokenizer, encoding_tokenizer, max_new_tokens: int, stop_
         prepared_content = '\n'.join([f'<{prompt["mode"]}>{prompt["content"]}</{prompt["mode"]}>' for prompt in prompts])
         prepared_content = f'{prepared_content}\nAssistant: '
         print(f'{RESET}{GREEN}Assistant: ', end='')
-        prompts.append({'mode': 'Assistant', 'content': ModelHacker.prompt(model, tokenizer, encoding_tokenizer, prepared_content, max_new_tokens, stop_words, temperature)})
+        prompts.append({'mode': 'Assistant', 'content': ModelHacker.prompt(model, tokenizer, encoding_tokenizer, prepared_content, max_new_tokens, stop_words, temperature, top_k, top_p)})
     
 
 def main():
@@ -98,7 +100,7 @@ def main():
         )
     
     # Start prompting
-    prompt_loop(model, tokenizer, encoding_tokenizer, int(args['max_new_tokens']), args['stop_words'].split(','), args['temperature'])
+    prompt_loop(model, tokenizer, encoding_tokenizer, int(args['max_new_tokens']), args['stop_words'].split(','), args['temperature'], args['top_k'], args['top_p'])
     return True
 
 if __name__ == '__main__':

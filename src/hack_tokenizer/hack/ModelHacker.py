@@ -301,8 +301,21 @@ class ModelHacker():
         return model
 
     @classmethod
-    def prompt(cls, model, tokenizer, encoding_tokenizer, content: list[str] | str, max_new_tokens: int, stop_words: list[str], temperature: Optional[float]=None, print_response: bool=True):
-        model_gen_kwargs = dict(top_p=None, top_k=None, temperature=None, do_sample=False) if temperature is None else dict(do_sample=True, temperature=temperature)
+    def prompt(
+        cls,
+        model, tokenizer,
+        encoding_tokenizer,
+        content: list[str] | str,
+        max_new_tokens: int,
+        stop_words: list[str],
+        temperature: Optional[float]=None,
+        top_k: Optional[int]=None,
+        top_p: Optional[float]=None,
+        print_response: bool=True
+    ):
+        # Setting up configs
+        model_gen_kwargs = dict(top_p=top_p, top_k=top_k, temperature=temperature)
+        model_gen_kwargs['do_sample'] = any(k is not None and k > 0 for k in model_gen_kwargs.values()) # Sample if ANY of the arguments above are > 0
         model_gen_kwargs.update({'max_new_tokens': 1, 'pad_token_id': tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id})
 
         # Move batch tensors to the correct device

@@ -68,7 +68,9 @@ class ModelHacker():
         # Remove the tokens which may be "contained" in any of the original tokens (for instance, "publ" is contained in "publico" so "publ" will be removed)
         if remove_contained_tokens:
             __new_tokens = []
-            for new_token in tqdm.tqdm(new_tokens_set, total=len(new_tokens_set), desc='Removing tokens "contained" within any token of original tokenizer'):
+            _iter = new_tokens_set
+            if show_progress: _iter = tqdm.tqdm(new_tokens_set, total=len(new_tokens_set), desc='Removing tokens "contained" within any token of original tokenizer')
+            for new_token in _iter:
                 add_new_token = True
                 for token in ignore_tokens:
                     if token.startswith(new_token):
@@ -152,7 +154,8 @@ class ModelHacker():
 
         # Initialize the embedding using the weighted average model (Meaning Tokenization[new_t] = [t1, t2, ..., tn] => Embed[new_t] =  where )
         with torch.no_grad():
-            for new_token in tqdm.tqdm(new_tokens, desc='Initializing the embeddings for the new_tokens'):
+            _iter = new_tokens if not show_progress else tqdm.tqdm(new_tokens, desc='Initializing the embeddings for the new_tokens')
+            for new_token in _iter:
                 new_token_id = tokenizer.encode(new_token)[0]
 
                 # Find Embedding for all tokens of old tokenization
@@ -207,7 +210,7 @@ class ModelHacker():
         else: self.new_tokens = new_tokens
 
         # Initialize embeddings in model and tokenizer
-        model, tokenizer = self._initialize_embeddings(model, tokenizer, self.new_tokens, embed_initializer_method)
+        model, tokenizer = self._initialize_embeddings(model, tokenizer, self.new_tokens, embed_initializer_method, show_progress)
 
         # Adding padding tokens to encoder tokenizer
         if encoding_tokenizer.pad_token is None:

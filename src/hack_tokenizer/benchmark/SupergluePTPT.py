@@ -1,7 +1,7 @@
 from .base import Benchmark
 from ..utils import functions
 import numpy as np
-from typing import Any
+from typing import Any, Literal
 
 
 def task_boolq(
@@ -95,17 +95,36 @@ def task_copa(
         'benchmark_predictions': benchmark_output,
     }
 
+
+TASK_MAPPING = {
+    'copa': task_copa,
+    'multirc': task_multirc,
+    'boolq': task_boolq
+}
+
 class SupergluePTPT(Benchmark):
-    def __init__(self):
-        # Loading CALAME-PT dataset onto a Pandas DataFrame
-        df = functions.load_dataset_to_dataframe('PORTULAN/extraglue', data_dir='data/boolq_pt-PT') 
+    def __init__(self, task: Literal['boolq', 'multirc', 'copa']='boolq'):
+        assert task in TASK_MAPPING.keys()
+        # Loading SUPERGLUE-PT dataset onto a Pandas DataFrame
+        df = functions.load_dataset_to_dataframe('PORTULAN/extraglue', data_dir=f'data/{task}_pt-PT') 
         # Prepare input texts
-        df['prediction_prompts'] = 'Passagem: ' + df['passage'] + '\nPergunta: ' + df['question'] + '\nResposta (0-Verdade, 1-Mentira):'
+        if task == 'boolq':
+            df['prediction_prompts'] = 'Passagem: ' + df['passage'] + '\nPergunta: ' + df['question'] + '\nResposta (0-Verdade, 1-Mentira):'
+        elif task == 'multirc':
+            df['prediction_prompts'] = 'Vais receber um parágrafo, uma pergunta e uma resposta. Tens de identificar a resposta como verdadeira (1) ou falso (0).\nParágrafo: '
+            df['prediction_prompts'] += df['paragraph'] + '\nPergunta: ' + df['question'] + '\nResposta: ' + df['answer'] + '\nConclusão (0-Falso, 1-Verdadeiro):'
+        elif task == 'copa':
+            df['prediction_prompts'] = 'Premissa: ' + df['premise'] + '\nQual foi '
+            # CAUSE predictions
+            df.loc[df['question']=='choice', 'prediction_prompts'] = df['prediction_prompts'] + 'a CAUSA para isto?\nAlternativa 0: '  + df['choice1'] + '\nAlternativa 1: ' + df['choice2'] + '\nEscolha (0) ou (1):'
+            # Effect predictions
+            df.loc[df['question']=='effect', 'prediction_prompts'] = df['prediction_prompts'] + 'o EFEITO para isto?\nAlternativa 0: ' + df['choice1'] + '\nAlternativa 1: ' + df['choice2'] + '\nEscolha (0) ou (1):'
+
 
         return super().__init__(
             self.__class__.__name__,
             df,
-            evaluation_method=task_boolq,
+            evaluation_method=TASK_MAPPING[task],
             prediction_prompts=df['prediction_prompts'].tolist(),
             aggregation_method=lambda results: np.array([r['accuracy'] for r in results]).mean()
         )

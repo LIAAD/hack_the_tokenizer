@@ -315,12 +315,13 @@ class ModelHacker():
         temperature: Optional[float]=None,
         top_k: Optional[int]=None,
         top_p: Optional[float]=None,
-        print_response: bool=True
+        print_response: bool=True,
+        num_tokens_generated_at_once: int=1,
     ):
         # Setting up configs
         model_gen_kwargs = dict(top_p=top_p, top_k=top_k, temperature=temperature)
         model_gen_kwargs['do_sample'] = any(k is not None and k > 0 for k in model_gen_kwargs.values()) # Sample if ANY of the arguments above are > 0
-        model_gen_kwargs.update({'max_new_tokens': 1, 'pad_token_id': tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id})
+        model_gen_kwargs.update({'max_new_tokens': num_tokens_generated_at_once, 'pad_token_id': tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id})
 
         # Move batch tensors to the correct device
         inputs = encoding_tokenizer(content, return_tensors='pt')
@@ -329,17 +330,18 @@ class ModelHacker():
     
         # Generate text
         outputs = []
-        while len(outputs) < max_new_tokens:
-            if len(outputs) > 1:
+        num_iterations = max_new_tokens // num_tokens_generated_at_once
+        for _ in range(num_iterations):
+            if len(outputs) > 0:
                 inputs = encoding_tokenizer(content + ''.join(outputs), return_tensors='pt')
                 input_ids = inputs['input_ids'].to(model.device.type)
                 attention_mask = inputs['attention_mask'].to(model.device.type)
-            new_token = model.generate(
+            new_tokens = model.generate(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
                 **model_gen_kwargs
-            )[0][-1].item()
-            outputs.append(tokenizer.decode(new_token))
+            )[0][-num_tokens_generated_at_once:]
+            outputs.append(tokenizer.decode(new_tokens))
             if print_response: print(outputs[-1], end='')
             # Check if any of the stop words have been generated
             for stop_word in stop_words:

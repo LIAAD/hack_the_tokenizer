@@ -87,6 +87,32 @@ class ModelHacker():
         """
         Returns the appropriate reduction function based on method string.
         Handles both basic methods and parametric methods like 'quantile(0.5)'/'weighted_drop(1.5)'.
+
+        Parameters
+        ----------
+        method : str
+            One of:
+            - "mean" / "avg": average over the first dimension.
+            - "min": elementwise minimum across the first dimension.
+            - "max": elementwise maximum across the first dimension.
+            - "random": generate a random vector per dimension, uniformly between the
+                        min and max values of that dimension.
+            - "quantile": elementwise median (default 0.5).
+            - "quantile(x)": elementwise quantile at q=x.
+            - "weighted_drop(a)": weighted average with exponentially decaying weights.
+
+        Returns
+        -------
+        Callable[[torch.Tensor], torch.Tensor]
+            A reduction function mapping a 2D tensor `[n, d]` to a 1D tensor `[d]`.
+
+        Example
+        -------
+        >>> x = torch.randn(100, 10)  # 100 tokens, 10-dim embeddings
+        >>> reducer = _get_reduction_method("random")
+        >>> y = reducer(x)
+        >>> y.shape
+        torch.Size([10])  # random values, one per dimension
         """
         # Validate method format
         if isinstance(method, str) and '(' in method:

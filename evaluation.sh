@@ -20,7 +20,7 @@ export num_runs_metrics="FertilityBoost=10"
 # List of models to evaluate
 MODELS=(
     "HuggingFaceTB/SmolLM2-135M"    # Small     SingleModal     Model
-	"Qwen/Qwen2.5-1.5B-Instruct"    # Medium    MultiModal      Model
+    "Qwen/Qwen2.5-1.5B-Instruct"    # Medium    MultiModal      Model
     "HuggingFaceTB/SmolLM3-3B"		# Big		MultiModal		Model
 )
 

@@ -12,7 +12,9 @@ def load_model_and_tokenizer(
     model_kwargs = {
         'torch_dtype': torch.bfloat16
     },
-    tokenizer_kwargs={}
+    tokenizer_kwargs={
+        'padding_side': 'left'
+    }
 ) -> Tuple[models.llama.modeling_llama.LlamaForCausalLM, models.gpt2.tokenization_gpt2_fast.GPT2TokenizerFast]:  # NOTE: Change the type hint depending on the model_name
     # Load the model and tokenizer
     model = transformers.AutoModelForCausalLM.from_pretrained(model_name, **model_kwargs).to(device)

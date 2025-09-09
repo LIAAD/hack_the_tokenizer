@@ -82,7 +82,7 @@ class ModelHacker():
 
     def _get_reduction_method(
         self,
-        method: Union[Literal['min', 'max', 'mean', 'avg', 'quantile'], str] = 'mean'
+        method: Union[Literal['random', 'min', 'max', 'mean', 'avg', 'quantile'], str] = 'mean'
     ) -> Callable[[torch.Tensor], torch.Tensor]:
         """
         Returns the appropriate reduction function based on method string.
@@ -114,6 +114,7 @@ class ModelHacker():
             'min': lambda x: torch.min(x, dim=0).values,
             'max': lambda x: torch.max(x, dim=0).values,
             'quantile': lambda x: torch.quantile(x, q=0.5, dim=0),  # Default median
+            'random': lambda x: torch.rand_like(x[0]) * (x.max(dim=0).values - x.min(dim=0).values) + x.min(dim=0).values # Generates uniform random values per dimension
         }
         
         if method not in reducers:
@@ -124,7 +125,7 @@ class ModelHacker():
         self,
         model, tokenizer,
         new_tokens: list[str],
-        method: Union[Literal['min', 'max', 'mean', 'mean', 'avg', 'quantile({number})', 'weighted_drop({number})'], str]='mean',
+        method: Union[Literal['random', 'min', 'max', 'mean', 'mean', 'avg', 'quantile({number})', 'weighted_drop({number})'], str]='mean',
         show_progress: bool=True
     ):
         """
@@ -174,7 +175,7 @@ class ModelHacker():
         encoding_tokenizer,
         num_tokens: int,
         new_tokens: Optional[list[str]]=None,
-        embed_initializer_method: Union[Literal['min', 'max', 'mean', 'mean', 'avg', 'quantile({number})', 'weighted_drop({number})'], str]='weighted_drop(1.5)',
+        embed_initializer_method: Union[Literal['random', 'min', 'max', 'mean', 'mean', 'avg', 'quantile({number})', 'weighted_drop({number})'], str]='weighted_drop(1.5)',
         show_progress: bool=False,
         train: bool=True,
         train_kwargs: dict={

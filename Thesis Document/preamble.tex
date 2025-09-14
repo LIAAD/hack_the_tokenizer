@@ -7,7 +7,15 @@
 \usepackage{pdfpages}
 
 % For the cover page
-%\usepackage{tikz}
+\usepackage{tikz}
+\usetikzlibrary{matrix, positioning, calc}
+\tikzset{
+    embedding/.style={rectangle, draw=blue!60, fill=blue!20, thick, minimum height=1em, minimum width=2em, align=center},
+    token/.style={rectangle, draw=black!60, fill=gray!20, thick, minimum height=1.2em, minimum width=2.2em},
+    sum/.style={circle, draw=black, fill=orange!20, thick, minimum size=2em},
+    avg/.style={rectangle, draw=green!60, fill=green!20, thick, minimum height=1.5em}
+}
+\usepackage{amsmath}
 
 % Fix top page geometry on long titles
 \setlength{\headheight}{14pt}  %Try fix error
@@ -43,7 +51,7 @@
 % Force float barriers, use as \FloatBarrier
 \usepackage[section]{placeins}
 % Place floats *above* footnotes
-\usepackage[bottom, perpage, symbol]{footmisc}
+\usepackage[bottom, perpage]{footmisc}
 % Set default float placement
 \makeatletter
 \renewcommand{\fps@figure}{tbph}
@@ -53,6 +61,8 @@
 % Pretty colours
 \usepackage{xcolor}
 % \usepackage{color} % Deprecated by xcolor
+\usepackage{booktabs}   % Allows for \toprule & \midrule & \bottomrule (different thickness \hline in tables
+
 
 % SVGs with Inkscape and PDF+LaTeX
 % https://tex.stackexchange.com/questions/473994/svg-and-inkscape
@@ -148,9 +158,10 @@
 % Hyperref and Backref
 % backref makes the bibliography say where the entry was cited.
 % For the print version of the thesis you might wanna set all colors to back
+
 \usepackage{hyperref}
 \usepackage[hyperpageref]{backref}
-\hypersetup{colorlinks, citecolor=black, urlcolor=black,
+\hypersetup{colorlinks=true, citecolor=black, urlcolor=blue,
         linkcolor=black, breaklinks=true, hypertexnames=true}
 \renewcommand*{\backref}[1]{}
 \renewcommand*{\backrefalt}[4]{%
@@ -173,6 +184,17 @@
 
 % Create tabular cells spanning multiple rows
 \usepackage{multirow}
+
+\usepackage{tabularx}       % For X column type (auto-width columns)
+\usepackage{xcolor} % Required for coloring text
+
+% Define new colors for the prompt and generation
+\definecolor{promptcolor}{HTML}{1C8D8D} % A blue similar to the example
+\definecolor{generationcolor}{HTML}{6A6A6A} % Grey for the generation
+
+% Define new commands to apply colors
+\newcommand{\prompt}[1]{\textcolor{promptcolor}{#1}}
+\newcommand{\generation}[1]{\textcolor{generationcolor}{#1}}
 
 % Changes bullet points marker
 \renewcommand{\labelitemi}{\(\bullet\)}
@@ -266,3 +288,8 @@
 \titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 \titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 \titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+
+
+
+\usepackage{float}
+\usepackage{placeins} % This package is needed for \FloatBarrier

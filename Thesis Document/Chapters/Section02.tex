@@ -13,66 +13,41 @@
 
 % Write text in here
 % Use \subsection and \subsubsection to organize text
-In this chapter, the relevant background needed for the work done in this thesis is presented, with an emphasis on 
-the transformers architecture and tokenizers as well as the different models used to create them.
-The principal goal of this chapter is to provide a background for the reader to understand the work done in this thesis, given that
-the reader already has some basic understanding of the field at study, machine learning, neural networks and deep learning to name a few.
+In this chapter, the relevant background needed for the work done in this thesis is presented, with an emphasis on tokenizers along with the models used to create them, and the transformer architecture.
+
+The principal goal of this chapter is to provide a background for the reader to understand the work done in this thesis, given that the reader already has some basic understanding of the field of study: machine learning, neural networks, and deep learning, to name a few.
 
 
-\section{Transformers}\label{Section2.1}
-Introduced in the 2017 paper, ~\citet{AttentionIsAllYouNeed},
-the transformers architecture have revolutionized the field of Natural Language Processing (NLP).
-Transformers are encoder-decoder architectures that use a self-attention mechanism to learn the dependencies between the words in a sentence.
-\begin{figure}
-    \centering
-      \includegraphics[width=0.5\columnwidth]{Transformers/full_architecture.png}
-      \captionof{figure}{\label{fig:Transformers-FullArchitecture}Transformers Architecture}
-\end{figure}
+\section{Tokenizers}\label{Section2.1}
+For a sequence of words to be processed by a transformer model, it must first be converted to something a computer can understand.
+Current models do this by tokenizing the input sequence into a sequence of tokens.
+In its most basic form, a tokenizer is a function that takes a sequence of words and returns a sequence of numbers denoted \textit{tokens}.
+These \textit{tokens} can be obtained by different methods, such as splitting the sequence into words, splitting the sequence into characters, or using a pre-trained model to tokenize the sequence.
 
+We will address some of the most common algorithms used to obtain the vocabulary - made up of tokens - of a transformer model.
 
-\subsection{Encoding}\label{Section2.1.1}
-As seen in Figure~\ref{fig:Transformers-FullArchitecture}, the transformers architecture starts with encoding an input 
-sequence into a sequence of vectors of fixed size. Each sequence is first split into tokens, which have been pre-trained on a large corpus of text to produce
-the vectors of the encoding layer.
-
-\subsection{Decoding}\label{Section2.1.2}
-After obtaining the encoding of the input sequence, the decoder uses the self attention layer to learn the dependencies between the input tokens which 
-updates the weights of the input tokens. This usually happens multiple times, in the hidden layers, and is later passed through a feed-forward layer.
-
-After obtaining the final output of the Feed-forward layer, the decoder outputs a probability distribution over the vocabulary, made up of the initial tokens given as inputs.
-
-\subsection{Attention Layer}\label{Section2.1.3}
-As mentioned above, during the attention layer the model learns the dependencies between the input tokens. 
-This is done by computing the attention weights for each token in the input sequence, which are then used to update the weights of the input tokens.
-The attention weights are computed by multiplying the input tokens by a weight matrix, which is then passed through a softmax function to obtain the attention weights.
-
-\section{Tokenizers}\label{Section2.2}
-For a sequence of words to be processed by a transformer model, it must first be converted into something a computer can understand.
-This is done by tokenizing the input sequence into a sequence of tokens.
-On its most basic form, a tokenizer is a function that takes a sequence of words and returns a sequence of tokens.
-These tokens can be obtained by different methods, such as splitting the sequence into words, splitting the sequence into characters, or using a pre-trained model to tokenize the sequence.
-
-We will address some of the most common algorithm used to obtain the vocabulary (made up of tokens) of a transformer model.
-
-\subsection{Token}\label{Section2.2.1}
-A token is simply a sequence of characters, it can be a word, a character or anything in between.
-A sequence of words can be converted into a sequence of tokens by applying the following steps:
+\subsection{Token}\label{Section2.1.1}
+A token is simply a sequence of characters. It can be a word, a character, or anything in between.
+A sequence of words can be converted into a sequence of tokens by applying the following steps.
 \begin{enumerate}
-    \item \textbf{Preprocessing:} Normalize the input text (e.g., lowercase conversion, Unicode normalization, stripping whitecases, removing ponctuation, etc).
-    \item \textbf{Splitting:} Divide the text into smaller unites based on a predefined tokenization maethod:
+    \item \textbf{Pre-processing:} (Optional) Normalize the input text (e.g., lowercase conversion, Unicode normalization, whitespace handling). Some tokenizers, such as SentencePiece, operate directly on raw text, while others require pre-tokenization or preprocessing steps.
+
+    \item \textbf{Splitting:} Divide the text into smaller units based on a predefined tokenization method:
     \begin{itemize}
         \item \textbf{Word-level}: Split by whitespace/punctuation (e.g., "Transformers!" $\rightarrow$ ["Transformers", "!"]).
         \item \textbf{Character-level}: Treat each character as a token (e.g., "cat" $\rightarrow$ ["c", "a", "t"]).
-        \item \textbf{Subword-level}: Splits text into learned subword units (e.g., "unhappiness" $\rightarrow$ ["un", "happiness"]) using algorithms like Byte-Pair Encoding [\ref{Section2.2.2}], WordPiece [\ref{Section2.2.3}], Unigram [\ref{Section2.2.4}], or SentencePiece [\ref{Section2.2.5}].
+        \item \textbf{Subword-level}: Splits text into learned subword units (e.g., "unhappiness" $\rightarrow$ ["un", "happiness"]) using algorithms like Byte-Pair Encoding [\ref{Section2.1.2}], WordPiece [\ref{Section2.1.3}], Unigram [\ref{Section2.1.4}], or SentencePiece [\ref{Section2.1.5}].
     \end{itemize}
     \item \textbf{Mapping to IDs:} Assign a unique integer (token ID) to each token using a vocabulary table (e.g., {"cat": 123, "dog": 456}).
     
-    \item \textbf{Special Tokens:} Add task-specific tokens (e.g., [CLS], [SEP], [PAD] for BERT) to mark sentence boundaries, padding, or classification tasks.
+    \item \textbf{Special Tokens:} Add task-specific tokens (e.g. \textit{[CLS]}, \textit{[SEP]}, \textit{[PAD]} for BERT) to mark sentence boundaries, padding or classification tasks.
 \end{enumerate}
-The choice of tokenization impacts model performance, computational efficiency, and out-of-vocabulary handling.
-Subword tokenization (e.g., as used in GPT or BERT) balances vocabulary size and semantic granularity.
+The choice of tokenization affects model performance, computational efficiency, and robustness to out-of-vocabulary (OOV) terms~\cite{bostrom2022byte}.
+Subword tokenization (e.g., as used in GPT or BERT\unsure{add reference to both these statements}) balances vocabulary size and semantic granularity.
 
-\subsection{Byte-Pair-Encoding}\label{Section2.2.2}
+
+
+\subsection{Byte-Pair-Encoding}\label{Section2.1.2}
     A subword tokenization algorithm that iteratively merges the most frequent pairs of symbols. \\
     \textbf{Algorithm:} \\
     \begin{tabular}{ll}  
@@ -81,7 +56,7 @@ Subword tokenization (e.g., as used in GPT or BERT) balances vocabulary size and
         \textbf{Key Property}: Greedy frequency-based merging (no probabilistic model).  \\
     \end{tabular} 
 
-\subsection{Wordpiece}\label{Section2.2.3}
+\subsection{Wordpiece}\label{Section2.1.3}
     A BPE variant that prioritizes merges maximizing language model likelihood (used in BERT). \\
     \textbf{Algorithm:} \\
     \begin{tabular}{ll}  
@@ -90,7 +65,7 @@ Subword tokenization (e.g., as used in GPT or BERT) balances vocabulary size and
         \textbf{Key Property}: Merges scored by $\frac{\text{freq}(A,B)}{\text{freq}(A) \cdot \text{freq}(B)}$.  \\
     \end{tabular}   
 
-\subsection{Unigram}\label{Section2.2.4}
+\subsection{Unigram}\label{Section2.1.4}
     A probabilistic model that prunes low-probability subwords from a seed vocabulary (used in ALBERT). \\
     \textbf{Algorithm:} \\
     \begin{tabular}{ll}  
@@ -99,11 +74,64 @@ Subword tokenization (e.g., as used in GPT or BERT) balances vocabulary size and
         \textbf{Key Property}: Subword probabilities are learned/updated.  \\
     \end{tabular}   
 
-\subsection{SentencePiece}\label{Section2.2.5}
-    A toolkit implementing BPE/Unigram *directly on raw text* (no pre-tokenization). \\
+\subsection{SentencePiece}\label{Section2.1.5}
+    A toolkit implementing BPE/Unigram (no pre-tokenization). \\
     \textbf{Algorithm:} \\
     \begin{tabular}{ll}  
         \textbf{Input}: Raw text (handles whitespace, CJK, etc.).  \\
         \textbf{Output}: Subword vocabulary + segmentation model.  \\
         \textbf{Key Property}: Unifies preprocessing and tokenization.  \\
     \end{tabular}  
+
+
+\section{Transformers}\label{Section2.2}
+Introduced in the 2017 paper, ~\citet{AttentionIsAllYouNeed},
+the transformers architecture have revolutionized the field of Natural Language Processing (NLP).
+, but most modern LLMs use encoder-only (e.g., BERT) or decoder-only (e.g., GPT) variants.
+
+Transformers can be encoder-decoder architectures (as in the original paper)\unsure{add reference to encoder-decoder introduction paper}, but most modern LLMs use encoder-only (e.g., BERT) or decoder-only (e.g., GPT) variants, that use a self-attention mechanism to learn the dependencies between the words in a sentence.
+
+\begin{figure}
+    \centering
+      \includegraphics[width=0.5\columnwidth]{Transformers/full_architecture.png}
+      \captionof{figure}{\label{fig:Transformers-FullArchitecture}Transformers Architecture}
+\end{figure}
+
+
+\subsection{Encoding}\label{Section2.2.1}
+As seen in Figure~\ref{fig:Transformers-FullArchitecture}, the transformers architecture starts with encoding an input sequence into a sequence of vectors of fixed size. Each sequence is first split into tokens, which have been pre-trained on a large corpus of text to produce the vectors of the encoding layer.
+
+\subsection{Decoding}\label{Section2.2.2}
+After obtaining the encoding of the input sequence, the decoder uses the self attention layer to learn the dependencies between the input tokens which updates the weights of the input tokens. This usually happens multiple times, in the hidden layers, and is later passed through a feed-forward layer.
+
+After obtaining the final output of the Feed-forward layer, the decoder outputs a probability distribution over the vocabulary, made up of the initial tokens given as inputs.
+
+\subsection{Attention Layer}\label{Section2.2.3}
+As mentioned above, during the attention layer the model learns the dependencies between the input tokens. This is done by computing the attention weights for each token in the input sequence, which are then used to update the weights of the input tokens.
+The attention weights are computed by multiplying the input tokens by a weight matrix, which is then passed through a softmax function to obtain the attention weights.\unsure{Add some diagrams/images here to explain this step a bit better}
+
+\subsection{Embedding Layer}\label{Section2.2.4}
+Before an input sequence can be processed by a transformer, its tokens must be converted into a numerical representation that captures semantic meaning. This is the role of the \textbf{embedding layer}.
+
+Each token, after being mapped to an integer ID by the tokenizer, is passed through an embedding matrix, a learnable parameter of the model, which maps the token ID to a dense vector of fixed size. These vectors are referred to as \textit{token embeddings}.
+
+Let \( V \) be the vocabulary size and \( d \) be the embedding dimension. The embedding layer is a matrix \( E \in \mathbb{R}^{V \times d} \), where each row corresponds to the embedding of a token. For an input sequence of token IDs \( [t_1, t_2, \dots, t_n] \), the embedding layer outputs:
+
+\[
+\mathbf{X} = [E_{t_1}; E_{t_2}; \dots; E_{t_n}] \in \mathbb{R}^{n \times d}
+\]
+
+These token embeddings are then augmented with \textbf{positional encodings} to provide information about the order of tokens in the sequence, as the transformer architecture has no inherent notion of order.
+
+\paragraph{Role in Transformer Models} The embedding layer is the entry point of the transformer model. It directly influences how the input data is perceived by the rest of the network. Pretrained models such as BERT~\cite{devlin2018bert} and GPT-2~\cite{radford2019language} use embeddings trained on large corpora, which encode rich semantic and syntactic information.
+
+\paragraph{Modifying the Embedding Layer} In this thesis, only the embedding layer is trained during the adaptation of a large language model to a new language. This is a form of lightweight fine-tuning, where the embedding matrix is modified while keeping the rest of the model frozen. This strategy is computationally efficient and has shown surprising effectiveness in low-resource or domain adaptation settings~\cite{artetxe2020cross}.
+
+By adjusting only the token embeddings, we aim to \textit{re-align} the model’s input space without requiring full model retraining.
+
+% \paragraph{Advantages.}
+% \begin{itemize}
+%     \item \textbf{Efficiency:} Requires updating only a small fraction of model parameters.
+%     \item \textbf{Modularity:} Allows swapping or re-learning embeddings without disturbing the rest of the model.
+%     \item \textbf{Applicability:} Particularly useful when adapting to new tokenizers or vocabularies, as in this thesis.
+% \end{itemize}

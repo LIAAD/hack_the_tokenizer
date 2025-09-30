@@ -5,6 +5,8 @@ import logging
 import numpy as np
 import transformers
 import sys
+
+from ..benchmark import extraGLUE
 sys.path.insert(0, '/home/yali/MEGA/Hack The Tockenizer')
 
 from ..utils import loader
@@ -379,7 +381,7 @@ class ModelHacker():
 
 
 if __name__ == '__main__':
-    from ..benchmark import BENCHMARKS, CalamePT, SupergluePTPT
+    from ..benchmark import BENCHMARKS, CalamePT
 
     DEVICE                  = 'cpu'
     GENERATION_BATCH_SIZE   = 8

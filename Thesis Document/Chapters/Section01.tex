@@ -13,77 +13,133 @@
 
 % Write text in here
 % Use \subsection and \subsubsection to organize text
-In recent years, Artificial Intelligence models have dominated the market with the introduction of Large Language Models (LLMs) such as ChatGPT~\cite{openaiChatGPT} and GPT-4~\cite{openaiGPT4}.\\
-These models were trained on extensive datasets that contain hundreds of billions to trillions of words~\cite{brown2020, touvron2023}, requiring enormous computational resources and large amounts of text data.\\
-One of the main challenges these models face is the lack of training data for low-resource languages. \unsure{Add citation to papers for LLMs in low-resource languages}\\
-Without the massive data required to create these models, languages with smaller digital footprints currently lack models with the same performance as those for widely spoken languages such as English.\\
-The main goal of this dissertation is to explore how to adapt existing models trained primarily in one language (English) to another (European Portuguese) using minimal computational resources.\\
-For that, we focus on the \textit{tokenizer}, the fundamental building block of state-of-the-art LLM models.
+Since the release of ChatGPT\cite{openaiChatGPT} in November 2022, the field of Artificial Intelligence has gained mainstream attention \cite{leiter2024chatgpt} by showcasing impressive performance across a wide range of tasks \cite{haque2022ithinkdisruptivetechnology}.
+These models, trained on large datasets comprising billions to trillions of words~\cite{brown2020language, touvron2023llama}, demand enormous computational resources.
+
+One of the main challenges these models face is the lack of training data \cite{sousa2025enhancing,sousa2025tradutor} for low-resource languages, which limits their effectiveness in those languages.
+
+The main goal of this dissertation is to explore how to adapt existing models trained primarily in one language (English) to another (European Portuguese) using minimal computational resources.
+
+Current research mainly focuses on fine-tuning, consisting of updating millions of parameters and requiring a multitude of hours using high-quality resources \cite{xia2024understanding}. Researchers have explored freezing some of a model's parameters while training others to accelerate fine-tuning \cite{hu2022lora}. However, to the best of our knowledge, no prior work has explored adapting LLMs without additional training.
+
+Our approach takes a complementary direction by focusing on training-free adaptation through an often overlooked early stage of LLMs: the \textit{tokenizer}. This stage serves as the first translation layer between raw text and the vector representation the model consumes. Prior work has shown that tokenizer choice and design is correlated with both effectiveness and efficiency ~\cite{bostrom2020byte, lotz2025beyond}, making it a promising and lightweight lever for cross-lingual model adaptation.
 
 \section{Motivation}\label{Section1.1}
-The development of language models for low-resource languages presents significant challenges due to the limited available data and computational constraints. Traditional approaches to creating language-specific models typically involve either training from scratch, requiring enormous datasets and computational resources, or extensive fine-tuning of existing models, which still demands considerable resources.
+Developing language models for low-resource languages presents significant challenges due to the limited availability of high-quality data and the high computational cost of training or fine-tuning large-scale models \cite{yassin2025state}.
+Only a small fraction of the world's languages are represented in mainstream NLP resources, resulting in chronic data scarcity \cite{joshi2020state}.
+Systematic reviews confirm that this scarcity is the dominant bottleneck \cite{mcgiff2025overcoming}, and that practicable solutions typically rely on transfer learning, data augmentation, or multilingual pretraining rather than training from scratch \cite{huang2024survey}.
 
-For European Portuguese, although spoken by approximately 10 million native speakers~\cite{EuropeanPortuguese_wikipedia}, the availability of high-quality language models lags behind that of the languages spoken more widely. This disparity creates barriers to technological inclusion and limits access to advanced language technologies for Portuguese speakers.
 
-This research is motivated by the need to develop efficient methods for adapting existing language models to low-resource languages without requiring extensive retraining. By focusing on tokenizer adaptation rather than complete model retraining, we aim to provide a computationally efficient approach that can be applied to various languages with limited digital resources.
+European Portuguese illustrates this challenge. Despite being spoken by approximately 10 million native speakers~\footnote{Number of Portuguese Speakers - \href{https://en.wikipedia.org/wiki/European\_Portuguese}{https://en.wikipedia.org/wiki/European\_Portuguese}}, the availability of high-quality language models lags behind that of widely spoken languages. This disparity creates barriers to technological inclusion and limits access to advanced language technologies for Portuguese speakers, such as AI assistants for healthcare or legal domains.
 
-\section{Objectives}\label{Section1.2}
-By focusing on models trained primarily in one specific language, our aim is to adapt them to another target language using the least amount of resources possible.\\
-This paper thoroughly explores the manipulation of the tokenizer \unsure{add reference to tokenizer background information} and the embedding layer of the model, without requiring intensive additional training.\\
+In response, this dissertation explores lightweight and training-free approaches to model adaptation. Rather than relying on costly retraining which would otherwise require access to specialized hardware, we focus on \emph{Tokenizer Adaptation} -- a technique focused on modifying and updating the \emph{tokenizer} -- the component responsible for mapping raw text into discrete tokens later consumed by the model. 
 
-We focus on addressing the following key research questions:
-\begin{itemize}
-    \item Is it possible for an English-trained model to achieve comparable performance in European Portuguese by strategically modifying the tokenizer?
-    \item What is the impact on model generation efficiency of tokenizer adaptation?
-    \item Does tokenizer adaptation affect all models equally, or are there differences based on model architecture and size?
-    \item What embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?
-\end{itemize}
-These key questions guided our research methodology and led to several insights regarding tokenizer adaptation for cross-lingual model performance.
+
+{
+\definecolor{r}{RGB}{251, 180, 174}
+\definecolor{c}{RGB}{179, 205, 227}
+\definecolor{g}{RGB}{204, 235, 197}
+\definecolor{p}{RGB}{222, 203, 228}
+\definecolor{o}{RGB}{254, 217, 166}
+\definecolor{y}{RGB}{255, 255, 204}
+
+\setlength{\fboxsep}{0pt} % remove padding inside colorbox
+% Command wrapper for highlight
+\newcommand{\tok}[2]{%
+  {\sethlcolor{#1}\hl{#2}}%
+}
+\begin{table}[h]
+    \begin{tabular}{p{14cm}}
+    \hline
+    \\[-2ex]
+    \textbf{Original Tokenizer:} 147 tokens \\
+    \\[-2ex]
+    \tok{r}{Os}\tok{c}{ f}\tok{g}{ã}\tok{p}{s}\tok{o}{ de}\tok{y}{ G}\tok{r}{TA}\tok{c}{ est}\tok{g}{ão}\tok{p}{ ans}\tok{o}{ios}\tok{y}{os}\tok{r}{ pel}\tok{c}{o}\tok{g}{ lan}\tok{p}{ç}\tok{o}{ament}\tok{y}{o}\tok{r}{ do}\tok{c}{ pr}\tok{g}{ó}\tok{p}{x}\tok{o}{imo}\tok{y}{ jog}\tok{r}{o}\tok{c}{ da}\tok{g}{ s}\tok{p}{é}\tok{o}{rie}\tok{y}{,}\tok{r}{ que}\tok{c}{ p}\tok{g}{ode}\tok{p}{ dem}\tok{o}{or}\tok{y}{ar}\tok{r}{ m}\tok{c}{ais}\tok{g}{ alg}\tok{p}{uns}\tok{o}{ an}\tok{y}{os}\tok{r}{ para}\tok{c}{ ser}\tok{g}{ lan}\tok{p}{ç}\tok{o}{ado}\tok{y}{.}\tok{r}{ Rum}\tok{c}{ores}\tok{g}{ su}\tok{p}{ge}\tok{o}{rem}\tok{y}{ que}\tok{r}{ o}\tok{c}{ G}\tok{g}{TA}\tok{p}{ VI}\tok{o}{ ser}\tok{y}{á}\tok{r}{ u}\tok{c}{ma}\tok{g}{ vers}\tok{p}{ão}\tok{o}{ modern}\tok{y}{a}\tok{r}{ de}\tok{c}{ Vice}\tok{g}{ City}\tok{p}{ e}\tok{o}{ cont}\tok{y}{ar}\tok{r}{á}\tok{c}{ com}\tok{g}{ um}\tok{p}{ map}\tok{o}{a}\tok{y}{ que}\tok{r}{ m}\tok{c}{uda}\tok{g}{ com}\tok{p}{ o}\tok{o}{ pass}\tok{y}{ar}\tok{r}{ do}\tok{c}{ tempo}\tok{g}{.}\tok{p}{ Al}\tok{o}{é}\tok{y}{m}\tok{r}{ dis}\tok{c}{so}\tok{g}{,}\tok{p}{ h}\tok{o}{á}\tok{y}{ a}\tok{r}{ poss}\tok{c}{ib}\tok{g}{il}\tok{p}{idade}\tok{o}{ de}\tok{y}{ u}\tok{r}{ma}\tok{c}{ protagon}\tok{g}{ista}\tok{p}{ femin}\tok{o}{ina}\tok{y}{,}\tok{r}{ o}\tok{c}{ que}\tok{g}{ tra}\tok{p}{z}\tok{o}{ m}\tok{y}{ais}\tok{r}{ expect}\tok{c}{at}\tok{g}{iva}\tok{p}{ para}\tok{o}{ o}\tok{y}{ jog}\tok{r}{o}\tok{c}{.}\tok{g}{ En}\tok{p}{quant}\tok{o}{o}\tok{y}{ ag}\tok{r}{u}\tok{c}{ard}\tok{g}{amos}\tok{p}{,}\tok{o}{ rest}\tok{y}{a}\tok{r}{ imag}\tok{c}{inar}\tok{g}{ o}\tok{p}{ que}\tok{o}{ ess}\tok{y}{a}\tok{r}{ n}\tok{c}{ova}\tok{g}{ a}\tok{p}{vent}\tok{o}{ura}\tok{y}{ nos}\tok{r}{ reserv}\tok{c}{a}\tok{g}{.}\\
+    \\[-1ex]
+    \hline
+    \\[-2ex]
+    \textbf{Adapted Tokenizer:} 120 tokens \\
+    \\[-2ex]
+    \tok{r}{Os}\tok{c}{ f}\tok{g}{ã}\tok{p}{s}\tok{o}{ de}\tok{y}{ G}\tok{r}{TA}\tok{c}{ estão}\tok{g}{ ans}\tok{p}{ioso}\tok{o}{s}\tok{y}{ pelo}\tok{r}{ l}\tok{c}{ança}\tok{g}{ment}\tok{p}{o}\tok{o}{ do}\tok{y}{ próximo}\tok{r}{ jogo}\tok{c}{ da}\tok{g}{ série}\tok{p}{,}\tok{o}{ que}\tok{y}{ pode}\tok{r}{ dem}\tok{c}{orar}\tok{g}{ mais}\tok{p}{ alguns}\tok{o}{ anos}\tok{y}{ para}\tok{r}{ ser}\tok{c}{ l}\tok{g}{ança}\tok{p}{do}\tok{o}{.}\tok{y}{ R}\tok{r}{umo}\tok{c}{res}\tok{g}{ su}\tok{p}{ge}\tok{o}{rem}\tok{y}{ que}\tok{r}{ o}\tok{c}{ G}\tok{g}{TA}\tok{p}{ VI}\tok{o}{ será}\tok{y}{ uma}\tok{r}{ ver}\tok{c}{são}\tok{g}{ modern}\tok{p}{a}\tok{o}{ de}\tok{y}{ Vice}\tok{r}{ City}\tok{c}{ e}\tok{g}{ contar}\tok{p}{á}\tok{o}{ com}\tok{y}{ um}\tok{r}{ map}\tok{c}{a}\tok{g}{ que}\tok{p}{ m}\tok{o}{uda}\tok{y}{ com}\tok{r}{ o}\tok{c}{ passar}\tok{g}{ do}\tok{p}{ tempo}\tok{o}{.}\tok{y}{ }\tok{r}{Além}\tok{c}{ dis}\tok{g}{so}\tok{p}{,}\tok{o}{ há}\tok{y}{ a}\tok{r}{ poss}\tok{c}{ib}\tok{g}{ilidade}\tok{p}{ de}\tok{o}{ uma}\tok{y}{ protagon}\tok{r}{ista}\tok{c}{ femin}\tok{g}{ina}\tok{p}{,}\tok{o}{ o}\tok{y}{ que}\tok{r}{ traz}\tok{c}{ mais}\tok{g}{ expect}\tok{p}{a}\tok{o}{tiva}\tok{y}{ para}\tok{r}{ o}\tok{c}{ jogo}\tok{g}{.}\tok{p}{ }\tok{o}{Enquanto}\tok{y}{ agu}\tok{r}{ard}\tok{c}{amos}\tok{g}{,}\tok{p}{ rest}\tok{o}{a}\tok{y}{ imag}\tok{r}{inar}\tok{c}{ o}\tok{g}{ que}\tok{p}{ ess}\tok{o}{a}\tok{y}{ nova}\tok{r}{ aven}\tok{c}{tura}\tok{g}{ nos}\tok{p}{ reserv}\tok{o}{a}\tok{y}{.}\\
+    \\[-1ex]
+    \hline
+
+    \end{tabular}
+    \caption{Tokenization before and after vocabulary extension of 2,000 tokens showcases the potential benefits of exploring tokenization approaches/ }
+    \label{fig:tokenizer-adapt-motivation}
+\end{table}
+}
+
+As illustrated in Table \ref{fig:tokenizer-adapt-motivation}, adapting an English-centric tokenizer -- originally from the \texttt{HuggingFaceTB/SmolLM2-135M} model -- by incorporating an additional 2,000 tokens reduces the number of tokens required to represent the same text by about $18\%$. This demonstrates that even modest modifications to a tokenizer can yield substantial efficiency gains, reinforcing the broader motivation for this dissertation: enabling technological inclusion without the prohibitive costs of full-scale retraining.
+
+
+
+\section{Objectives}\label{Section1.2}\label{sec:objectives}
+
+The objective of this dissertation is to develop methods that expand language models trained primarily in one source language to a \textit{target} language, while minimizing computational cost. We thoroughly explore this expansion by manipulating the tokenizer and the embedding layer of the model, without the need for intensive additional training.
+
+We focus on addressing the following research questions:
+
+% \begin{itemize}
+%     \item \textbf{RQ1:} Is it possible for an English-trained model to achieve comparable effectiveness in European Portuguese by strategically modifying the tokenizer?
+%     \item \textbf{RQ2:} What is the impact on model generation efficiency of tokenizer adaptation?
+%     \item \textbf{RQ3:} Does tokenizer adaptation affect all models equally, or are there differences based on model architecture and size?
+%     \item \textbf{RQ4:} Which embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?
+%     \item \textbf{RQ5:} Does tokenizer adaptation reduce effectiveness in the model's source language?
+% \end{itemize}
+\textbf{RQ1}. \RQone\\
+\textbf{RQ2}. \RQtwo\\
+\textbf{RQ3}. \RQthree\\
+\textbf{RQ4}. \RQfour\\
+\textbf{RQ5}. \RQfive
+
+
+By structuring the research around these questions, we provide a systematic evaluation of tokenizer adaptation for multilingual expansion.
 
 \section{Approach}\label{Section1.3}
-Our approach to adapting language models to European Portuguese centers on modifying the tokenizer component while minimizing changes to the model parameters. The methodology consists of four primary components:
+Our approach centers on modifying the tokenizer and embedding layer of pre-trained models, without editing the model parameters. This strategy reduces training costs while preserving most of the knowledge already present in the model. The methodology consists of four stages:
 
 \begin{enumerate}
-    \item \textbf{Token Selection}: We train a new Byte-Pair Encoding (BPE) tokenizer specifically on Portuguese text corpora, then identify high-frequency tokens that are not present in the original model's vocabulary.
-    
-    \item \textbf{Vocabulary Expansion}: We expand the model's vocabulary by adding these Portuguese-specific tokens, effectively creating a hybrid tokenizer that maintains compatibility with the original language while expanding for Portuguese text.
-    
-    \item \textbf{Embedding Initialization}: We develop and compare novel strategies for initializing the embeddings of the newly added tokens, including Mean Vector Initialization and Position-Weighted Initialization, which account for the positional importance of constituent tokens.
-    
-    \item \textbf{Inference Adaptation}: We explore a specialized inference procedure that enables the model to effectively utilize the newly added tokens during text generation, maintaining compatibility with the model's pre-trained weights.
+    \item \textbf{Token Selection.} Train a new tokenizer specifically on the target language corpora, then identify high-frequency tokens that are not present in the original model's vocabulary.
+    \item \textbf{Vocabulary Expansion.} Extend the model's vocabulary by adding the trained tokens, creating a hybrid tokenizer that maintains compatibility with the source language while expanding coverage for the target language text.
+    \item \textbf{Embedding Initialization.} Develop and compare strategies for initializing the embeddings of the newly added tokens, including \emph{Mean Vector Initialization} and \emph{Position-Weighted Initialization}, which account for the positional importance of constituent tokens.
+    \item \textbf{Inference Adaptation.} Develop an inference framework that enables the model to effectively use the newly added tokens during text generation, maintaining compatibility with the model's pre-trained weights.
 \end{enumerate}
 
-This approach requires minimal computational resources compared to traditional fine-tuning or pre-training methods, making it particularly suitable for scenarios with limited access to high-performance computing infrastructure.
+% Alongside these adaptation stages, we conduct exploratory analyses to refine methodological choices and clarify their impact across different models and architectures. These analyses shape the final design decisions, which are then systematically evaluated. 
+
+This approach enables efficient adaptation at minimal cost, making it particularly suitable for scenarios with limited access to high-performance computing infrastructure.
 
 \section{Contributions}\label{Section1.4}
-This dissertation makes several significant contributions to the field of multilingual language model adaptation.
+This dissertation makes several contributions to the field of multilingual model adaptation.
 
-\begin{itemize}
-    \item Development of a novel tokenizer adaptation methodology that enhances model performance\unsure{only with some temperature value > k, find a way of specifying it here} for European Portuguese without requiring complete model retraining
+\begin{enumerate}
+    \item Development of a new tokenizer adaptation methodology that enhances model generation efficiency -- under sampling methods -- for European Portuguese without requiring full model retraining
     
-    \item Introduction and comparative analysis of two embedding initialization strategies - Mean Vector Initialization and Position-Weighted Initialization, with the latter demonstrating superior performance across evaluation metrics
+    \item Comparative analysis of multiple embedding initialization strategies, including \emph{Mean Vector Initialization} and \emph{Position-Weighted Initialization}
     
-    \item Creation of an inference adaptation framework that enables efficient utilization of adapted tokenizers while maintaining compatibility with pre-trained model weights
-    
-    \item Comprehensive evaluation using European Portuguese-specific benchmarks, achieved through the consolidation of two existing methodologies, offering a practical foundation for future work in low-resource language adaptation
-\end{itemize}
+    \item Proposal of an inference adaptation framework that enables efficient utilization of adapted tokenizers while maintaining compatibility with pre-trained model weights
 
-These contributions collectively advance the state-of-the-art in efficient cross-lingual adaptation of language models, particularly for languages with limited resources.
+    \item Introduction of novel evaluation metrics -- \textit{Fertility Boost}, \textit{Fertility Output} and \textit{Effective Efficiency Gain} -- that quantify how efficiently adapted tokenizers are used during generation, bridging the gap between tokenization-level analysis and actual inference behavior.
+    
+    \item Comprehensive experimental evaluation on European Portuguese-specific benchmarks, achieved through the consolidation of two existing evaluation methodologies, offering a practical foundation for future work in low-resource language adaptation
+\end{enumerate}
 
-\section{Chapter Summaries}\label{Section1.5}
-% -----------------------------------------------------------------------
-% AI Generated Mumbling bellow, must review it once all the other chapters are finalized
-% -----------------------------------------------------------------------
-The remainder of this dissertation is organized as follows.\unsure{Review this section as I've changed the chapters after writing it}
+Together, these contributions provide a lightweight, computationally efficient path to extending LLMs to low-resource languages.
 
-\begin{itemize}
-    \item \textbf{Chapter 2: Background} provides the theoretical foundation for understanding transformers architecture, tokenization methods, and their role in language modeling. It covers the fundamental concepts of transformer models, attention mechanisms, and various tokenization algorithms.
-    
-    \item \textbf{Chapter 3: Related Work} reviews existing approaches to language model adaptation, including fine-tuning methodologies and tokenizer-focused techniques. It also discusses available datasets and benchmarks for European Portuguese evaluation.
-    
-    \item \textbf{Chapter 4: Methodology} details our approach to tokenizer adaptation, including token selection criteria, embedding initialization strategies, and inference adaptation techniques. It provides mathematical formulations for the proposed methods and explains the experimental configuration.
-    
-    \item \textbf{Chapter 5: Results} presents the empirical evaluation of our approach using European Portuguese benchmarks. It includes comparative performance analysis, token efficiency metrics, and qualitative assessment of model outputs.
-    
-    \item \textbf{Chapter 6: Conclusions} summarizes the key findings, acknowledges limitations of the current approach, and outlines promising directions for future research in this area.
-\end{itemize}
+
+\section{Document Structure}\label{Section1.5}
+
+The rest of this work is organized as follows. Chapter~\ref{chap:background} establishes the necessary background, starting with an overview of the Transformer architecture and its reliance on tokenization for language representation.
+
+Building on this, Chapter~\ref{chap:related_work} reviews related work, contrasting traditional fine-tuning approaches with more recent tokenizer-level strategies, and introducing European Portuguese benchmarks.
+
+Chapter~\ref{chap:tokenizer_adaptation} then introduces the core methodology of tokenizer adaptation. It details how new tokens are selected, explores various strategies for embedding initialization, and presents a controlled evaluation framework.
+
+Chapter~\ref{chap:exploration} provides exploratory analyses and clarifies the design rationale behind each decision. Here, the research questions guiding the work are formalized.
+
+Chapter~\ref{chap:inference_adaptation} tackles inference adaptation. It examines the challenges that arise when extending a tokenizer without modifying the model’s pre-trained weights and proposes a practical framework to ensure coherent and efficient generation with the newly introduced vocabulary.
+
+Chapter~\ref{chap:results} presents the results. Quantitative analyses assess embedding strategies, benchmark effectiveness, and efficiency gains, while qualitative evaluations complement these findings, offering a broader perspective on the implications of tokenizer adaptation.
+
+Finally, Chapter~\ref{chap:conclusions} concludes the dissertation, synthesizing the key insights, acknowledging limitations, and outlining directions for future research.

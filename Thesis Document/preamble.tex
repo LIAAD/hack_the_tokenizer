@@ -60,6 +60,7 @@
 
 % Pretty colours
 \usepackage{xcolor}
+\usepackage[dvipsnames]{xcolor}
 % \usepackage{color} % Deprecated by xcolor
 \usepackage{booktabs}   % Allows for \toprule & \midrule & \bottomrule (different thickness \hline in tables
 
@@ -186,15 +187,15 @@
 \usepackage{multirow}
 
 \usepackage{tabularx}       % For X column type (auto-width columns)
-\usepackage{xcolor} % Required for coloring text
+
 
 % Define new colors for the prompt and generation
 \definecolor{promptcolor}{HTML}{1C8D8D} % A blue similar to the example
 \definecolor{generationcolor}{HTML}{6A6A6A} % Grey for the generation
 
-% Define new commands to apply colors
-\newcommand{\prompt}[1]{\textcolor{promptcolor}{#1}}
-\newcommand{\generation}[1]{\textcolor{generationcolor}{#1}}
+
+
+
 
 % Changes bullet points marker
 \renewcommand{\labelitemi}{\(\bullet\)}
@@ -293,3 +294,16 @@
 
 \usepackage{float}
 \usepackage{placeins} % This package is needed for \FloatBarrier
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}  % for \State, \For, etc.
+
+
+\usepackage[many]{tcolorbox} % in your preamble
+\usepackage{soul} % for highlighting with justification
+
+
+\usepackage{seqsplit} % safe breaking of long "words"
+
+
+

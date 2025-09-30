@@ -1,179 +1,200 @@
-\chapter{Exploratory Analysis and Design Rationale}
-\chaptermark{exploration}
-\label{chap:exploration}
+% Chapter Template
 
-As introduced in Chapter~\ref{Section1}, this thesis is guided by a set of research questions focused on tokenizer adaptation and evaluation for European Portuguese:
+% Main chapter title
+\chapter{Tokenizer Adaptation}
 
+% Short version of the title for the header
+\chaptermark{Tokenizer Adaptation}
+
+% Chapter Label
+\label{chap:tokenizer_adaptation}
+
+This chapter presents the methodological framework for adapting existing language models to new target languages with minimal retraining. The central idea of this dissertation -- ``Hacking the Tokenizer'' -- is to exploit the tokenizer as the main adaptation point, allowing pre-trained models to process new languages by extending their vocabulary rather than applying pre-training to the model. 
+
+Recent work \cite{김재윤2025exploring} demonstrates that extending tokenizers with domain-specific tokens can improve fine-tuning efficiency, which motivates our decision to carefully curate the Portuguese vocabulary extension.
+
+Our case study focuses on European Portuguese (PT-PT). This language was selected mainly because it is our native language and the target audience of this work, but also because its orthographic and morphological characteristics pose interesting challenges for tokenizer adaptation. This makes it a strong test case for evaluating the effectiveness of tokenizer-level adaptation.
+
+The overall workflow follows three stages: (\S\ref{sec:token_selection}) Selecting which new tokens to add to the vocabulary; (\S\ref{sec:embedding_init}) Initializing embeddings for these tokens; and (\S\ref{sec:embedding_finetune}) Optionally fine-tuning embeddings with lightweight training.
+
+This chapter details each of these stages and prepares the ground for the inference adaptation in Chapter~\ref{chap:inference_adaptation} and results in Chapter~\ref{chap:results}.
+
+
+% --------------------------------------------------------------
+\section{Experimental Setup}
+\label{sec:exp_setup}
+
+All experiments in this chapter were conducted under a consistent configuration, unless otherwise specified:
+
+\begin{itemize}
+    \item \textbf{Models:} \texttt{HuggingFaceTB/SmolLM2-135M} as a small monolingual baseline, \texttt{Qwen/Qwen2.5-1.5B-Instruct} as a strong multilingual reference, and \texttt{HuggingFaceTB/SmolLM3-3B} as a larger multilingual variant.
+    \item \textbf{Tokenizers:} Byte-Pair Encoding (BPE) with initial vocabulary sizes of approximately $50{,}000$, $150{,}000$, and $130{,}000$, respectively.
+    \item \textbf{Portuguese Corpus:} The European Portuguese portion of the OpenSubtitles dataset\footnote{\url{https://opus.nlpl.eu/results/en&pt/corpus-result-table}}.
+    \item \textbf{Evaluation Benchmarks:} CalamePT (\S\ref{subsec:dataset-calamept}) and \emph{extraGLUE} (\S\ref{subsec:dataset-extraGLUE}), described in Chapter~\ref{chap:results}.
+    \item \textbf{Hardware:} All experiments were executed on a Zephyrus G14 (2023) laptop equipped with an NVIDIA RTX~4060 GPU (8GB VRAM).
+\end{itemize}
+
+
+% --------------------------------------------------------------
+\section{Token Selection Methodology}
+\label{sec:token_selection}
+
+The first step in adapting a model to a new language is identifying which tokens to add. Tokenizer design choices such as vocabulary size, training corpus, and pre-tokenization regular expressions can significantly impact downstream model effectiveness \cite{dagan2024getting}.
+
+To adapt \texttt{HuggingFaceTB/SmolLM2-135M} to Portuguese, we expanded the vocabulary by up to 10,000 tokens using the \texttt{add\_tokens}\footnote{HuggingFace \href{https://huggingface.co/docs/transformers/v4.56.1/en/main\_classes/tokenizer\#transformers.PreTrainedTokenizer.add\_tokens}{documentation}} functionality of the Hugging Face Transformers library. 
+
+The selection process of \textit{new\_tokens} to expand our tokenizer, was as follows:
 \begin{enumerate}
-    \item Is it possible for an English-trained model to achieve comparable performance in European Portuguese by strategically modifying the tokenizer?
-    \item What is the impact on model generation efficiency of tokenizer adaptation?
-    \item Does tokenizer adaptation affect all models equally, or are there differences based on model architecture and size?
-    \item What embedding initialization strategies are most effective for integrating new tokens into a pre-trained model?
-    \item Does a model lose performance in English after going through the adaptation process?
+    \item Train a new BPE tokenizer with a target vocabulary size of $2 \times size$, where $size$ is the number of tokens to be added.
+    \item Remove all tokens already present in the original vocabulary.
+    \item Remove tokens that are substrings of existing tokens (e.g., discard \textit{pub} if \textit{público} is already in the vocabulary).
+    \item Rank the remaining tokens by frequency of occurrence in the Portuguese corpus.\footnote{Here, frequency is defined as the number of times a token appears in the training corpus.}
+    \item Select the top $size$ tokens for integration.
 \end{enumerate}
 
-This chapter presents exploratory analyses that address each of these questions and outlines the rationale behind our methodological decisions.
+This pipeline ensures that the expansion captures Portuguese-specific tokens with high frequency and utility while minimizing redundancy with the original tokenizer. For example, words like ``\textit{chegada}'' (arrival), ``\textit{trabalhar}'' (to work), or ``\textit{rapidamente}'' (quickly) frequently appear in Portuguese but are fragmented into multiple subtokens by the original tokenizer.
 
-\section{Experimental Setup and Tokenizer Adaptation Methodology}
-\label{chap:exploration-sec:setup}
+% \textit{Transition: Having identified a list of useful new tokens, the next step is to initialize their embeddings so that they integrate smoothly into the model’s vector space.}
 
-All experiments in this thesis share a common methodology centered around tokenizer adaptation, model evaluation, and comparative benchmarking.
+% --------------------------------------------------------------
+\section{Embedding Initialization Strategies}
+\label{sec:embedding_init}
 
-\subsection*{\textbf{Tokenizer Adaptation Pipeline}}
+When extending the vocabulary of a pre-trained language model, each newly added token requires an embedding vector. The quality of this initialization has a significant impact on downstream effectiveness: poorly chosen embeddings can disrupt the geometry of the embedding space, leading to semantic inconsistencies and degraded predictions~\cite{artetxe2018robust, chronopoulou2020reusing}.
+
+To address this, prior work has explored a range of strategies for initializing new embeddings, from simple random assignment to cross-lingual alignment and heuristic methods that exploit the structure of the existing embedding space. Below we review the most common baselines used in vocabulary extension and introduce our own methodology. Additionally, we introduce a dedicated evaluation framework for comparing initialization strategies. This allowed us to empirically select which approach best aligned with our work.
+
+
+
+\subsection{Baseline Methods}
+As reviewed in Chapter~\ref{sec:embedding_init}, prior work has proposed several strategies for initializing new token embeddings. In our experiments, we consider representative approaches spanning the main categories:
+
+\begin{itemize}
+    \item \textbf{Random Initialization:} Embeddings are sampled from the distribution used during model training \cite{kocmi2017exploration}.
+    \item \textbf{Heuristic Initialization:} Methods that construct new embeddings from existing ones. For example, FOCUS~\cite{dobler2023focus} combines embeddings using weighted sums, while OFA~\cite{liu2023ofa} incorporates external multilingual word vectors.
+\end{itemize}
+
+Cross-lingual approaches such as WECHSEL~\cite{minixhofer2021wechsel} have demonstrated strong results, but we exclude them here due to their reliance on high-quality parallel corpora or bilingual lexicons. Our focus remains on lightweight, resource-agnostic strategies that can be deployed under minimal assumptions.
+
+
+\subsection{Mean Vector Initialization}
+\label{subsec:mean-init}
+
+The first approach, termed ``Mean Vector Initialization'', computes the embedding for each new token by averaging the embeddings of its constituent subtokens as determined by the original tokenizer. 
+
+This method provides a straightforward way to capture the average semantic content of the constituent tokens. For example, the Portuguese word ``chegada'' might be tokenized as ``che'' + ``gada''; the embedding for the new single token ``chegada'' would be the average of the embeddings for ``che'' and ``gada''. 
+
+Mean Vector Initialization is computationally efficient and intuitive, but it treats all subtokens as equally important, which may not always hold in morphologically rich languages.
+
+
+\subsection{Position-Weighted Initialization}
+\label{subsec:pos-wei-init}
+
+The second approach, termed ``Position-Weighted Initialization'', assigns differential importance to constituent tokens based on their position within the sequence. This method is predicated on the hypothesis that initial tokens in a sequence often carry greater semantic weight in autoregressive language models.
+
+This method can be implemented as follows:
+
+\begin{algorithm}[H]
+    \caption{Position-Weighted Initialization}
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} New token $t$, represented by subtoken IDs $(s_1, s_2, \dots, s_n)$; embedding matrix $E$; decay parameter $\alpha$
+        \State $M \gets [E[s_1], E[s_2], \dots, E[s_n]]$, embeddings for all subtokens
+        \State $i \gets 0$
+        \While{$i < n$}
+            \State $w_i = \alpha^{(n-i+1)}$
+            \State $w_i = \frac{w_i}{\sum_j w_j}$, Normalize weights
+        \EndWhile
+        \State $e_t = \sum_{i=1}^{n} w_i \cdot M[i]$, Compute weighted embedding
+        \State \textbf{Output:} Initialized embedding $e_t$ for token $t$
+    \end{algorithmic}
+\end{algorithm}
+
+
+By weighting the subtokens according to position, this strategy preserves more semantic information learned from the original model while still incorporating contributions from later subtokens.
+
+
+% --------------------------------------------------------------
+\section{Comparative Methodology of Initialization Methods}
+\label{sec:init_methodology}
+
+We conducted extensive experiments to compare the effectiveness of these initialization strategies, including various values of the weighting parameter $\alpha$ for the Position-Weighted Initialization method.
+
+To ensure a fair comparison across initialization strategies, we designed a controlled evaluation pipeline that focuses on the predictive ability of new tokens introduced into the vocabulary. The procedure is detailed below:
 
 \begin{enumerate}
-    \item \textbf{Tokenizer Training:} We train a new tokenizer on European Portuguese using the same algorithm as the original model (e.g., BPE for \texttt{HuggingFaceTB/SmolLM2-135M}).
-    \item \textbf{Token Filtering:} From the new tokenizer’s vocabulary:
-    \begin{itemize}
-        \item Remove tokens already present in the original model’s tokenizer.
-        \item Remove tokens that are substrings of any token in the original vocabulary (e.g., exclude \texttt{pub} if \texttt{publico} is present).
-    \end{itemize}
-    \item \textbf{Embedding Integration:} The remaining \texttt{new\_tokens} are added to the model by:
-    \begin{itemize}
-        \item Extending the model's embedding matrix.
-        \item Initializing new embeddings using a selected strategy (e.g., \texttt{weighted\_drop(2)}).
-    \end{itemize}
-    \item \textbf{Embedding Training (Optional):} Apply short, targeted fine-tuning to the new embeddings to improve alignment with the existing model.
+    \item A list of Portuguese-specific tokens (\texttt{new\_tokens}) was generated from the BPE tokenizer trained on the \texttt{OpenSubtitlesPT} subset (see \S\ref{sec:token_selection}).
+    \item For each initialization method, the base model was modified to include the \texttt{new\_tokens} and corresponding embeddings.
+    \item From the \texttt{OpenSubtitlesPT} corpus, we sampled 1,000 lines containing at least \textbf{one} of the \texttt{new\_tokens}.
+    \item For each line:
+        \begin{enumerate}
+            \item Randomly select \textbf{one} \texttt{new\_token} present in the line.
+            \item Split the line at that token, dropping the final piece (i.e., \textit{phrase.split(token)[:-1]}).
+            \item Use \texttt{model.generate} to continue the text from the remaining fragments.
+            \item Record the model's predicted \emph{score} and \emph{rank} of the correct \texttt{new\_token} among all vocabulary candidates.
+        \end{enumerate}
+    \item Repeat until all sampled lines have been processed.
 \end{enumerate}
 
-\subsection*{\textbf{Evaluation Pipeline}}
+To enable a direct comparison across initialization strategies, we additionally recorded, for each sampled line, which method assigned the lowest rank to the correct token. We then aggregated these results by counting the number of ``wins'' -- instances where a method achieved the best rank among all compared strategies. This win-rate metric complements the per-method rank distributions by providing a simple yet robust comparative measure of effectiveness.
 
-\begin{enumerate}
-    \item Evaluate the unmodified model on benchmark tasks (\textit{baseline}).
-    \item Apply tokenizer adaptation.
-    \item Evaluate the adapted model.
-    \item Train new embeddings.
-    \item Evaluate the fully adapted and trained model.
-\end{enumerate}
+This methodology directly evaluates how well each initialization strategy positions new embeddings in the model's vector space, as measured by the model’s ability to correctly predict unseen tokens in realistic contexts. It also allows us to compare methods under consistent conditions without additional fine-tuning or external resources.
 
-\textbf{Terminology Note: }Throughout this chapter, the term \textit{baseline} refers to the original pre-trained model without any modifications. All comparisons are made relative to this unmodified baseline unless otherwise specified.
-
-\section{RQ1: Impact on Model Performance}
-\label{sec:model_performance}
-
-To evaluate how tokenizer adaptation affects model performance, we tested the model on two benchmark datasets for European Portuguese: \textit{SuperGluePTPT}[\ref{Section3.3.1}] and \textit{CalamePT}[\ref{Section3.3.2}].
-
-The benchmarks were run in three configurations:
-\begin{itemize}
-    \item \textbf{Baseline:} Model with original tokenizer.
-    \item \textbf{Post-Adaptation:} Model with new tokens integrated into the vocabulary.
-    \item \textbf{Post-Training:} Model after short targeted training of new embeddings.
-\end{itemize}
-
-These comparisons allowed us to quantify the impact of the adapted tokenizer on task-specific performance in European Portuguese.
-
-\section{RQ2: Token Efficiency – Fertility Metrics}
-\label{sec:fertility_metric}
-
-To assess whether tokenizer adaptation improved efficiency, we developed two complementary metrics:  \textbf{Fertility Output}, and \textbf{Fertility Boost}.
-
-
-\subsection*{\textbf{Fertility Output}}
-\label{subsec:fertility_output}
-
-This metric measures the number of generated tokens required to generate a full Portuguese word during inference.
-
-\textbf{Method:}
-\begin{enumerate}
-    \item Start with a static prefix (e.g., \texttt{"Em português, a palavra para"}).
-    \item Feed increasingly longer input sequences until the model generates a complete word.
-    \item Repeat for multiple target words and calculate the average.
-\end{enumerate}
-
-\textbf{Example Implementation:}
-\begin{lstlisting}
-num_tokens = []
-for phrase in phrases:
-    tokens = tokenizer.encode(phrase)
-    for n in range(3, len(tokens)):
-        generation = []
-        while not is_full_word(generation):
-            next_token = model.generate(tokens[:n])
-            generation.append(next_token)
-        num_tokens.append(len(generation))
-fertility_output = average(num_tokens)
-\end{lstlisting}
-
-\subsection*{\textbf{Fertility Boost}}
-\label{subsec:fertility_boost}
-
-This metric estimates the frequency of newly added tokens being used during generation — providing insight into how well the model integrates them.
-
-\textbf{Method:}
-\begin{itemize}
-    \item Encode texts known to contain added tokens.
-    \item Run the input through the forward pass layers
-    \item Modify the logits with a non-zero temperature ($T=0.8$) to increase randomness.
-    \item Sample logits and count how many added tokens are generated.
-    \item Repeat multiple times to calculate the average and standard deviation.
-\end{itemize}
-
-This metric was calculated over 10 runs to ensure statistical confidence.
-
-\section{RQ3: Model Architecture Impact on Adaptation}
-\label{sec:model_impact}
-
-We tested how tokenizer adaptation affects models with different architectures and training objectives.
-
-\textbf{Models Compared:}
-\begin{itemize}
-    \item \texttt{SmolLM2-135M}\footnote{Hugging Face/SmolLM2-135m - \url{https://huggingface.co/HuggingFaceTB/SmolLM2-135M}} – a monolingual model with 135 Million parameters.
-    \item \texttt{Qwen2.5-1.5B-Instruct}\footnote{Qwen/Qwen2.5-1.5B-Instruct - \url{https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct}} – a multilingual model with 1.5 Billion parameters.
-    \item \texttt{SmolLM3-3B}\footnote{Hugging Face/SmolLM3-3B - \url{https://huggingface.co/HuggingFaceTB/SmolLM3-3B}} – a multilingual model with 3 Billion parameters.
-\end{itemize}
-
-% \textbf{Findings:} The smaller monolingual model adapted more effectively to new tokens, while the larger multilingual model showed more conservative integration. These differences highlight the importance of tailoring adaptation strategies to model size and scope.
-
-\section{RQ4: Embedding Initialization Strategies}
-\label{sec:init_strategies}
-
-To test whether embedding initialization methods affected adaptation success, we applied multiple strategies for integrating new tokens.
-
-\textbf{Initialization Strategies Tested:}
-\begin{itemize}
-    \item Zero initialization
-    \item Random uniform sampling
-    \item Mean of tokens embeddings
-    \item Dimension-wise min/max of tokens embeddings
-    \item Weighted dropout of similar embeddings (e.g., \texttt{weighted\_drop(2)})
-\end{itemize}
-
-% \textbf{Preliminary Findings:} Methods leveraging contextual similarity (e.g., weighted drop) improved integration and reduced instability during inference.
+The outcomes of this evaluation are presented and analyzed in Chapter~\ref{chap:results}.
 
 
 
-\section{RQ5: Impact on English Performance}
-\label{sec:english_regression}
+% --------------------------------------------------------------
+\section{Embedding Fine-tuning}
+\label{sec:embedding_finetune}
 
-To evaluate whether tokenizer adaptation negatively impacts the model’s performance in its original language (English), we re-ran standard benchmarks on the unmodified English test sets before and after adaptation.
+In addition to initialization, we implemented a lightweight, context-aware fine-tuning procedure to further refine the embeddings of the new tokens. The key idea is to update only the embeddings of the newly added tokens while leaving the rest of the model frozen. This ensures minimal interference with the pre-trained knowledge. 
 
-\subsection*{\textbf{Method}}
+For each new token, similarly to the initialization methodology comparison, we extract phrases from the training dataset that precede the token and discard the trailing fragment. We then run the model in generation mode to compute logits (i.e., scores) and hidden states for these phrases. The embedding for the target token is updated proportionally to the difference between the maximum predicted logit and the logit corresponding to the token, using the last hidden state of the generation as a directional signal.  
 
-The same evaluation benchmarks used during pre-adaptation (e.g., a subset of GLUE or other English-focused tasks used in pre-training) were applied to:
-\begin{itemize}
-    \item The baseline model (unmodified)
-    \item The adapted model (with Portuguese tokens added)
-    \item The adapted + embedding-trained model
-\end{itemize}
+This procedure can be formalized as follows:
 
-% \subsection*{Findings}
+\begin{algorithm}[H]
+\caption{Context-Aware Embedding Fine-Tuning}
+\begin{algorithmic}[1]
+\State \textbf{Input:} Pre-trained model $M$, tokenizer $T$, new token set $\mathcal{N}$, training dataset $\mathcal{D}$, learning rate $\eta$
+\ForAll{new token $t \in \mathcal{N}$}
+    \State $phrases \gets \{phrase: phrase\in\mathcal{D} \wedge  t \in phrase\}$, Collect all phrases containing $t$
+    \ForAll{$phrase \in phrases$}
+        \State $phrases_{split} \gets phrases.split(t)[:-1]$, Keep text that expects $t$
+        \ForAll{$p \in phrases_{split}$}
+            \State $g \gets M.generate(p)$, Pass the text through the model
+            \State $logits \gets g.logits$, Compute $logits=[l_1, l_2 \dots l_n]$
+            \State $hidden \gets g.hidden\_states$, Obtain the hidden states of the generation
+            \State $\Delta l = \max(\text{logits}) - \text{logits}[t]$
+            \State $h \gets hidden.last()$ Extract last hidden state vector from $hidden$
+            \State $h \gets h.norm()$, Normalize $h$ to unit length
+            \State $E[t] \gets E[t] + \eta \cdot \Delta l \cdot h$, Update embedding for new token $t$
+        \EndFor
+    \EndFor
+\EndFor
+\State \textbf{Output:} Updated embedding matrix for new tokens
+\end{algorithmic}
+\end{algorithm}
 
-% Preliminary results suggest that performance degradation in English is minimal and largely confined to cases where new embeddings dominate the input (e.g., forced Portuguese contexts). When the model is used in purely English scenarios, its comprehension and generation abilities are largely retained, especially when embedding initialization is well-calibrated.
+\newpage
 
-% This finding is promising for multilingual scenarios, where English remains a dominant language and regression must be avoided.
+This approach nudges the new embeddings toward vector representations that better align with the model's predictions in realistic contexts while preserving the pre-trained model's original knowledge. Importantly, empirical evaluation showed no significant bias, as measured by downstream effectiveness metrics.
 
 
 
-% \section{Summary and Design Implications}
-% \label{sec:exploration_summary}
 
-% Our exploratory analyses revealed key insights:
+\section{Chapter Summary and Rationale for Method Selection}
 
-% \begin{itemize}
-%     \item \textbf{RQ1–2:} Tokenizer adaptation improves downstream performance and token efficiency.
-%     \item \textbf{RQ3:} Model size and architecture significantly affect adaptation outcomes.
-%     \item \textbf{RQ4:} Manual evaluations confirm improvements in fluency and naturalness.
-%     \item \textbf{RQ5:} The choice of embedding initialization strategy impacts integration quality.
-% \end{itemize}
+In this chapter, we presented a systematic approach for adapting pre-trained language models to a new target language by “hacking” the tokenizer: A resource-agnostic approach that avoids costly large-scale retraining. The process involved three stages: (1) selecting new tokens, (2) initializing their embeddings, and (3) optionally fine-tuning them with lightweight updates. 
 
-% These findings inform the design of more robust and generalizable adaptation methods in subsequent chapters.
+We also introduced a comparative evaluation pipeline designed to assess the effectiveness of different embedding initialization strategies in a controlled setting. This framework enables us to quantify how well each strategy positions new tokens within the embedding space and how reliably the model can generate them in realistic contexts.
+
+The detailed experimental results of this comparative analysis are presented in Chapter~\ref{chap:results}. Based on these findings, we identify a default initialization strategy that will serve as the foundation for all subsequent evaluations of tokenizer adaptation throughout this dissertation.
+
+
+
+
+
+
+
+

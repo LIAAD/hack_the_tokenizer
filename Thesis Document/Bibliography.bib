@@ -22,340 +22,719 @@
   url           = {https://www.osapublishing.org/ao/abstract.cfm?uri=ao-21-15-2758},
   urldate       = {CURRENT\_TIMESTAMP},
 }
-@Article{GettingMostOutOfTokenizers,
-    author        = {Gautier Dagan, Gabriel Synnaeve and Baptiste Rozière},
-    title         = {Getting the most out of your tokenizer for pre-training and domain adaptation},
-    year          = {2024},
-    month         = feb,
-    journal       = {},
-    url          = {https://arxiv.org/abs/2402.01035}
-
+@misc{lopes2024gloriagenerativeopen,
+      title={Gl\'orIA -- A Generative and Open Large Language Model for Portuguese}, 
+      author={Ricardo Lopes and João Magalhães and David Semedo},
+      year={2024},
+      eprint={2402.12969},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2402.12969}, 
 }
-@Article{Gloria,
-    author      = {Ricardo Lopes, João Magalhães, David Semedo},
-    title       = {GlórIA -- A Generative and Open Large Language Model for Portuguese},
-    year        = {2024},
-    month       = feb,
-    journal     = {},
-    url        = {https://arxiv.org/abs/2402.12969}
-}
-@Article{Sabia,
-    author      = {Ramon Pires, Hugo Abonizio, Thales Sales Almeida, Rodrigo Nogueira},
-    title       = {Sabiá: Portuguese Large Language Models},
-    year        = {2023},
-    month       = apr,
-    journal     = {},
-    url        = {https://arxiv.org/abs/2304.07880}
-}
-@Article{Gervasio,
-    author      = {Rodrigo Santos},
-    title       = {Advancing Generative AI for Portuguese with Open Decoder Gervásio PT*},
-    year        = {2024},
-    month       = feb,
-    journal     = {},
-    url        = {https://arxiv.org/abs/2402.18766}
-}
-@article{Albertina,
-    author = {João Rodrigues},
-    title = {Advancing Neural Encoding of Portuguese with Transformer Albertina PT-*},
-    journal = {},
-    year = 2023,
-    month = may,
-    url = { https://arxiv.org/abs/2305.06721}
-}
-@article{AdaptinigPretrainedModels,
-    author = {Zoltan Csaki},
-    title = {Efficiently Adapting Pretrained Language Models To New Languages},
-    journal = {},
-    year = 2023,
-    month = nov,
-    url = { https://arxiv.org/abs/2311.05741}
-}
-@misc{chatgpt,
-    key = "https://openai.com/chatgpt/overview/",
-    note = "ChatGPT"
-}
-@article{AttentionIsAllYouNeed,
-    author = {Ashish Vaswani},
-    title = {Attention Is All You Need},
-    journal = {},
-    year = 2017,
-    month = jun,
-    url = {https://arxiv.org/abs/1706.03762}
-}
-@article{brown2020,
-    author = {Tom B. Brown},
-    title = {Language Models are Few-Shot Learners},
-    journal = {},
-    year = 2020,
-    month = Jul,
-    url = {https://arxiv.org/abs/2005.14165}
+@InProceedings{10.1007/978-3-031-45392-2_15,
+author="Pires, Ramon
+and Abonizio, Hugo
+and Almeida, Thales Sales
+and Nogueira, Rodrigo",
+editor="Naldi, Murilo C.
+and Bianchi, Reinaldo A. C.",
+title="Sabi{\'a}: Portuguese Large Language Models",
+booktitle="Intelligent Systems",
+year="2023",
+publisher="Springer Nature Switzerland",
+address="Cham",
+pages="226--240",
+abstract="As the capabilities of language models continue to advance, it is conceivable that ``one-size-fits-all'' model will remain as the main paradigm. For instance, given the vast number of languages worldwide, many of which are low-resource, the prevalent practice is to pretrain a single model on multiple languages. In this paper, we add to the growing body of evidence that challenges this practice, demonstrating that monolingual pretraining on the target language significantly improves models already extensively trained on diverse corpora. More specifically, we further pretrain GPT-J and LLaMA models on Portuguese texts using 3{\%} or less of their original pretraining budget. Few-shot evaluations on Poeta, a suite of 14 Portuguese datasets, reveal that our models outperform English-centric and multilingual counterparts by a significant margin. Our best model, Sabi{\'a}-65B, performs on par with GPT-3.5-turbo. By evaluating on datasets originally conceived in the target language as well as translated ones, we study the impact of language-specific pretraining in terms of 1) capturing linguistic nuances and structures inherent to the target language, and 2) enriching the model's knowledge about a domain or culture. Our results indicate that most benefits stem from the domain-specific knowledge acquired through monolingual pretraining. Finally, we show that our optimized model for Portuguese demonstrates a reduced performance in English tasks, thereby substantiating the inherent compromise in refining models for specific linguistic domains.",
+isbn="978-3-031-45392-2"
 }
 
-@article{openaiGPT4,
-    author = {OpenAI},
-    title = {Language Models are Few-Shot Learners},
-    journal = {},
-    year = 2023,
-    month = Mar,
-    url={https://arxiv.org/abs/2303.08774}
+@article{santos2024advancing,
+  title={Advancing Generative AI for Portuguese with Open Decoder Gerv$\backslash$'asio PT},
+  author={Santos, Rodrigo and Silva, Jo{\~a}o and Gomes, Lu{\'\i}s and Rodrigues, Jo{\~a}o and Branco, Ant{\'o}nio},
+  journal={arXiv preprint arXiv:2402.18766},
+  year={2024}
 }
+@inproceedings{rodrigues2023advancing,
+  title={Advancing neural encoding of portuguese with transformer albertina pt},
+  author={Rodrigues, Jo{\~a}o and Gomes, Lu{\'\i}s and Silva, Jo{\~a}o and Branco, Ant{\'o}nio and Santos, Rodrigo and Cardoso, Henrique Lopes and Os{\'o}rio, Tom{\'a}s},
+  booktitle={EPIA Conference on Artificial Intelligence},
+  pages={441--453},
+  year={2023},
+  organization={Springer}
+}
+@article{csaki2023efficiently,
+  title={Efficiently adapting pretrained language models to new languages},
+  author={Csaki, Zoltan and Pawakapan, Pian and Thakker, Urmish and Xu, Qiantong},
+  journal={arXiv preprint arXiv:2311.05741},
+  year={2023}
+}
+@article{brown2020language,
+  title={Language models are few-shot learners},
+  author={Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared D and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and others},
+  journal={Advances in neural information processing systems},
+  volume={33},
+  pages={1877--1901},
+  year={2020}
+}
+
+
 @misc{openaiChatGPT,
     author={OpenAI},
     key = {ChatGPT},
-    note = {Accessed: 2025‑08‑26, Online chat-bot that first shared LLM architecture with the general public.},
+    note = {Accessed: 2025-08-26, Online chat-bot that first shared LLM architecture with the general public.},
     url = {https://chatgpt.com/}
 }
-@article{touvron2023,
-    author = {Hugo Touvron},
-    title = {LLaMA: Open and Efficient Foundation Language Models},
-    journal = {},
-    year = 2023,
-    month = Feb,
-    url = {https://arxiv.org/abs/2302.13971}
+
+@article{touvron2023llama,
+  title={Llama: Open and efficient foundation language models},
+  author={Touvron, Hugo and Lavril, Thibaut and Izacard, Gautier and Martinet, Xavier and Lachaux, Marie-Anne and Lacroix, Timoth{\'e}e and Rozi{\`e}re, Baptiste and Goyal, Naman and Hambro, Eric and Azhar, Faisal and others},
+  journal={arXiv preprint arXiv:2302.13971},
+  year={2023}
 }
 
-@misc{EuropeanPortuguese_wikipedia,
-  title = {European Portuguese},
-  url = {https://en.wikipedia.org/wiki/European_Portuguese},
-  key = Wikipedia,
-  note = {Accessed: 2025‑08‑26},
-  year = {2025},
-}
 @article{chen2021evaluating,
-    author = {Mark Chen},
-    title = {Evaluating Large Language Models Trained on Code},
-    journal = {},
-    year = 2021,
-    month = Jul,
-    url = {https://arxiv.org/abs/2107.03374}
+  title={Evaluating large language models trained on code},
+  author={Chen, Mark and Tworek, Jerry and Jun, Heewoo and Yuan, Qiming and Pinto, Henrique Ponde De Oliveira and Kaplan, Jared and Edwards, Harri and Burda, Yuri and Joseph, Nicholas and Brockman, Greg and others},
+  journal={arXiv preprint arXiv:2107.03374},
+  year={2021}
 }
+
 @article{lee2020biobert,
-    author = {Jinhyuk Lee},
-    title = {BioBERT: a pre-trained biomedical language representation model for biomedical text mining},
-    journal = {},
-    year = 2020,
-    month = Feb,
-    url = {https://pubmed.ncbi.nlm.nih.gov/31501885/}
+  title={BioBERT: a pre-trained biomedical language representation model for biomedical text mining},
+  author={Lee, Jinhyuk and Yoon, Wonjin and Kim, Sungdong and Kim, Donghyeon and Kim, Sunkyu and So, Chan Ho and Kang, Jaewoo},
+  journal={Bioinformatics},
+  volume={36},
+  number={4},
+  pages={1234--1240},
+  year={2020},
+  publisher={Oxford University Press}
 }
 @article{chalkidis2020legal,
-    author = {Ilias Chalkidis},
-    title = {LEGAL-BERT: The Muppets straight out of Law School},
-    journal = {},
-    year = 2020,
-    month = Nov,
-    url = {https://aclanthology.org/2020.findings-emnlp.261/}
+  title={LEGAL-BERT: The muppets straight out of law school},
+  author={Chalkidis, Ilias and Fergadiotis, Manos and Malakasiotis, Prodromos and Aletras, Nikolaos and Androutsopoulos, Ion},
+  journal={arXiv preprint arXiv:2010.02559},
+  year={2020}
 }
 @article{gururangan2020don,
-    author = {Suchin Gururangan},
-    title = {Don't Stop Pretraining: Adapt Language Models to Domains and Tasks},
-    journal = {},
-    year = 2020,
-    month = Apr,
-    url = {https://arxiv.org/abs/2004.10964}
+  title={Don't stop pretraining: Adapt language models to domains and tasks},
+  author={Gururangan, Suchin and Marasovi{\'c}, Ana and Swayamdipta, Swabha and Lo, Kyle and Beltagy, Iz and Downey, Doug and Smith, Noah A},
+  journal={arXiv preprint arXiv:2004.10964},
+  year={2020}
 }
 
 
-@article{hu2021lora,
-    author = {Edward J. Hu},
-    title = {LoRA: Low-Rank Adaptation of Large Language Models},
-    journal = {},
-    year = 2021,
-    month = Jun,
-    url = {https://arxiv.org/abs/2106.09685}
+@article{hu2022lora,
+  title={Lora: Low-rank adaptation of large language models.},
+  author={Hu, Edward J and Shen, Yelong and Wallis, Phillip and Allen-Zhu, Zeyuan and Li, Yuanzhi and Wang, Shean and Wang, Lu and Chen, Weizhu and others},
+  journal={ICLR},
+  volume={1},
+  number={2},
+  pages={3},
+  year={2022}
 }
 
-@article{khade2024lora,
-    author = {Omkar Khade},
-    title = {Challenges in Adapting Multilingual LLMs to Low-Resource Languages using LoRA PEFT Tuning},
-    journal = {},
-    year = 2024,
-    month = Nov,
-    url = {https://arxiv.org/abs/2411.18571},
-}    
+@article{khade2024challenges,
+  title={Challenges in Adapting Multilingual LLMs to Low-Resource Languages using LoRA PEFT Tuning},
+  author={Khade, Omkar and Jagdale, Shruti and Phaltankar, Abhishek and Takalikar, Gauri and Joshi, Raviraj},
+  journal={arXiv e-prints},
+  pages={arXiv--2411},
+  year={2024}
+} 
 
 
-@article{houlsby2019parameter,
-    author = {Neil Houlsby},
-    title = {Parameter-Efficient Transfer Learning for NLP},
-    journal = {},
-    year = 2019,
-    month = Feb,
-    url = {https://proceedings.mlr.press/v97/houlsby19a.html},
-}    
-
-@article{hu2023adapters,
-    author = {Zhiqiang Hu},
-    title = {LLM-Adapters: An Adapter Family for Parameter-Efficient Fine-Tuning of Large Language Models},
-    journal = {},
-    year = 2023,
-    month = Apr,
-    url = {https://arxiv.org/abs/2304.01933}
-
+@inproceedings{houlsby2019parameter,
+  title={Parameter-efficient transfer learning for NLP},
+  author={Houlsby, Neil and Giurgiu, Andrei and Jastrzebski, Stanislaw and Morrone, Bruna and De Laroussilhe, Quentin and Gesmundo, Andrea and Attariyan, Mona and Gelly, Sylvain},
+  booktitle={International conference on machine learning},
+  pages={2790--2799},
+  year={2019},
+  organization={PMLR}
 }
 
-@article{xia2024finetuneperformance,
-    author = {YuchenXia},
-    title = {Understanding the Performance and Estimating the Cost of LLM Fine-Tuning},
-    journal = {IEEE Xplore},
-    year = 2024,
-    month = Sep,
-    url = {https://arxiv.org/abs/2304.01933}
+@article{hu2023llm,
+  title={Llm-adapters: An adapter family for parameter-efficient fine-tuning of large language models},
+  author={Hu, Zhiqiang and Wang, Lei and Lan, Yihuai and Xu, Wanyu and Lim, Ee-Peng and Bing, Lidong and Xu, Xing and Poria, Soujanya and Lee, Roy Ka-Wei},
+  journal={arXiv preprint arXiv:2304.01933},
+  year={2023}
+}
+
+@inproceedings{xia2024understanding,
+  title={Understanding the performance and estimating the cost of llm fine-tuning},
+  author={Xia, Yuchen and Kim, Jiho and Chen, Yuhan and Ye, Haojie and Kundu, Souvik and Hao, Cong Callie and Talati, Nishil},
+  booktitle={2024 IEEE International Symposium on Workload Characterization (IISWC)},
+  pages={210--223},
+  year={2024},
+  organization={IEEE}
 }
 
 @article{wei2021finetuned,
-    author = {Jason Wei},
-    title = {Finetuned Language Models Are Zero-Shot Learners},
-    journal = {},
-    year = 2021,
-    month = Sep,
-    url = {https://arxiv.org/abs/2109.01652}
+  title={Finetuned language models are zero-shot learners},
+  author={Wei, Jason and Bosma, Maarten and Zhao, Vincent Y and Guu, Kelvin and Yu, Adams Wei and Lester, Brian and Du, Nan and Dai, Andrew M and Le, Quoc V},
+  journal={arXiv preprint arXiv:2109.01652},
+  year={2021}
 }
 
-@article{martinez2022tuning,
-    author = {Fernando Fernández-Martínez},
-    title = {Fine-Tuning BERT Models for Intent Recognition Using a Frequency Cut-Off Strategy for Domain-Specific Vocabulary Extension},
-    journal = {MPDI},
-    year = 2022,
-    month = Jan,
-    url = {https://www.mdpi.com/2076-3417/12/3/1610}
+@article{fernandez2022fine,
+  title={Fine-tuning BERT models for intent recognition using a frequency cut-off strategy for domain-specific vocabulary extension},
+  author={Fernandez-Martinez, Fernando and Luna-Jim{\'e}nez, Cristina and Kleinlein, Ricardo and Griol, David and Callejas, Zoraida and Montero, Juan Manuel},
+  journal={Applied Sciences},
+  volume={12},
+  number={3},
+  pages={1610},
+  year={2022},
+  publisher={MDPI}
 }
 
-@article{rust2020tokenizer,
-    author = {Philip Rust},
-    title = {How Good is Your Tokenizer? On the Monolingual Performance of Multilingual Language Models},
-    journal = {arxiv},
-    year = 2020,
-    month = Dec,
-    url = {https://arxiv.org/abs/2012.15613}
+@article{rust2020good,
+  title={How good is your tokenizer? on the monolingual performance of multilingual language models},
+  author={Rust, Phillip and Pfeiffer, Jonas and Vuli{\'c}, Ivan and Ruder, Sebastian and Gurevych, Iryna},
+  journal={arXiv preprint arXiv:2012.15613},
+  year={2020}
 }
 
-@article{jiti2021bertweet,
-    author = {Fajri Koto},
-    title = {IndoBERTweet: A Pretrained Language Model for Indonesian Twitter with Effective Domain-Specific Vocabulary Initialization},
-    journal = {},
-    year = 2021,
-    month = Sep,
-    url = {https://www.semanticscholar.org/paper/IndoBERTweet\%3A-A-Pretrained-Language-Model-for-with-Koto-Lau/59c0c6b62e33850cda08663d4c9ecabcf5d21596}
+@article{koto2021indobertweet,
+  title={IndoBERTweet: A pretrained language model for Indonesian Twitter with effective domain-specific vocabulary initialization},
+  author={Koto, Fajri and Lau, Jey Han and Baldwin, Timothy},
+  journal={arXiv preprint arXiv:2109.04607},
+  year={2021}
 }
 
 @article{artetxe2018robust,
-    author = {Mikel Artetxe},
-    title = {A robust self-learning method for fully unsupervised cross-lingual mappings of word embeddings},
-    journal = {},
-    year = 2018,
-    month = May,
-    url = {https://arxiv.org/abs/1805.06297}
+  title={A robust self-learning method for fully unsupervised cross-lingual mappings of word embeddings},
+  author={Artetxe, Mikel and Labaka, Gorka and Agirre, Eneko},
+  journal={arXiv preprint arXiv:1805.06297},
+  year={2018}
 }
 
 
 @article{wang2019superglue,
-    author = {Alex Wang},
-    title = {SuperGLUE: A Stickier Benchmark for General-Purpose Language Understanding Systems},
-    journal = {},
-    year = 2019,
-    month = May,
-    url = {https://arxiv.org/abs/1905.00537}
+  title={Superglue: A stickier benchmark for general-purpose language understanding systems},
+  author={Wang, Alex and Pruksachatkun, Yada and Nangia, Nikita and Singh, Amanpreet and Michael, Julian and Hill, Felix and Levy, Omer and Bowman, Samuel},
+  journal={Advances in neural information processing systems},
+  volume={32},
+  year={2019}
 }
 
 
-% Add references to this one, Thesis focused on extension of tokenizers
-@article{kim2025finetune,
-    author = {Jaeyoon Kim},
-    title = {Exploring the Effects of Tokenizer Extension on Domain-specific Finetuning of Language Models},
-    journal = {},    
-    year = 2025,
-    month = Jul,
-    url = {https://s-space.snu.ac.kr/handle/10371/220877?mode=full}
+@phdthesis{김재윤2025exploring,
+  title={Exploring the Effects of Tokenizer Extension on Domain-specific Fine-tuning of Language Models},
+  author={김재윤},
+  year={2025},
+  school={서울대학교 대학원}
 }
-% [MISSING_REFERENCE/ADD_NEW_REFERENCE/ADD_REFERENCE] Add references to this one as well, paper focused on modeling a statistical word alignment between two languages: And using that matrix to initialize the embeddings
-@article{singh2025tokeninit,
-    author = {Pranaydeep Singh},
-    title = {EnerGIZAr: Leveraging GIZA++ for Effective Tokenizer Initialization},
-    journal = {},
-    year = 2025,
-    month = Jul,
-    url = {https://aclanthology.org/2025.findings-acl.109/}
+
+@article{minixhofer2021wechsel,
+  title={WECHSEL: Effective initialization of subword embeddings for cross-lingual transfer of monolingual language models},
+  author={Minixhofer, Benjamin and Paischer, Fabian and Rekabsaz, Navid},
+  journal={arXiv preprint arXiv:2112.06598},
+  year={2021}
 }
-% [MISSING_REFERENCE/ADD_NEW_REFERENCE/ADD_REFERENCE] Similar as above, but focused on a less effective method
-@article{minixhofer2022subwembedinit,
-    author = {Benjamin Minixhofer},
-    title = {WECHSEL: Effective initialization of subword embeddings for cross-lingual transfer of monolingual language models},
-    journal = {},
-    year = 2022,
-    month = Jul,
-    url = {https://aclanthology.org/2022.naacl-main.293/}
+@article{dobler2023focus,
+  title={FOCUS: Effective embedding initialization for monolingual specialization of multilingual models},
+  author={Dobler, Konstantin and De Melo, Gerard},
+  journal={arXiv preprint arXiv:2305.14481},
+  year={2023}
 }
-% [MISSING_REFERENCE/ADD_NEW_REFERENCE/ADD_REFERENCE] Same as above, but uses model's weights embedding matrix to retrieve information of the new added tokens (similar to our approach, but not as direct as ours)
-@article{dobler2023embedinit,
-    author = {Konstantin Dobler},
-    title = {FOCUS: Effective Embedding Initialization for Monolingual Specialization of Multilingual Models},
-    journal = {},
-    year = 2023,
-    month = Dec,
-    url = {https://aclanthology.org/2023.emnlp-main.829}
+@article{liu2023ofa,
+  title={OFA: A framework of initializing unseen subword embeddings for efficient large-scale multilingual continued pretraining},
+  author={Liu, Yihong and Lin, Peiqin and Wang, Mingyang and Sch{\"u}tze, Hinrich},
+  journal={arXiv preprint arXiv:2311.08849},
+  year={2023}
 }
-% [MISSING_REFERENCE/ADD_NEW_REFERENCE/ADD_REFERENCE] Same as above, but makes use of external vector external well-aligned multilingual static word vectors and injects the alignment knowledge into the embedding matrix.
-@article{liu2024embedinit,
-    author = {Yihong Liu},
-    title = {OFA: A Framework of Initializing Unseen Subword Embeddings for Efficient Large-scale Multilingual Continued Pretraining},
-    journal = {},
-    year = 2024,
-    month = Jun,
-    url = {https://aclanthology.org/2024.findings-naacl.68/}
+
+@article{dagan2024getting,
+  title={Getting the most out of your tokenizer for pre-training and domain adaptation},
+  author={Dagan, Gautier and Synnaeve, Gabriel and Roziere, Baptiste},
+  journal={arXiv preprint arXiv:2402.01035},
+  year={2024}
 }
 
 
-% [MISSING_REFERENCE/ADD_NEW_REFERENCE/ADD_REFERENCE] Add refenrece to bellow, shows that a tokenizer size, pre-tokenization regular expression, and training data significantly impact a model's performance (MOTIVATION)
-@article{dragan2024mosttoken,
-    author = {Gautier Dagan},
-    title = {Getting the most out of your tokenizer for pre-training and domain adaptation},
-    journal = {},
-    year = 2024,
-    month = Feb,
-    url = {https://arxiv.org/abs/2402.01035}
-}
-
-
-
-
-@article{devlin2018bert,
-  title={BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding},
-  author={Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova},
-  journal={arXiv preprint arXiv:1810.04805},
-  year={2019},
-  url = {https://arxiv.org/abs/1810.04805}
+@inproceedings{devlin2019bert,
+  title={Bert: Pre-training of deep bidirectional transformers for language understanding},
+  author={Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  booktitle={Proceedings of the 2019 conference of the North American chapter of the association for computational linguistics: human language technologies, volume 1 (long and short papers)},
+  pages={4171--4186},
+  year={2019}
 }
 
 @article{radford2019language,
-  title={Language Models are Unsupervised Multitask Learners},
-  author={Alec Radford, Jeff Wu, R. Child and others},
-  journal={OpenAI Blog},
-  year={2019},
-  url={https://www.semanticscholar.org/paper/Language-Models-are-Unsupervised-Multitask-Learners-Radford-Wu/9405cc0d6169988371b2755e573cc28650d14dfe}
+  title={Language models are unsupervised multitask learners},
+  author={Radford, Alec and Wu, Jeffrey and Child, Rewon and Luan, David and Amodei, Dario and Sutskever, Ilya and others},
+  journal={OpenAI blog},
+  volume={1},
+  number={8},
+  pages={9},
+  year={2019}
+}
+@article{artetxe2019cross,
+  title={On the cross-lingual transferability of monolingual representations},
+  author={Artetxe, Mikel and Ruder, Sebastian and Yogatama, Dani},
+  journal={arXiv preprint arXiv:1910.11856},
+  year={2019}
+}
+@article{bostrom2020byte,
+  title={Byte pair encoding is suboptimal for language model pretraining},
+  author={Bostrom, Kaj and Durrett, Greg},
+  journal={arXiv preprint arXiv:2004.03720},
+  year={2020}
+}
+@article{kocmi2017exploration,
+  title={An exploration of word embedding initialization in deep-learning tasks},
+  author={Kocmi, Tom and Bojar, Ond{\v{r}}ej},
+  journal={arXiv preprint arXiv:1711.09160},
+  year={2017}
 }
 
-@article{artetxe2020cross,
-  title={On the Cross-lingual Transferability of Monolingual Representations},
-  author={Mikel Artetxe, Sebastian Ruder, Dani Yogatama},
-  journal={ACL},
-  year={2020},
-  url = {https://aclanthology.org/2020.acl-main.421/}
+@article{sennrich2015neural,
+  title={Neural machine translation of rare words with subword units},
+  author={Sennrich, Rico and Haddow, Barry and Birch, Alexandra},
+  journal={arXiv preprint arXiv:1508.07909},
+  year={2015}
 }
-@article{bostrom2022byte,
-  title={Byte-Level vs Subword Tokenization: How Does It Affect Multilingual Pretraining?},
-  author={Kaj Bostrom, Greg Durrett},
-  journal={},
-  year={2022},
-  url = {https://arxiv.org/abs/2004.03720}
+
+@article{wu2016google,
+  title={Google's neural machine translation system: Bridging the gap between human and machine translation},
+  author={Wu, Yonghui and Schuster, Mike and Chen, Zhifeng and Le, Quoc V and Norouzi, Mohammad and Macherey, Wolfgang and Krikun, Maxim and Cao, Yuan and Gao, Qin and Macherey, Klaus and others},
+  journal={arXiv preprint arXiv:1609.08144},
+  year={2016}
 }
-@article{kocmi2017embed,
-    title = {An Exploration of Word Embedding Initialization in Deep-Learning Tasks},
-    author = {Tom Kocmi, Ondřej Bojar},
-    journal = {},
-    year = {2017},
-    month = {Nov},
-    url = {https://arxiv.org/abs/1711.09160}
+
+@article{kudo2018sentencepiece,
+  title={SentencePiece: A simple and language independent subword tokenizer and detokenizer for neural text processing},
+  author={Kudo, Taku and Richardson, John},
+  journal={arXiv preprint arXiv:1808.06226},
+  year={2018}
 }
+
+@article{leiter2024chatgpt,
+  title={Chatgpt: A meta-analysis after 2.5 months},
+  author={Leiter, Christoph and Zhang, Ran and Chen, Yanran and Belouadi, Jonas and Larionov, Daniil and Fresen, Vivian and Eger, Steffen},
+  journal={Machine Learning with Applications},
+  volume={16},
+  pages={100541},
+  year={2024},
+  publisher={Elsevier}
+}
+
+@misc{haque2022ithinkdisruptivetechnology,
+      title={"I think this is the most disruptive technology": Exploring Sentiments of ChatGPT Early Adopters using Twitter Data}, 
+      author={Mubin Ul Haque and Isuru Dharmadasa and Zarrin Tasnim Sworna and Roshan Namal Rajapakse and Hussain Ahmad},
+      year={2022},
+      eprint={2212.05856},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2212.05856}, 
+}
+@inproceedings{sousa2025tradutor,
+  title={Tradutor: Building a Variety Specific Translation Model},
+  author={Sousa, Hugo and Almasian, Satya and Campos, Ricardo and Jorge, Alipio},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={39},
+  number={24},
+  pages={25183--25191},
+  year={2025},
+  url={https://scholar.google.com/citations?view_op=view_citation&hl=en&user=d-14Qx4AAAAJ&citation_for_view=d-14Qx4AAAAJ:Y0pCki6q_DkC},
+}
+@inproceedings{sousa2025enhancing,
+  title={Enhancing Portuguese variety identification with cross-domain approaches},
+  author={Sousa, Hugo and Almeida, R{\'u}ben and Silvano, Purifica{\c{c}}ao and Cantante, In{\^e}s and Campos, Ricardo and Jorge, Alipio},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={39},
+  number={24},
+  pages={25192--25200},
+  year={2025},
+  url={https://scholar.google.com/citations?view_op=view_citation&hl=en&user=d-14Qx4AAAAJ&citation_for_view=d-14Qx4AAAAJ:W7OEmFMy1HYC}
+}
+
+
+@article{minaee2024large,
+  title={Large language models: A survey},
+  author={Minaee, Shervin and Mikolov, Tomas and Nikzad, Narjes and Chenaghlu, Meysam and Socher, Richard and Amatriain, Xavier and Gao, Jianfeng},
+  journal={arXiv preprint arXiv:2402.06196},
+  year={2024}
+}
+
+
+@article{harris1954distributional,
+  title={Distributional structure},
+  author={Harris, Zellig S},
+  journal={Word},
+  volume={10},
+  number={2-3},
+  pages={146--162},
+  year={1954},
+  publisher={Taylor \& Francis}
+}
+@article{winograd1972understanding,
+  title={Understanding natural language},
+  author={Winograd, Terry},
+  journal={Cognitive psychology},
+  volume={3},
+  number={1},
+  pages={1--191},
+  year={1972},
+  publisher={Elsevier},
+  url = {https://doi.org/10.1016/0010-0285(72)90002-3}
+}
+
+@article{bengio2003neural,
+  title={A neural probabilistic language model},
+  author={Bengio, Yoshua and Ducharme, R{\'e}jean and Vincent, Pascal and Jauvin, Christian},
+  journal={Journal of machine learning research},
+  volume={3},
+  number={Feb},
+  pages={1137--1155},
+  year={2003}
+}
+@article{mikolov2013efficient,
+  title={Efficient estimation of word representations in vector space},
+  author={Mikolov, Tomas and Chen, Kai and Corrado, Greg and Dean, Jeffrey},
+  journal={arXiv preprint arXiv:1301.3781},
+  year={2013}
+}
+@inproceedings{pennington2014glove,
+  title={Glove: Global vectors for word representation},
+  author={Pennington, Jeffrey and Socher, Richard and Manning, Christopher D},
+  booktitle={Proceedings of the 2014 conference on empirical methods in natural language processing (EMNLP)},
+  pages={1532--1543},
+  year={2014}
+}
+
+@inproceedings{socher2013recursive,
+  title={Recursive deep models for semantic compositionality over a sentiment treebank},
+  author={Socher, Richard and Perelygin, Alex and Wu, Jean and Chuang, Jason and Manning, Christopher D and Ng, Andrew Y and Potts, Christopher},
+  booktitle={Proceedings of the 2013 conference on empirical methods in natural language processing},
+  pages={1631--1642},
+  year={2013}
+}
+@article{zhang2015character,
+  title={Character-level convolutional networks for text classification},
+  author={Zhang, Xiang and Zhao, Junbo and LeCun, Yann},
+  journal={Advances in neural information processing systems},
+  volume={28},
+  year={2015}
+}
+@article{hochreiter1997long,
+  title={Long short-term memory},
+  author={Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
+  journal={Neural computation},
+  volume={9},
+  number={8},
+  pages={1735--1780},
+  year={1997},
+  publisher={MIT press}
+}
+@article{chung2014empirical,
+  title={Empirical evaluation of gated recurrent neural networks on sequence modeling},
+  author={Chung, Junyoung and Gulcehre, Caglar and Cho, KyungHyun and Bengio, Yoshua},
+  journal={arXiv preprint arXiv:1412.3555},
+  year={2014}
+}
+@article{sutskever2014sequence,
+  title={Sequence to sequence learning with neural networks},
+  author={Sutskever, Ilya and Vinyals, Oriol and Le, Quoc V},
+  journal={Advances in neural information processing systems},
+  volume={27},
+  year={2014}
+}
+@article{bengio1994learning,
+  title={Learning long-term dependencies with gradient descent is difficult},
+  author={Bengio, Yoshua and Simard, Patrice and Frasconi, Paolo},
+  journal={IEEE transactions on neural networks},
+  volume={5},
+  number={2},
+  pages={157--166},
+  year={1994},
+  publisher={IEEE}
+}
+@article{pascanu2013construct,
+  title={How to construct deep recurrent neural networks},
+  author={Pascanu, Razvan and Gulcehre, Caglar and Cho, Kyunghyun and Bengio, Yoshua},
+  journal={arXiv preprint arXiv:1312.6026},
+  year={2013}
+}
+@article{kalchbrenner2014convolutional,
+  title={A convolutional neural network for modelling sentences},
+  author={Kalchbrenner, Nal and Grefenstette, Edward and Blunsom, Phil},
+  journal={arXiv preprint arXiv:1404.2188},
+  year={2014}
+}
+@inproceedings{gehring2017convolutional,
+  title={Convolutional sequence to sequence learning},
+  author={Gehring, Jonas and Auli, Michael and Grangier, David and Yarats, Denis and Dauphin, Yann N},
+  booktitle={International conference on machine learning},
+  pages={1243--1252},
+  year={2017},
+  organization={PMLR}
+}
+@inproceedings{johnson2017deep,
+  title={Deep pyramid convolutional neural networks for text categorization},
+  author={Johnson, Rie and Zhang, Tong},
+  booktitle={Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  pages={562--570},
+  year={2017}
+}
+@article{goldberg2018neural,
+  title={Neural network methods for natural language processing},
+  author={Goldberg, Yoav},
+  journal={Computational Linguistics},
+  volume={44},
+  number={1},
+  pages={194--195},
+  year={2018},
+  publisher={MIT Press}
+}
+
+@article{vaswani2017attention,
+  title={Attention is all you need},
+  author={Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  journal={Advances in neural information processing systems},
+  volume={30},
+  year={2017}
+}
+
+@article{tang2019distilling,
+  title={Distilling task-specific knowledge from bert into simple neural networks},
+  author={Tang, Raphael and Lu, Yao and Liu, Linqing and Mou, Lili and Vechtomova, Olga and Lin, Jimmy},
+  journal={arXiv preprint arXiv:1903.12136},
+  year={2019}
+}
+
+@inproceedings{peters-etal-2018-deep,
+    title = "Deep Contextualized Word Representations",
+    author = "Peters, Matthew E.  and
+      Neumann, Mark  and
+      Iyyer, Mohit  and
+      Gardner, Matt  and
+      Clark, Christopher  and
+      Lee, Kenton  and
+      Zettlemoyer, Luke",
+    editor = "Walker, Marilyn  and
+      Ji, Heng  and
+      Stent, Amanda",
+    booktitle = "Proceedings of the 2018 Conference of the North {A}merican Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers)",
+    month = jun,
+    year = "2018",
+    address = "New Orleans, Louisiana",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/N18-1202/",
+    doi = "10.18653/v1/N18-1202",
+    pages = "2227--2237",
+    abstract = "We introduce a new type of deep contextualized word representation that models both (1) complex characteristics of word use (e.g., syntax and semantics), and (2) how these uses vary across linguistic contexts (i.e., to model polysemy). Our word vectors are learned functions of the internal states of a deep bidirectional language model (biLM), which is pre-trained on a large text corpus. We show that these representations can be easily added to existing models and significantly improve the state of the art across six challenging NLP problems, including question answering, textual entailment and sentiment analysis. We also present an analysis showing that exposing the deep internals of the pre-trained network is crucial, allowing downstream models to mix different types of semi-supervision signals."
+}
+
+@inproceedings{wolf2020transformers,
+  title={Transformers: State-of-the-art natural language processing},
+  author={Wolf, Thomas and Debut, Lysandre and Sanh, Victor and Chaumond, Julien and Delangue, Clement and Moi, Anthony and Cistac, Pierric and Rault, Tim and Louf, Remi and Funtowicz, Morgan and others},
+  booktitle={Proceedings of the 2020 conference on empirical methods in natural language processing: system demonstrations},
+  pages={38--45},
+  year={2020}
+}
+
+@article{radford2018improving,
+  title={Improving language understanding by generative pre-training},
+  author={Radford, Alec and Narasimhan, Karthik and Salimans, Tim and Sutskever, Ilya and others},
+  year={2018},
+  journal = {},
+  publisher={San Francisco, CA, USA}
+}
+
+@article{raffel2020exploring,
+  title={Exploring the limits of transfer learning with a unified text-to-text transformer},
+  author={Raffel, Colin and Shazeer, Noam and Roberts, Adam and Lee, Katherine and Narang, Sharan and Matena, Michael and Zhou, Yanqi and Li, Wei and Liu, Peter J},
+  journal={Journal of machine learning research},
+  volume={21},
+  number={140},
+  pages={1--67},
+  year={2020}
+}
+
+@misc{jiang2023mistral7b,
+      title={Mistral 7B}, 
+      author={Albert Q. Jiang and Alexandre Sablayrolles and Arthur Mensch and Chris Bamford and Devendra Singh Chaplot and Diego de las Casas and Florian Bressand and Gianna Lengyel and Guillaume Lample and Lucile Saulnier and Lélio Renard Lavaud and Marie-Anne Lachaux and Pierre Stock and Teven Le Scao and Thibaut Lavril and Thomas Wang and Timothée Lacroix and William El Sayed},
+      year={2023},
+      eprint={2310.06825},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2310.06825}, 
+}
+
+@article{gage1994new,
+  title={A new algorithm for data compression},
+  author={Gage, Philip},
+  journal={C Users Journal},
+  volume={12},
+  number={2},
+  pages={23--38},
+  year={1994},
+  publisher={McPherson, KS: R \& D Publications, c1987-1994.}
+}
+
+@inproceedings{schuster2012japanese,
+  title={Japanese and korean voice search},
+  author={Schuster, Mike and Nakajima, Kaisuke},
+  booktitle={2012 IEEE international conference on acoustics, speech and signal processing (ICASSP)},
+  pages={5149--5152},
+  year={2012},
+  organization={IEEE}
+}
+
+@article{sanh2019distilbert,
+  title={DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter},
+  author={Sanh, Victor and Debut, Lysandre and Chaumond, Julien and Wolf, Thomas},
+  journal={arXiv preprint arXiv:1910.01108},
+  year={2019}
+}
+
+@article{lan2019albert,
+  title={Albert: A lite bert for self-supervised learning of language representations},
+  author={Lan, Zhenzhong and Chen, Mingda and Goodman, Sebastian and Gimpel, Kevin and Sharma, Piyush and Soricut, Radu},
+  journal={arXiv preprint arXiv:1909.11942},
+  year={2019}
+}
+
+@misc{dai2019transformerxlattentivelanguagemodels,
+      title={Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context}, 
+      author={Zihang Dai and Zhilin Yang and Yiming Yang and Jaime Carbonell and Quoc V. Le and Ruslan Salakhutdinov},
+      year={2019},
+      eprint={1901.02860},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1901.02860}, 
+}
+
+@article{elman1990finding,
+  title={Finding structure in time},
+  author={Elman, Jeffrey L},
+  journal={Cognitive science},
+  volume={14},
+  number={2},
+  pages={179--211},
+  year={1990},
+  publisher={Wiley Online Library}
+}
+
+@article{yassin2025state,
+  title={The State of Large Language Models for African Languages: Progress and Challenges},
+  author={Yassin Hussen, Kedir and Tewabe Sewunetie, Walelign and Ayele, Abinew Ali and Hafiz Imam, Sukairaj and Muhammad, Shamsuddeen Hassan and Muhie Yimam, Seid},
+  journal={arXiv e-prints},
+  pages={arXiv--2506},
+  year={2025}
+}
+
+@article{joshi2020state,
+  title={The state and fate of linguistic diversity and inclusion in the NLP world},
+  author={Joshi, Pratik and Santy, Sebastin and Budhiraja, Amar and Bali, Kalika and Choudhury, Monojit},
+  journal={arXiv preprint arXiv:2004.09095},
+  year={2020}
+}
+
+
+@article{mcgiff2025overcoming,
+  title={Overcoming Data Scarcity in Generative Language Modelling for Low-Resource Languages: A Systematic Review},
+  author={McGiff, Josh and Nikolov, Nikola S},
+  journal={arXiv preprint arXiv:2505.04531},
+  year={2025}
+}
+
+@article{huang2024survey,
+  title={A survey on large language models with multilingualism: Recent advances and new frontiers},
+  author={Huang, Kaiyu and Mo, Fengran and Zhang, Xinyu and Li, Hongliang and Li, You and Zhang, Yuanchi and Yi, Weijian and Mao, Yulong and Liu, Jinchen and Xu, Yuzhuang and others},
+  journal={arXiv preprint arXiv:2405.10936},
+  year={2024}
+}
+
+@article{lotz2025beyond,
+  title={Beyond Text Compression: Evaluating Tokenizers Across Scales},
+  author={Lotz, Jonas F and Lopes, Ant{\'o}nio V and Peitz, Stephan and Setiawan, Hendra and Emili, Leonardo},
+  journal={arXiv preprint arXiv:2506.03101},
+  year={2025}
+}
+
+
+
+@article{kim2014convolutional,
+  title={Convolutional neural networks for sentence classification},
+  author={Kim, Yoon},
+  journal={arXiv preprint arXiv:1408.5882},
+  year={2014}
+}
+
+@article{kim2024efficient,
+  title={Efficient and effective vocabulary expansion towards multilingual large language models},
+  author={Kim, Seungduk and Choi, Seungtaek and Jeong, Myeongho},
+  journal={arXiv preprint arXiv:2402.14714},
+  year={2024}
+}
+
+@article{nakash2025adaptivocab,
+  title={AdaptiVocab: Enhancing LLM Efficiency in Focused Domains through Lightweight Vocabulary Adaptation},
+  author={Nakash, Itay and Calderon, Nitay and David, Eyal Ben and Hoffer, Elad and Reichart, Roi},
+  journal={arXiv preprint arXiv:2503.19693},
+  year={2025}
+}
+
+@article{gu2024retok,
+  title={Retok: Replacing tokenizer to enhance representation efficiency in large language model},
+  author={Gu, Shuhao and Zhao, Mengdi and Zhang, Bowen and Wang, Liangdong and Li, Jijie and Liu, Guang},
+  journal={arXiv preprint arXiv:2410.04335},
+  year={2024}
+}
+
+@article{sanches2024brazilian,
+  title={From Brazilian Portuguese to European Portuguese},
+  author={Sanches, Jo{\~a}o and Ribeiro, Rui and Coheur, Lu{\'\i}sa},
+  journal={arXiv preprint arXiv:2408.07457},
+  year={2024}
+}
+
+@article{carvalho2025cam,
+  title={CAM$\backslash$\~{} OES: A Comprehensive Automatic Speech Recognition Benchmark for European Portuguese},
+  author={Carvalho, Carlos and Teixeira, Francisco and Botelho, Catarina and Pompili, Anna and Solera-Ure{\~n}a, Rub{\'e}n and Paulo, S{\'e}rgio and Juli{\~a}o, Mariana and Rolland, Thomas and Mendon{\c{c}}a, John and Pereira, Diogo and others},
+  journal={arXiv preprint arXiv:2508.19721},
+  year={2025}
+}
+
+
+@article{wang2018glue,
+  title={GLUE: A multi-task benchmark and analysis platform for natural language understanding},
+  author={Wang, Alex and Singh, Amanpreet and Michael, Julian and Hill, Felix and Levy, Omer and Bowman, Samuel R},
+  journal={arXiv preprint arXiv:1804.07461},
+  year={2018}
+}
+
+
+@article{chronopoulou2020reusing,
+  title={Reusing a pretrained language model on languages with limited corpora for unsupervised nmt},
+  author={Chronopoulou, Alexandra and Stojanovski, Dario and Fraser, Alexander},
+  journal={arXiv preprint arXiv:2009.07610},
+  year={2020}
+}
+
+
+@inproceedings{ali2024tokenizer,
+  title={Tokenizer choice for llm training: Negligible or crucial?},
+  author={Ali, Mehdi and Fromm, Michael and Thellmann, Klaudia and Rutmann, Richard and L{\"u}bbering, Max and Leveling, Johannes and Klug, Katrin and Ebert, Jan and Doll, Niclas and Buschhoff, Jasper and others},
+  booktitle={Findings of the Association for Computational Linguistics: NAACL 2024},
+  pages={3907--3924},
+  year={2024}
+}
+
+@article{Toraman_2023,
+   title={Impact of Tokenization on Language Models: An Analysis for Turkish},
+   volume={22},
+   ISSN={2375-4702},
+   url={http://dx.doi.org/10.1145/3578707},
+   DOI={10.1145/3578707},
+   number={4},
+   journal={ACM Transactions on Asian and Low-Resource Language Information Processing},
+   publisher={Association for Computing Machinery (ACM)},
+   author={Toraman, Cagri and Yilmaz, Eyup Halit and Şahi̇nuç, Furkan and Ozcelik, Oguzhan},
+   year={2023},
+   month=mar, pages={1–21} }
+
+
+
 
 @Comment{jabref-meta: databaseType:bibtex;}

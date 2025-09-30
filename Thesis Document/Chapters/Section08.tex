@@ -8,69 +8,42 @@
 
 % Chapter Label
 \label{chap:conclusions}
-This dissertation has presented a methodological framework for adapting pre-trained language models to European Portuguese through targeted tokenizer modifications. By expanding the tokenizer vocabulary with language-specific tokens and developing novel embedding initialization strategies, we have demonstrated improvements in generation efficiency for certain model architectures while maintaining comparable performance on benchmark tasks.
 
-Our findings indicate that tokenizer adaptation represents a computationally efficient approach to language adaptation, requiring less resources compared to full model retraining. The Position-Weighted Initialization method, in particular, demonstrated superior performance across evaluation metrics, suggesting that accounting for positional information in token embeddings is crucial for effective language adaptation.
 
-The experimental results showed that model performance on the CalamePT and SuperGluePTPT benchmarks remained largely consistent after tokenizer adaptation, with no significant improvement observed. More importantly, our analysis of the \textit{Fertility Boost}(\S \ref{subsec:gen_efficiency}) metric revealed that the smaller monolingual (\texttt{SmolLM2-135M}) model saw a 16\% improvement in generation efficiency, requiring fewer output tokens to generate Portuguese words. However, the larger multilingual models (\texttt{Qwen2.5-1.5B-Instruct} and \texttt{SmolLM3}) showed less than 3\% generation efficiency.
+The research presented in this dissertation set out to address the problem of adapting large language models to low-resource languages, with a particular focus on European Portuguese. While existing approaches largely rely on computationally expensive fine-tuning or continued pre-training, this work explored whether lightweight, training-free interventions at the tokenizer level could offer a viable alternative. By modifying the tokenizer vocabulary and embedding initialization strategies, the goal was to improve efficiency and effectiveness without requiring access to large-scale computational resources.
 
-This model-dependent behavior suggests that the benefits of our tokenizer adaptation approach may be more pronounced for certain model architectures, particularly smaller monolingual models.
+The developments carried out in this work converged into three central contributions. First, a systematic methodology for tokenizer adaptation was designed, encompassing vocabulary expansion, embedding initialization, and an inference adaptation framework. Second, a new strategy for embedding initialization was proposed and evaluated, \textit{Position-Weighted Initialization}, which was identified as the most effective among those tested. Third, these methods were applied and validated on European Portuguese benchmarks, offering a practical demonstration of their potential for extending model capabilities to underrepresented languages.
 
-\section{Summary of Contributions}
-This research has made several substantive contributions to the field of natural language processing and multilingual model adaptation:
+The overall conclusion is that tokenizer adaptation represents a computationally efficient pathway for enabling cross-lingual use. The approach yielded measurable efficiency improvements, especially for smaller monolingual models, while maintaining effectiveness on benchmark tasks and preserving the original source language capabilities. At the same time, the findings revealed that the benefits are model-dependent, underscoring the importance of tailoring adaptation strategies to specific architectures. With these overarching results established, the remainder of this chapter turns to the answering of the research questions directly, before reflecting on the limitations of the work and outlining promising directions for future research.
 
-\begin{itemize}
-    \item Development and validation of a tokenizer adaptation methodology that enhances generation efficiency for European Portuguese without requiring complete model retraining
-    
-    \item Introduction of novel embedding initialization strategy—Position-Weighted Initialization—with comprehensive comparative analysis of its effectiveness
-    
-    \item Discovery of model-dependent effects on generation efficiency (Fertility Output) after tokenizer adaptation, with smaller monolingual models showing improvement while larger multilingual models exhibited decreased efficiency\unsure{This finding may be refined with additional model architecture analysis}
-    
-    \item Empirical validation of the approach using rigorous European Portuguese-specific benchmarks, establishing a methodological foundation for future work in low-resource language adaptation
-\end{itemize}
 
-\section{Limitations}
-While our approach demonstrated improvements in token efficiency for Portuguese language processing, several limitations should be acknowledged:
 
-\begin{itemize}
-    \item \textbf{Model-Dependent Generation Efficiency}: Our research revealed that generation efficiency improvements (as measured by the \textit{Fertility Boost} \S \ref{sec:gen_efficiency} metric) were limited to the smaller monolingual model, while the larger multilingual model showed decreased efficiency. This suggests that our approach may not be universally beneficial across different model architectures and sizes.
-    
-    \item \textbf{Model Architecture Sensitivity}: A significant finding of our approach is that different model architectures respond differently to tokenizer adaptation. This variation was particularly notable between the smaller monolingual \texttt{SmolLM2-135M} model and the larger multilingual \texttt{Qwen2.5-1.5B-Instruct} model, suggesting that adaptation strategies may need to be tailored to specific model architectures.\unsure{Need validation if this is actually different model "ARCHITECTURES" or simply different models (word Architecture may not be true)}
-    
-    \item \textbf{Inference Adaptation}: While we proposed and implemented a theoretical framework for inference adaptation, this component was not implemented with production-ready standards in the current research.
-    
-    % \item \textbf{Training Data Constraints}: The quality of the added tokens is directly dependent on the representativeness of the Portuguese corpus used for training the BPE tokenizer. Our training data, while diverse, was limited to approximately \unsure{add correct number of sentences/tokens in our "OpenSubtitles" dataset} sentences, which may not capture all linguistic variations present in European Portuguese, particularly domain-specific terminology, regional dialects, and evolving language patterns.
-    
-    \item \textbf{Embedding Space Coherence}: While our initialization strategies attempt to place new token embeddings in semantically appropriate regions of the embedding space, there is no guarantee of optimal placement without fine-tuning the entire model. This creates the need for the new Inference Adaptation mentioned above and adds an extra layer of complexity to existing architectures.
-    
-    \item \textbf{Evaluation Scope}: Our evaluation focused primarily on text completion and binary classification tasks, which may not fully represent the model's performance across all potential use cases. More complex tasks such as translation, summarization, and creative text generation were not comprehensively evaluated.
-    
-    \item \textbf{Cross-lingual Transfer}: The impact of tokenizer adaptation on the model's performance in other languages was not evaluated. There may be potential trade-offs in multilingual capabilities when optimizing for a specific target language.
 
-    % \item \textbf{Single Target Language}: The research executed was limited to European Portuguese, without exploration of other target languages where results may differ.
-\end{itemize}
+\paragraph{\textbf{Research Questions.}}
+The first research question asked whether an English-trained model could achieve comparable effectiveness in European Portuguese through tokenizer adaptation.
+The findings suggest that tokenizer-level modifications alone were insufficient to close the gap between English and Portuguese effectiveness.
+Results on \textit{extraGLUE} consistently lagged behind those on \textit{SuperGLUE}, providing a negative answer to this question. Nonetheless, this outcome is valuable, as it clarifies the boundaries of what tokenizer adaptation can and cannot achieve without complementary techniques.  
 
-These limitations provide important context for interpreting our results and highlight areas requiring further investigation in future research. Despite these constraints, the improvements in token efficiency achieved with minimal computational resources suggest that the approach represents a valuable contribution to the field of language model adaptation.
+The second research question concerned the impact on generation efficiency. The results obtained through \textit{Effective Efficiency Gains} (Table~\ref{tab:fertility_results}) showed improvements in the smaller monolingual model, which required fewer tokens per generated word. Larger multilingual models, however, benefited only marginally, and deterministic settings still favored the original tokens. Efficiency improvements were therefore real, but mostly evident when sampling was enabled, and primarily in resource-constrained, smaller-scale settings.
 
-\section{Future Research Directions}
-Based on our findings and the identified limitations, several promising avenues for future research emerge:
+The third research question asked whether adaptation affects all models equally, or if differences depend on architecture and size.
+Across all metrics in Table~\ref{tab:fertility_results} and the \textit{Rank Differences Distribution} illustrated in Figure~\ref{fig:results-rank-differences}, architecture emerged as a key factor. Smaller monolingual models benefited substantially in terms of efficiency, while larger multilingual ones showed limited gains. Effectiveness itself remained broadly consistent, with differences mainly reflected in token distribution. These findings indicate that model architecture plays a meaningful role in determining the effectiveness of tokenizer adaptation.
 
-\begin{itemize}
-    \item \textbf{Model Architecture Analysis}: Investigating why generation efficiency (Fertility Output) improvements were observed in smaller monolingual models but not in larger multilingual models. This could involve testing the approach on additional model architectures to identify patterns and determine the key factors that influence generation efficiency outcomes.
-    
-    \item \textbf{Architecture-Specific Adaptation}: Investigating methods to tailor tokenizer adaptation strategies to specific model architectures. This could involve developing specialized training objectives that account for architectural differences.\unsure{Maybe remove "Architecture" from item}
-    
-    \item \textbf{Production-Ready Inference Adaptation}: Developing and evaluating a production-ready implementation of the inference adaptation framework to determine if it can effectively address model-specific challenges while maintaining generation efficiency gains.
-    
-    \item \textbf{Embedding Fine-tuning}: Investigating lightweight fine-tuning approaches that could optimize the initialized embeddings without requiring full model retraining. Specifically, exploring gradient-based optimization of only the new token embeddings while keeping the rest of the model frozen.
-    
-    \item \textbf{Hybrid Adaptation Strategies}: Exploring combinations of tokenizer adaptation with parameter-efficient fine-tuning methods such as LoRA, adapters, or prompt tuning to potentially achieve better performance across all metrics.
-    
-    \item \textbf{Cross-lingual Evaluation}: Conducting comprehensive evaluations to understand how tokenizer adaptation for one language affects model performance across other languages, specifically with Multi-Lingual models.
-    
-    \item \textbf{Extension to Other Languages}: Applying and refining the methodology for other low-resource languages, particularly those with distinct morphological characteristics.
-    
-    \item \textbf{Theoretical Analysis}: Developing a more rigorous theoretical framework for understanding the relationship between tokenization granularity, model architecture, generation efficiency, and model performance across languages.
-\end{itemize}
+The fourth research question focused on embedding initialization strategies. Among the tested methods, the newly proposed \textit{Position-Weighted Initialization} consistently produced the most coherent embeddings and stable results (Table~\ref{tab:embed_init_results}), confirming that positional context plays a critical role in effective embedding construction.
 
-These research directions offer promising pathways for advancing the field of multilingual language model adaptation, particularly for languages with limited resources for full model pre-training. By addressing architecture-specific adaptation challenges and implementing the proposed inference adaptation framework, future work can build upon the foundation established in this dissertation to develop more effective and efficient approaches to language model adaptation.
+Finally, the fifth research question asked whether adapting the tokenizer reduces effectiveness in the model's source language, English. The findings from both quantitative evaluations using \textit{MMLU} (Table~\ref{tab:mmlu-results}) and qualitative completions (Table~\ref{tab:example_completions_horizontal-EN}) showed no significant loss of effectiveness. This indicates that adaptation to Portuguese did not compromise English capabilities.
+
+Taken together, these answers outline both the potential and the limitations of tokenizer adaptation as a strategy for cross-lingual transfer.
+
+
+\paragraph{\textbf{Limitations.}}
+Despite these contributions, several limitations must be acknowledged. The most important is the model-dependent nature of the observed gains: efficiency improvements were substantial in smaller monolingual models but negligible in larger multilingual ones. This suggests that the approach cannot yet be considered universally effective across all architectures. Another limitation lies in inference adaptation, which was only introduced conceptually and not implemented in a production-ready manner. While embedding initialization strategies improved semantic alignment, they cannot guarantee optimal placement without additional fine-tuning. The evaluation itself was also restricted to text completion and binary classification, leaving out more complex tasks such as translation, summarization, and creative generation. Finally, the study focused solely on European Portuguese, which prevents broader generalization and leaves open the possibility of trade-offs in multilingual effectiveness.  
+
+
+\paragraph{\textbf{Future Work.}}
+Building on these findings, several avenues for further research emerge. A deeper analysis of how model size and architecture shape the effectiveness of tokenizer adaptation could help design strategies suited to specific classes of models. The development of a production-ready inference adaptation framework would ensure coherence and efficiency in real-world deployments. Lightweight fine-tuning approaches that optimize only the embeddings of new tokens may provide a middle ground between computational efficiency and improved effectiveness. The exploration of hybrid methods that combine tokenizer adaptation with parameter-efficient fine-tuning, such as \textit{LoRA}, \textit{adapters}, or prompt tuning, also present a promising direction. Extending the methodology to other low-resource languages, particularly those with complex morphology, would test its broader applicability. Finally, a more rigorous theoretical treatment of the relationship between tokenization, model efficiency, and effectiveness could provide deeper insight into the mechanisms underlying the empirical results.  
+
+% These research directions offer promising pathways for advancing the field of multilingual language model adaptation, particularly for languages with limited resources for full model pre-training. By addressing architecture-specific adaptation challenges and implementing the proposed inference adaptation framework, future work can build upon the foundation established in this dissertation to develop more effective and efficient approaches to language model adaptation.
+
+
+In conclusion, this dissertation demonstrates that tokenizer-level interventions constitute a practical and computationally efficient pathway for extending large language models to underrepresented languages. By reducing resource requirements while maintaining effectiveness, and by offering concrete strategies for embedding initialization and inference adaptation, the work contributes to the broader effort of making advanced language technologies more inclusive and accessible.

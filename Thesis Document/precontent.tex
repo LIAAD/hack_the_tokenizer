@@ -22,7 +22,17 @@
 \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
 \begin{acknowledgements}
 
-Acknowledge ALL the people!
+The work presented in this dissertation was only made possible thanks to the support, guidance, and encouragement I received from many people. Although it would be impossible to thank everyone individually, I would like to express my gratitude to several groups and individuals in particular.  
+
+First and foremost, I owe my deepest appreciation to my supervisor, Prof. Alípio Mário Guedes Jorge, for his guidance, availability, and encouragement throughout this project. I also wish to sincerely thank my supervisor, MsC. Hugo Sousa, for his invaluable knowledge, advice, and unwavering support whenever I felt stuck -- which happened more often than I care to admit. I may not have been the easiest of students to deal with, but both of you remained patient and committed, and without your help this dissertation would not have been possible.  
+
+I am profoundly grateful to my family -- my parents, my brother, and my grandparents -- for their endless love, patience, and support. Even when my time with them was shortened due to the demands of my personal life, they always stood by me, encouraging me and giving me the strength to continue.  
+
+To my work colleagues, I want to express my appreciation for the flexibility and understanding you offered, which allowed me to balance both professional responsibilities and the challenges of completing my master’s degree. Your support was fundamental in making this possible.  
+
+To my friends, I am truly thankful for your patience and encouragement during the difficult moments of this journey. Some of you witnessed my struggles up close, others from afar, but all of you gave me strength. A special thank you goes to Hugo Valdrez, who has been by my side throughout the entire master’s journey -- your companionship throughout this journey means more than words can say.  
+
+Finally, to my partner in crime, Susana: thank you for your kindness, motivation, and unwavering support through the most challenging times. Your advice, patience, and understanding -- especially during the countless weekends I could not be by your side -- carried me through this work. This dissertation would not have been possible without you. 
 
 \end{acknowledgements}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{3}}
@@ -39,10 +49,16 @@ Acknowledge ALL the people!
 	degree={Mestrado Ciências de Computadores},
 	nameconnector={por},
         keywordsname={Palavras-chave},
-        keywords={física (keywords em português)}]
+        keywords={Ciências de Computadores, Aprendizagem de Máquina, Modelos de Linguagem, Tokenizador, Fertilidade, Processamento Natural de Linguagem}]
 \begin{otherlanguage}{portuguese}
 
-Este tese é sobre alguma coisa
+Os modelos de linguagem de grande porte (``Large Language Models'') são normalmente treinados em línguas com muitos recursos, deixando as de poucos recursos em desvantagem. Esta dissertação explora estratégias eficientes para adaptar modelos treinados em inglês ao português europeu sem treinar novamente todo o modelo. A ideia central, denominada ``hacking the tokenizer'', envolve estender seletivamente o vocabulário do tokenizador (``tokenizer'') e a camada de \textit{embedding} (``embedding layer'') do modelo, permitindo-lhe representar o texto português de forma mais compacta, minimizando o custo computacional.
+
+Propomos e avaliámos várias estratégias de inicialização de incorporação, introduzindo a ``Inicialização Ponderada por Posição'' (``Position-Weighted Initialization'') como um método inovador que superou outros métodos comparados. Para garantir a usabilidade do vocabulário expandido, também desenvolvemos uma estrutura de adaptação de inferência~\footnote{Código Fonte - \url{https://github.com/LIAAD/hack_the_tokenizer}} (``Inference Adaptation'') que preserva a compatibilidade com pesos pré-treinados (``pre-trained weights''). Além da metodologia, introduzimos novas métricas de avaliação -- \textit{``Fertility Boost''}, \textit{``Fertility Output''} e \textit{``Effective Efficiency Gain''} -- para capturar melhor os ganhos de eficiência da relação entre tokenização e inferência.
+
+Experiências realizadas em benchmarks de português europeu (\textit{extraGLUE} e \textit{CalamePT}) mostram que a adaptação do tokenizador não tem impacto significativo na qualidade do texto gerado, mas pode melhorar a eficiência da geração (``Generation Efficiency''), reduzindo a contagem de tokens em aproximadamente 18\%, com os modelos monolíngua de menor tamanho sendo os mais beneficiados. É importante destacar que a adaptação não prejudica o desempenho em inglês, destacando a viabilidade dessa estratégia leve de expansão multilíngua.
+
+Embora esses resultados sejam encorajadores, eles são modestos em escala: intervenções no nível do tokenizador não são apresentadas como um substituto completo para o ajuste fino (``fine-tuning''). Este trabalho demonstra que a adaptação do tokenizador pode ser um complemento útil para as técnicas de adaptação existentes. Seria necessário um maior desenvolvimento para alcançar a confiabilidade pronta para produção. 
 
 
 
@@ -55,7 +71,15 @@ Este tese é sobre alguma coisa
 \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
 \begin{abstract}
 
-This thesis is about something, I guess.
+
+Large language models (LLMs) are typically trained on high-resource languages, leaving low-resourced ones at a disadvantage. This dissertation explores efficient strategies for adapting English-trained models to European Portuguese without retraining the entire model. The central idea, termed \textit{hacking the tokenizer}, involves selectively extending the tokenizer’s vocabulary and embedding layer, enabling models to represent Portuguese text more compactly in terms oftoken count, while minimizing computational cost.  
+
+We propose and evaluate multiple embedding initialization strategies, introducing \textit{Position-Weighted Initialization} as a novel method that outperformed other methods we studied. To ensure the usability of the expanded vocabulary, we also design an inference adaptation framework~\footnote{Source code - \url{https://github.com/LIAAD/hack_the_tokenizer}} that preserves compatibility with pre-trained weights. In addition to methodology, we introduce new evaluation metrics -- \textit{Fertility Boost}, \textit{Fertility Output}, and \textit{Effective Efficiency Gain} -- to better capture efficiency gains from the relationship between tokenization and inference.  
+
+Experiments conducted on European Portuguese benchmarks (\textit{extraGLUE} and \textit{CalamePT}) show that tokenizer adaptation has no significant impact on effectiveness. However, it can improve generation efficiency by reducing token counts by approximately 18\%, with smaller monolingual models benefiting the most. Importantly, adaptation does not degrade English effectiveness, highlighting the viability of this lightweight multilingual expansion strategy.  
+
+While these results are encouraging, they are modest in scale. Tokenizer-level interventions are not a full replacement for fine-tuning as they do not increase the effectiveness of the target language. Instead, this work demonstrates that tokenizer adaptation can be a useful, lightweight complement to existing adaptation techniques. Further development, broader evaluations across diverse model architectures and sizes, and integration with parameter-efficient fine-tuning methods would be needed to reach production-ready reliability.
+
 
 \end{abstract}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{3}}

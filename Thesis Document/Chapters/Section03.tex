@@ -1,90 +1,130 @@
 \chapter{Related Work}
-\label{Section3}
+\label{Section3}\label{chap:related_work}
 
-This chapter explores different methodologies for adapting existing models to new languages, with a particular focus on European Portuguese. In Section \ref{Section3.1}, we review research that applies fine-tuning and continued pre-training on previously trained models, while in Section \ref{Section3.2}, we explore approaches that, in addition to pre-training and fine-tuning, explore tokenizer adaptation. Section \ref{Section3.3} examines the available datasets and benchmarks for the evaluation of the European Portuguese language.
+This chapter explores different methodologies for adapting existing models to new languages, with a focus on the European Portuguese variety of the language. In Section~\ref{Section3.1}, we review research that applies fine-tuning and continued pre-training on previously trained models, while in Section~\ref{Section3.2}, we review approaches that combine pre-training and fine-tuning with tokenizer adaptation. Section~\ref{Section3.3} examines the available datasets and benchmarks for the evaluation of the European Portuguese language.
 
 \section{Fine-tuning Approach}\label{Section3.1}
-Utilizing existing models and adapting them with additional training to more specific tasks can be a faster and less expensive way to obtain acceptable results compared to training from scratch.
-Pre-trained models fine-tuned to European Portuguese have been explored in several recent papers, including GlórIA~\cite{Gloria}, Sabiá~\cite{Sabia}, Gervásio-PT~\cite{Gervasio}, and Albertina-PT~\cite{Albertina}.
+Utilizing existing models and adapting them through additional training for more specific tasks can be a faster and less expensive way to obtain competitive results compared to training from scratch.
+Pre-trained models fine-tuned to European Portuguese have been explored in several recent papers, including GlórIA~\cite{lopes2024gloriagenerativeopen}, Sabiá~\cite{10.1007/978-3-031-45392-2_15}, Gervásio-PT~\cite{santos2024advancing}, and Albertina-PT~\cite{rodrigues2023advancing}.
 
 \subsection{Methodology}
 By using heavily trained models as a starting point, adaptation to new languages or domains can be achieved through additional training on target language data. This approach has been widely explored in various domains, including code generation~\cite{chen2021evaluating}, biomedical applications~\cite{lee2020biobert}, legal text processing~\cite{chalkidis2020legal}, and other specialized domains~\cite{gururangan2020don}.
 
-The fine-tuning process typically involves setting the pre-trained models to training mode, providing them with domain-specific or language-specific datasets, and training them for a relatively short period compared to the initial pre-training phase. This approach leverages the general language understanding capabilities already encoded in the model while adapting the parameters to better handle the target language or domain.
+The fine-tuning process typically involves setting the pre-trained models to training mode, providing them with domain-specific or language-specific datasets, and training them for a comparatively shorter period than the initial pre-training phase. This approach leverages the general language understanding capabilities already encoded in the model while adapting the parameters to better handle the target language or domain.
 
-Several variations of fine-tuning have been proposed to improve efficiency and effectiveness.
+Several variations of fine-tuning have been proposed to improve efficiency and effectiveness: \textbf{(i)} \textit{Parameter-Efficient Fine-Tuning (PEFT)} with methods such as LoRA~\cite{hu2022lora} and adapters~\cite{houlsby2019parameter}~\cite{hu2023llm}, that update only a small subset of parameters; \textbf{(ii)} \textit{Instruction Fine-Tuning} by training models on instruction-following datasets to enhance their ability to follow user instructions~\cite{wei2021finetuned}; and \textbf{(iii)} \textit{Continued Pre-training}, with further pre-training on the \emph{target language} data before task-specific fine-tuning~\cite{gururangan2020don}
 
-\begin{itemize}
-    \item \textbf{Parameter-Efficient Fine-Tuning (PEFT)}: Methods like LoRA~\cite{hu2021lora} and adapters~\cite{houlsby2019parameter}~\cite{hu2023adapters} that update only a small subset of parameters
-    \item \textbf{Instruction Fine-Tuning}: Training models on instruction-following datasets to improve their ability to follow user instructions~\cite{wei2021finetuned}
-    \item \textbf{Continued Pre-training}: Further pre-training on target language data before task-specific fine-tuning~\cite{gururangan2020don}
-\end{itemize}
 
 \subsection{Results}
-Fine-tuning approaches have shown positive results~\cite{xia2024finetuneperformance} in various languages and domains; however, they also present difficult challenges such as reduction in reasoning capabilities~\cite{khade2024lora}. For European Portuguese specifically, GlórIA~\cite{Gloria} demonstrated that fine-tuning a multilingual model on Portuguese data could achieve performance comparable to models specifically designed for Portuguese. Similarly, Sabiá~\cite{Sabia} showed that continued pre-training of existing multilingual models on Portuguese corpora led to significant improvements on Portuguese-specific tasks.
+Fine-tuning approaches have shown positive results~\cite{xia2024understanding} in various languages and domains; however, they also present challenges such as a reduction in reasoning capabilities~\cite{khade2024challenges}. For European Portuguese specifically, GlórIA~\cite{lopes2024gloriagenerativeopen} demonstrated that fine-tuning a multilingual model on Portuguese data achieved performance comparable to models specifically designed for Portuguese. Similarly, Sabiá~\cite{10.1007/978-3-031-45392-2_15} showed that continued pre-training of existing multilingual models on Portuguese corpora led to significant improvements in Portuguese-specific tasks.
 
-However, these approaches still require substantial computational resources and large amounts of target language data. The GlórIA model, for example, required training on more than 52 billion tokens of Portuguese text and took 21 days~\cite{Gloria}, while Albertina-PT~\cite{Albertina} used approximately 15 billion tokens and took 3 days for continued pre-training.
+However, these approaches still require substantial computational resources and large amounts of target language data. The GlórIA model, for example, required training on over 52 billion Portuguese tokens and a runtime of 21 days~\cite{lopes2024gloriagenerativeopen}, while Albertina-PT~\cite{rodrigues2023advancing} used approximately 15 billion tokens and took 3 days for continued pre-training.
 
 \section{Exploring Tokenizers}\label{Section3.2}
-An alternative approach to adapt existing decoder models to new languages is to modify the tokenizer component. Tokenizers are the building blocks of most language models and provide the foundation required to train and utilize these models effectively.
+An alternative approach to adapting existing decoder models to new languages is to expand the tokenizer component \cite{kim2024efficient, nakash2025adaptivocab} by either updating or replacing its vocabulary with new tokens. Tokenizers are one of the building blocks of most language models and provide the basis required to train and utilize these models effectively.
 
-This approach focuses on editing existing tokenizers and adjusting the model embedding weights to adapt to new languages. One of the primary benefits of this approach is the minimal or complete absence of training, which makes it potentially the most computationally efficient method for adapting existing models to new languages.
+This approach focuses on modifying tokenizers and adjusting the corresponding embedding weights to adapt to new languages. One of its primary benefits is the minimal training, or in some cases, none at all.
 
-\subsection{Tokenizer Adaptation Methods}
-Several methods have been proposed for adapting tokenizers to new languages:
+\subsection{Methodology}
+While fine-tuning and continued pre-training have been extensively studied, tokenizer adaptation has received comparatively little attention in the literature. Nonetheless, this methodology offers an appealing alternative due to its potential for efficiency, requiring minimal additional training or, in some cases, none at all. By intervening directly in the tokenizer and embedding layers, models can be adapted to represent target languages more faithfully without the computational demands of large-scale pre-training.
 
-\begin{itemize}
-    \item \textbf{Vocabulary Expansion}: Adding new tokens specific to the target language while maintaining the original vocabulary~\cite{martinez2022tuning}
-    
-    \item \textbf{Tokenizer Replacement}: Completely replacing the original tokenizer with one trained on the target language~\cite{rust2020tokenizer}
-    
-    \item \textbf{Hybrid Approaches}: Combining elements of the original tokenizer with language-specific target tokens~\cite{AdaptinigPretrainedModels}
-\end{itemize}
+Several strategies for tokenizer adaptation have been proposed. One direction is vocabulary expansion, where additional tokens corresponding to words or subwords of the target language are incorporated into the existing tokenizer while retaining the original vocabulary~\cite{fernandez2022fine}. Another approach is tokenizer replacement, which discards the original tokenizer and instead employs a new tokenizer trained specifically on the target language, adjusting the model’s embedding matrix accordingly~\cite{rust2020good}. More recent work has also examined hybrid approaches that merge elements of the original tokenizer with language-specific tokens, striking a balance between preserving the model’s prior knowledge and improving its coverage of the target language~\cite{csaki2023efficiently}.
 
-Particularly relevant to our work, Pfeiffer ~\cite{AdaptinigPretrainedModels} explored adapting pre-trained models to new languages without the need for any training, focusing on replacing tokens in the tokenizer, adjusting their respective embedding weights and undergo fine-tuning training. Their approach demonstrated promising results, though their focus was primarily on non-Latin languages with distinct character sets from the pre-training languages.
+It is worth noting that existing studies often combine tokenizer adaptation with further fine-tuning. For example, ~\citet{csaki2023efficiently} explored replacing tokens in the tokenizer and realigning their embeddings, followed by fine-tuning the adapted models on target-language data. Their results highlight the potential of tokenizer adaptation while underscoring that research focused on tokenizer-only adaptation -- without the subsequent training phase -- remains largely unexplored. This dissertation contributes to addressing this gap by investigating the viability of tokenizer-based methods as a lightweight alternative for adapting models to new languages.
+
 
 \subsection{Embedding Initialization Strategies}
-A critical aspect of tokenizer adaptation is determining how to initialize the embeddings for newly added tokens. Several strategies have been proposed:
+A critical aspect of tokenizer adaptation is determining how to initialize the embeddings for newly added tokens. Several strategies have been proposed: \textbf{(i)} \textit{Random Initialization} by assigning random values to new token embeddings~\cite{koto2021indobertweet}; \textbf{(ii)} \textit{Subword Averaging} by computing new token embeddings as the average of their constituent subwords in the original tokenizer~\cite{gu2024retok}; and \textbf{(iii)} \textit{Cross-lingual Mapping} by using bilingual dictionaries to map embeddings from source to target language~\cite{artetxe2018robust}.
 
-\begin{itemize}
-    \item \textbf{Random Initialization}: Assigning random values to new token embeddings~\cite{jiti2021bertweet}
-    
-    \item \textbf{Subword Averaging}: Computing new token embeddings as the average of their constituent subwords in the original tokenizer~\cite{AdaptinigPretrainedModels}
-    
-    \item \textbf{Cross-lingual Mapping}: Using bilingual dictionaries to map embeddings from source to target language~\cite{artetxe2018robust}
-\end{itemize}
+Although \textit{Cross-lingual Mapping} has shown promising results, this approach relies on the availability of high-quality bilingual dictionaries linking the source and target languages. As it introduces an additional dependency and pre-processing step  compared to the other strategies, this work does not pursue that approach. Instead, we propose a new strategy -- \textit{Position-Weighted Initialization} -- which accounts for the varying importance of constituent tokens based on their position.
 
-Our work based on these approaches\unsure{We discussed about implementing the "Cross-lingual Mapping" but ended up not implementing it. Should we remove it from this section?} by introducing position-sensitive embedding initialization, which accounts for the varying importance of constituent tokens based on their position.
+\subsection{Results}
 
-\section{PT-PT Datasets}\label{Section3.3}
-One of the main challenges in creating and adapting models for European Portuguese is the limited availability of high-quality data sets. From our literature review, we identified several datasets specifically designed for evaluating Portuguese language models, with a particular focus on two comprehensive benchmarks.
+Although still relatively underexplored, studies on tokenizer adaptation have shown encouraging results. Vocabulary expansion approaches have been able to improve effectiveness on downstream tasks in the target language while preserving the model’s ability to process the original training languages~\cite{fernandez2022fine}. Tokenizer replacement methods have also demonstrated that training with a tokenizer better aligned to the target language can reduce tokenization inefficiencies and lead to measurable gains in accuracy~\cite{rust2020good}. Hybrid methods, which balance the preservation of existing vocabulary with the introduction of new language-specific tokens, have been shown to offer competitive effectiveness while avoiding catastrophic degradation of the original language capabilities~\cite{csaki2023efficiently}.  
 
-\subsection{SuperGluePTPT}\label{Section3.3.1}\label{subsec:dataset-superglueptpt}
-SuperGluePTPT is a Portuguese adaptation of the SuperGlue benchmark~\cite{wang2019superglue}, which consists of a collection of challenging language understanding tasks, first used in \textit{Gervásio PT*}~\cite{Gervasio}. The Portuguese version was created through machine translation using DeepL\footnote[1]{\url{https://www.deepl.com}}.\\
-\\
-\textbf{Composition}\\
-The benchmark includes several tasks:
-\begin{itemize}
-    \item \textbf{BoolQ-PT}: A question-answering dataset requiring binary (yes/no) answers
-    \item \textbf{CB-PT}: A textual entailment task focused on determining whether one text entails, contradicts, or is neutral toward another
-    \item \textbf{COPA-PT}: A causal reasoning task requiring models to determine cause-effect relationships
-    \item \textbf{MultiRC-PT}: A reading comprehension task with multiple correct answers
-\end{itemize}
+However, these results typically rely on additional fine-tuning or continued pre-training after tokenizer modifications. For example, ~\citet{csaki2023efficiently} reported that models required fine-tuning on target-language corpora to realize the benefits of tokenizer adaptation, particularly for languages with characters distinct from those present in the pre-training data. This reliance on post-adaptation training highlights an open research gap: the effectiveness of tokenizer-only methods without further fine-tuning remains insufficiently explored.  
 
-After carefully analyzing the data for each task\footnote{The \textit{SuperGluePTPT} dataset is available at \href{https://huggingface.co/datasets/PORTULAN/extraglue}{HuggingFace}}, we noticed the translation quality of some of the questions in \textit{MultiRC-PT}, \textit{CB-PT} and \textit{COPA-PT} were of low-quality.\\
-With that in mind, we decided to focus on the task \textit{BoolQ-PT} in order to minimize wrong measurements of the benchmarks.
+In summary, existing results suggest that tokenizer adaptation is a promising direction, but its full potential -- particularly in low-resource and computationally constrained settings -- has yet to be systematically explored. This dissertation aims to contribute toward filling this gap by evaluating tokenizer-only adaptation strategies for European Portuguese.
 
-\textbf{Evaluation}\\
-Each task in SuperGluePTPT has its own evaluation metric, typically accuracy or F1 score. The overall benchmark score is computed as the average performance across all tasks, providing a comprehensive assessment of a model's language understanding capabilities in European Portuguese. However, since we only focused our benchmark in a single task, our score was simply the accuracy of the task \textit{BoolQ}.
+
+\section{European Portuguese Benchmarks}\label{Section3.3}\label{sec:ptpt-benchmarks-intro}
+One of the main challenges in creating and adapting models for European Portuguese is the limited availability of high-quality datasets. From our literature review, we identified several specifically designed for evaluating Portuguese language models, and focused on two comprehensive benchmarks.
+
+The rationale behind this decision was motivated by the overrepresentation of Brazilian Portuguese in most available resources \cite{sanches2024brazilian, carvalho2025cam}. 
+As a result, identifying high-quality datasets exclusively in European Portuguese proved challenging. To ensure reliability and linguistic fidelity, we therefore focused on peer-reviewed benchmarks that explicitly focus on European Portuguese as their evaluation data.
+
+\subsection{extraGLUE}\label{Section3.3.1}\label{subsec:dataset-extraGLUE}
+Originally introduced as an extension of the \emph{GLUE} benchmark \cite{wang2018glue}, \emph{SuperGLUE} was designed to provide a more rigorous evaluation of natural language understanding. Its goal was to preserve the accessibility and robustness of GLUE's evaluation framework, while increasing task difficulty in order to ensure that significant progress on the benchmark results would require substantial innovations in language model design.
+
+While \emph{SuperGLUE} represents a strong candidate for evaluating general-purpose English language models, it is less suitable for our research context, given that our target language is European Portuguese rather than English.
+
+To address this, we turned to the European Portuguese adaptation of SuperGLUE: \emph{extraGLUE}\footnote{extraGLUE is available at: \url{https://huggingface.co/datasets/PORTULAN/extraglue}}. First introduced by \citet{santos2024advancing}, this benchmark retains the goals of its parent while adapting the tasks to European Portuguese. The adaptation process relied primarily on automated machine translation using DeepL \footnote{DeepL - \url{https://www.deepl.com}} as well as a filtering of tasks by selectively retaining those more suitable for Portuguese translation. For example, the CoLA dataset was excluded as ungrammatical English expressions are typically rendered as grammatical in Portuguese after translation, undermining the task at hand. This careful curation ensured that only datasets whose linguistic properties could be meaningfully preserved in Portuguese were included. 
+
+
+\paragraph{Composition.}
+Similar to its parent benchmark, \emph{extraGLUE} is composed of multiple tasks, each targeting a specific dimension of language understanding. This multi-task design ensures that evaluation captures broad comprehension rather than specialization.
+Among the tasks included, we highlight four core components: \textbf{(i)} BoolQ-PT, a question-answering dataset requiring binary (yes/no) responses; \textbf{(ii)} CB-PT, a textual entailment task where models determine whether a hypothesis entails, contradicts, or is neutral with respect to a premise; \textbf{(iii)} COPA-PT, a causal reasoning task evaluating the ability to infer cause-effect relationships; and \textbf{(iv)} MultiRC-PT, a reading comprehension task in which multiple answers can be correct.
+
+During preliminary analysis, however, we identified limitations in the translation quality for several tasks, particularly in \textit{MultiRC-PT}, \textit{CB-PT} and \textit{COPA-PT}. Such inconsistencies increase the risk of unreliable evaluation, which would undermine the reliability of our results. For this reason, we decided to concentrate on \textit{BoolQ-PT}, which exhibited the highest translation fidelity.
+
+\paragraph{Evaluation.}
+Each task in \emph{extraGLUE} has its own evaluation metric, typically accuracy or F1 score. The overall benchmark score is computed as the average effectiveness across all tasks, providing a comprehensive measure of a model's language understanding capabilities in European Portuguese.
+
+However, since we only focused our benchmark on a single task, our score corresponded to the accuracy achieved on the \textit{BoolQ} task.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{14cm}|}
+        \hline
+        \textbf{Passage:} \textit{Da Vinci's Demons -- A série estreou nos Estados Unidos no canal Starz a 12 de abril de 2013, e a sua segunda temporada estreou a 22 de março de 2014. A série foi renovada para uma terceira temporada, que estreou a 24 de outubro de 2015. Em 23 de julho de 2015, a Starz anunciou que a terceira temporada seria a última da série. No entanto, Goyer deixou em aberto a possibilidade de um regresso da minissérie.} \\
+        \textbf{Question:} \textit{Haverá uma 4ª temporada de Da Vinci's Demons?
+} \textbf{Answer:} Não \\
+        \hline
+        \textbf{Passage:} \textit{Números de telefone gratuitos no Plano de Numeração Norte-Americano -- Nos Estados Unidos da América, no Canadá e noutros países que participam no Plano de Numeração Norte-Americano, um número de telefone gratuito tem um dos códigos de área 800, 833, 844, 855, 866, 877 e 888.} \\
+        \textbf{Question:} \textit{O 844 é um número gratuito no Canadá?} \textbf{Answer:} Sim \\
+        \hline
+    \end{tabular}
+    \caption{Representative examples from BoolQ-PT. The system's prediction is compared against the standard answer, with task effectiveness measured in terms of accuracy.}
+    \label{tab:boolq-examples}
+\end{table}
+
+To illustrate the structure of BoolQ-PT, Table~\ref{tab:boolq-examples} provides two representative examples of passages, questions, and their standard answers.
+
 
 \subsection{CalamePT}\label{Section3.3.2}\label{subsec:dataset-calamept}
 CalamePT\footnote{The \textit{CalamePT} dataset is available at \href{https://huggingface.co/datasets/NOVA-vision-language/calame-pt}{HuggingFace}.}
- is a dataset specifically designed to evaluating text completion capabilities in European Portuguese. This dataset was originally developed at Rodrigues~\cite{Gloria} as part of the \textit{GlórIA} project.
+is a benchmark specifically tailored to evaluate text completion capabilities in European Portuguese. It was originally introduced by \citet{lopes2024gloriagenerativeopen} as part of the \emph{GlórIA} project, addressing the lack of evaluation resources tailored for assessing generative abilities in this language.
 
-\textbf{Composition}\\
-The dataset consists of 2,476 phrases, including 406 handwritten phrases and 2,070 phrases automatically generated using GPT-3.5~\cite{chatgpt}. Each phrase is designed such that the final word can be predicted with high confidence given the preceding context, making it an effective test of a model's ability to understand and generate Portuguese text.
+\paragraph{Composition.}
+The dataset contains 2,476 carefully designed phrases to evaluate contextual prediction. Of these, 406 were manually written by native speakers to ensure linguistic variety and authenticity, while 2,070 were automatically generated with GPT-3.5~\footnote{ChatGPT - \url{https://openai.com/chatgpt/overview/}}. Each phrase is designed such that the final word is highly predictable from the preceding context, providing a controlled test of a model’s capacity to track local dependencies and generate coherent completions in Portuguese.
 
-\textbf{Evaluation}\\
-The evaluation methodology for CalamePT is straightforward: for each phrase, the last word is removed, and the model is asked to predict it. The model's prediction is then compared with the actual last word, and a binary score (match or no match) is assigned. The final metric is calculated as the ratio of correct matches to the total number of phrases: $\text{Score} = \frac{\text{Matches}}{\text{TotalPhrases}}$
+\paragraph{Evaluation.}
+The evaluation protocol is straightforward: for each phrase, the last word is masked, and the model is tasked with predicting it. The predicted token is then compared against the expected last word, with effectiveness scored in binary terms (match / no match). The final benchmark score is calculated as:  
 
-This simple yet effective evaluation approach provides a clear measure of a model's ability to understand Portuguese context and generate appropriate completions.
+$$
+\text{Score} = \frac{\text{Correct Predictions}}{\text{Total Phrases}}
+$$
+
+This simple yet effective approach offers a clear measure of a model’s ability to process Portuguese context and generate accurate completions.
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{14cm}|}
+        \hline
+        \textbf{Prompt:} \textit{No mundo da diversidade, nada deveria impedir alguém de amar livremente. O amor não escolhe gênero, apenas se entrega ao \_\_\_} \\
+        \textbf{Expected completion:} coração \\
+        \hline
+        \textbf{Prompt:} \textit{Um pequeno asteroide, chamado 1999 JJ72, percorre silenciosamente a cintura principal do nosso sistema \_\_\_} \\
+        \textbf{Expected completion:} solar \\
+        \hline
+        \textbf{Prompt:} \textit{As negociações encerraram sem acordo, impossibilitando os peregrinos de realizarem a \_\_\_} \\
+        \textbf{Expected completion:} peregrinação \\
+        
+        \hline
+    \end{tabular}
+    \caption{Examples of CalamePT completion tasks. Each phrase omits the final word, which the model must predict. Accuracy is computed as the proportion of exact matches.}
+    \label{tab:calamept-examples}
+\end{table}
+
+These examples illustrate the type of predictions required in \emph{CalamePT}, with model effectiveness evaluated in terms of accuracy -- the proportion of phrases for which the final word is correctly predicted.

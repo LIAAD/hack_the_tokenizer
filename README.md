@@ -174,13 +174,8 @@ If you use this work in your research, please cite:
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/yourusername/hack-tokenizer}}
 }
-```
+```a
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- This research builds upon work from "Efficiently Adapting Pretrained Language Models to New Languages" (https://arxiv.org/pdf/2311.05741)
-- Thanks to Microsoft for the Phi model series used in this research

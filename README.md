@@ -174,7 +174,7 @@ If you use this work in your research, please cite:
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/yourusername/hack-tokenizer}}
 }
-```a
+```
 
 ## License
 
